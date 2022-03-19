@@ -10,12 +10,11 @@ import java.io.IOException
 import java.io.InputStream
 import okhttp3.Protocol
 import okhttp3.Response
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType.Companion.fromName
 import org.moire.ultrasonic.api.subsonic.models.JukeboxAction
-import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -425,14 +424,13 @@ open class RESTMusicService(
         save: Boolean
     ): Pair<InputStream, Boolean> {
         val songOffset = if (offset < 0) 0 else offset
-        lateinit var response: StreamResponse
 
         // Use semantically correct call
-        if (save) {
-            response = API.download(song.id, maxBitrate, offset = songOffset)
+        val response = if (save) {
+            API.download(song.id, maxBitrate, offset = songOffset)
                 .execute().toStreamResponse()
         } else {
-            response = API.stream(song.id, maxBitrate, offset = songOffset)
+            API.stream(song.id, maxBitrate, offset = songOffset)
                 .execute().toStreamResponse()
         }
 
@@ -463,7 +461,7 @@ open class RESTMusicService(
             // Returns a dummy response
             Response.Builder()
                 .code(100)
-                .body(ResponseBody.create(null, ""))
+                .body("".toResponseBody(null))
                 .protocol(Protocol.HTTP_2)
                 .message("Empty response")
                 .request(chain.request())
@@ -480,7 +478,7 @@ open class RESTMusicService(
         val response = client.newCall(request).execute()
 
         // The complete url :)
-        val url = response.request().url()
+        val url = response.request.url
 
         return url.toString()
     }

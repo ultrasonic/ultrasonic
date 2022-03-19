@@ -5,7 +5,7 @@ import com.squareup.picasso.Picasso.LoadedFrom.NETWORK
 import com.squareup.picasso.Request
 import com.squareup.picasso.RequestHandler
 import java.io.IOException
-import okio.Okio
+import okio.source
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.util.FileUtil.SUFFIX_LARGE
@@ -44,7 +44,7 @@ class CoverArtRequestHandler(private val client: SubsonicAPIClient) : RequestHan
 
         // Handle the response
         if (!response.hasError() && response.stream != null) {
-            return Result(Okio.source(response.stream!!), NETWORK)
+            return Result(response.stream!!.source(), NETWORK)
         }
 
         // Throw an error if still not successful

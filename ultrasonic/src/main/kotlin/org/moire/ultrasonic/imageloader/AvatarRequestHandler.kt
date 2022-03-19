@@ -4,7 +4,7 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
 import com.squareup.picasso.RequestHandler
 import java.io.IOException
-import okio.Okio
+import okio.source
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 
 /**
@@ -29,7 +29,7 @@ class AvatarRequestHandler(
         if (response.hasError() || response.stream == null) {
             throw IOException("${response.apiError}")
         } else {
-            return Result(Okio.source(response.stream!!), Picasso.LoadedFrom.NETWORK)
+            return Result(response.stream!!.source(), Picasso.LoadedFrom.NETWORK)
         }
     }
 }
