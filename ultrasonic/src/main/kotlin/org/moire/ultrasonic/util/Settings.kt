@@ -191,7 +191,7 @@ object Settings {
 
     @JvmStatic
     var showNowPlayingDetails
-            by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING_DETAILS, false)
+        by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING_DETAILS, false)
 
     @JvmStatic
     var shouldUseId3Tags

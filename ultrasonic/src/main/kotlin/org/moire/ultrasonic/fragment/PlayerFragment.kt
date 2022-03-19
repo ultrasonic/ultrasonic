@@ -14,12 +14,26 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.view.*
+import android.view.ContextMenu
 import android.view.ContextMenu.ContextMenuInfo
+import android.view.GestureDetector
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
-import android.widget.*
 import android.widget.AdapterView.AdapterContextMenuInfo
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.TextView
+import android.widget.ViewFlipper
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -29,12 +43,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.rxjava3.disposables.Disposable
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.ArrayList
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.CancellationException
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
+import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.BaseAdapter
 import org.moire.ultrasonic.adapters.TrackViewBinder
@@ -54,19 +80,14 @@ import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
-import org.moire.ultrasonic.util.*
+import org.moire.ultrasonic.util.CancellationToken
+import org.moire.ultrasonic.util.CommunicationError
+import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.Settings
+import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.AutoRepeatButton
 import org.moire.ultrasonic.view.VisualizerView
 import timber.log.Timber
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.CancellationException
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
-import kotlin.math.abs
-import kotlin.math.max
 
 /**
  * Contains the Music Player screen of Ultrasonic with playback controls and the playlist
@@ -966,17 +987,22 @@ class PlayerFragment :
 
             val fileFormat: String? =
                 if (TextUtils.isEmpty(currentSong!!.transcodedSuffix) ||
-                        currentSong!!.transcodedSuffix == currentSong!!.suffix ||
-                        currentSong!!.isVideo)
+                    currentSong!!.transcodedSuffix == currentSong!!.suffix ||
+                    currentSong!!.isVideo
+                )
                     currentSong!!.suffix
                 else
-                    String.format(Locale.ROOT, "%s > %s", currentSong!!.suffix, currentSong!!.transcodedSuffix)
-            val details: String =
-                String.format(
-                    Util.appContext().getString(R.string.song_details_nowplaying),
-                    currentSong!!.genre, currentSong!!.year, currentSong!!.bitRate, fileFormat)
+                    String.format(Locale.ROOT, "%s > %s", currentSong!!.suffix,
+                        currentSong!!.transcodedSuffix)
+            val details: String = String.format(
+                Util.appContext().getString(R.string.song_details_nowplaying),
+                currentSong!!.genre, currentSong!!.year, currentSong!!.bitRate, fileFormat
+            )
             detailsTextView.text = details
-            detailsTextView.visibility = if (Settings.showNowPlayingDetails) View.VISIBLE else View.GONE
+            if (Settings.showNowPlayingDetails)
+                detailsTextView.visibility = View.VISIBLE
+            else
+                detailsTextView.visibility = View.GONE
 
             downloadTrackTextView.text = trackFormat
             downloadTotalDurationTextView.text = duration
