@@ -992,17 +992,20 @@ class PlayerFragment :
                 )
                     currentSong!!.suffix
                 else
-                    String.format(Locale.ROOT, "%s > %s", currentSong!!.suffix,
-                        currentSong!!.transcodedSuffix)
+                    String.format(
+                        Locale.ROOT, "%s > %s", currentSong!!.suffix,
+                        currentSong!!.transcodedSuffix
+                    )
             val details: String = String.format(
                 Util.appContext().getString(R.string.song_details_nowplaying),
                 currentSong!!.genre, currentSong!!.year, currentSong!!.bitRate, fileFormat
             )
             detailsTextView.text = details
-            if (Settings.showNowPlayingDetails)
-                detailsTextView.visibility = View.VISIBLE
-            else
-                detailsTextView.visibility = View.GONE
+            detailsTextView.visibility =
+                if (Settings.showNowPlayingDetails)
+                    View.VISIBLE
+                else
+                    View.GONE
 
             downloadTrackTextView.text = trackFormat
             downloadTotalDurationTextView.text = duration
