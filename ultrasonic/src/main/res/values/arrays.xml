@@ -245,7 +245,6 @@
         <item>@string/language.en</item>
         <item>@string/language.fr</item>
         <item>@string/language.de</item>
-        <item>@string/language.de_DE_1901</item>
         <item>@string/language.hu</item>
         <item>@string/language.it</item>
         <item>@string/language.es</item>
@@ -265,7 +264,6 @@
         <item>en</item>
         <item>fr</item>
         <item>de</item>
-        <item>de-DE-1901</item>
         <item>hu</item>
         <item>it</item>
         <item>es</item>
