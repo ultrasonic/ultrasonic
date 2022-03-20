@@ -14,7 +14,7 @@ android {
 
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
-
+        resConfigs 'cs', 'de', 'en', 'es', 'fr', 'hu', 'it', 'nl', 'pl', 'pt', 'pt-rBR', 'ru', 'zh-rCN', 'zh-rTW'
     }
 
     bundle.language.enableSplit = false
