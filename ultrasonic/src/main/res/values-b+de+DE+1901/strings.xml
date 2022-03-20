@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="common.artist">Interpret</string>
     <string name="main.artists_title">Interpreten</string>
+    <string name="search.artists">Interpreten</string>
+    <string name="settings.display_bitrate_summary">Bitrate und Dateityp hinter der Interpret anzeigen</string>
+    <string name="common.various_artists">Mehrere Interpreten</string>
+    <string name="main.albums_alphaByArtist">Nach Interpret</string>
+    <string name="settings.show_all_songs_by_artist">Alle Titel nach Interpret sortieren</string>
+    <string name="settings.show_all_songs_by_artist_summary">Einen neuen Eintrag in der Interpretenansicht hinzufügen, um auf alle Lieder eines Interprets zuzugreifen</string>
+    <string name="download.menu_show_artist">Interpret zeigen</string>
 </resources>
