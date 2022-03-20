@@ -97,7 +97,8 @@
     <string name="jukebox.is_default">Jukebox By Default</string>
     <string name="lyrics.nomatch">No lyrics found</string>
     <string name="language.default">Default</string>
-    <string name="language.zh">Chinese</string>
+    <string name="language.zh_CN">Chinese (China)</string>
+    <string name="language.zh_TW">Chinese (Taiwan)</string>
     <string name="language.cs">Czech</string>
     <string name="language.nl">Dutch</string>
     <string name="language.en">English</string>
@@ -109,7 +110,7 @@
     <string name="language.es">Spanish</string>
     <string name="language.pl">Polish</string>
     <string name="language.pt">Portuguese</string>
-    <string name="language.pt_br">Portuguese (Brazil)</string>
+    <string name="language.pt_BR">Portuguese (Brazil)</string>
     <string name="language.ru">Russian</string>
     <string name="main.albums_alphaByArtist">By Artist</string>
     <string name="main.albums_alphaByName">By Name</string>

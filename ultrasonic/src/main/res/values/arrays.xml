@@ -236,9 +236,10 @@
         <item>@string/settings.playback.bluetooth_a2dp</item>
         <item>@string/settings.playback.bluetooth_disabled</item>
     </string-array>
-    <string-array name="languageNames" translatable="true">
+    <string-array name="languageNames" translatable="false">
         <item>@string/language.default</item>
-        <item>@string/language.zh</item>
+        <item>@string/language.zh_CN</item>
+        <item>@string/language.zh_TW</item>
         <item>@string/language.cs</item>
         <item>@string/language.nl</item>
         <item>@string/language.en</item>
@@ -250,14 +251,15 @@
         <item>@string/language.es</item>
         <item>@string/language.pl</item>
         <item>@string/language.pt</item>
-        <item>@string/language.pt_br</item>
+        <item>@string/language.pt_BR</item>
         <item>@string/language.ru</item>
     </string-array>
 
     <string-array name="languageValues" translatable="false">
         <!--suppress CheckTagEmptyBody -->
         <item></item>
-        <item>zh</item>
+        <item>zh-CN</item>
+        <item>zh-TW</item>
         <item>cs</item>
         <item>nl</item>
         <item>en</item>
