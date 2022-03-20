@@ -23,7 +23,7 @@ class LocaleHelper(base: Context?) : ContextWrapper(base) {
             var context = ctx
             if (context != null && language != "") {
                 val config = context.resources.configuration
-                val locale = Locale(language)
+                val locale = Locale.forLanguageTag(language)
                 Locale.setDefault(locale)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     setSystemLocale(config, locale)
