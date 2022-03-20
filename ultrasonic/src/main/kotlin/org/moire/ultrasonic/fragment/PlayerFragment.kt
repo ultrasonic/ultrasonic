@@ -138,8 +138,9 @@ class PlayerFragment :
     private lateinit var playlistFlipper: ViewFlipper
     private lateinit var emptyTextView: TextView
     private lateinit var songTitleTextView: TextView
-    private lateinit var albumTextView: TextView
     private lateinit var artistTextView: TextView
+    private lateinit var albumTextView: TextView
+    private lateinit var genreTextView: TextView
     private lateinit var detailsTextView: TextView
     private lateinit var albumArtImageView: ImageView
     private lateinit var playlistView: RecyclerView
@@ -176,9 +177,10 @@ class PlayerFragment :
         playlistFlipper = view.findViewById(R.id.current_playing_playlist_flipper)
         emptyTextView = view.findViewById(R.id.playlist_empty)
         songTitleTextView = view.findViewById(R.id.current_playing_song)
-        albumTextView = view.findViewById(R.id.current_playing_album)
         artistTextView = view.findViewById(R.id.current_playing_artist)
-        detailsTextView = view.findViewById(R.id.current_playing_details)
+        albumTextView = view.findViewById(R.id.current_playing_album)
+        genreTextView = view.findViewById(R.id.current_playing_genre)
+        detailsTextView = view.findViewById(R.id.current_file_details)
         albumArtImageView = view.findViewById(R.id.current_playing_album_art_image)
         positionTextView = view.findViewById(R.id.current_playing_position)
         downloadTrackTextView = view.findViewById(R.id.current_playing_track)
@@ -982,30 +984,40 @@ class PlayerFragment :
         if (currentPlaying != null) {
             currentSong = currentPlaying!!.song
             songTitleTextView.text = currentSong!!.title
-            albumTextView.text = currentSong!!.album
             artistTextView.text = currentSong!!.artist
+            albumTextView.text = currentSong!!.album
+            if (currentSong!!.year != null && Settings.showNowPlayingDetails)
+                albumTextView.append(String.format(Locale.ROOT, " (%d)", currentSong!!.year))
 
-            val fileFormat: String? =
-                if (TextUtils.isEmpty(currentSong!!.transcodedSuffix) ||
-                    currentSong!!.transcodedSuffix == currentSong!!.suffix ||
-                    currentSong!!.isVideo
+            genreTextView.text = currentSong!!.genre
+            genreTextView.visibility =
+                if (currentSong!!.genre != null && currentSong!!.genre!!.isNotBlank() &&
+                    Settings.showNowPlayingDetails
+                ) View.VISIBLE
+                else View.GONE
+
+            var bitRate: String? = null
+            if (currentSong!!.bitRate != null && currentSong!!.bitRate!! > 0)
+                bitRate = String.format(
+                    Util.appContext().getString(R.string.song_details_kbps), currentSong!!.bitRate
                 )
-                    currentSong!!.suffix
-                else
-                    String.format(
+            detailsTextView.text =
+                String.format(
+                    Util.appContext().getString(R.string.song_details_all),
+                    if (bitRate == null) ""
+                    else String.format(Locale.ROOT, "%s ", bitRate),
+                    if (TextUtils.isEmpty(currentSong!!.transcodedSuffix) ||
+                        currentSong!!.transcodedSuffix == currentSong!!.suffix ||
+                        currentSong!!.isVideo
+                    ) currentSong!!.suffix
+                    else String.format(
                         Locale.ROOT, "%s > %s", currentSong!!.suffix,
                         currentSong!!.transcodedSuffix
                     )
-            val details: String = String.format(
-                Util.appContext().getString(R.string.song_details_nowplaying),
-                currentSong!!.genre, currentSong!!.year, currentSong!!.bitRate, fileFormat
-            )
-            detailsTextView.text = details
+                )
             detailsTextView.visibility =
-                if (Settings.showNowPlayingDetails)
-                    View.VISIBLE
-                else
-                    View.GONE
+                if (Settings.showNowPlayingDetails) View.VISIBLE
+                else View.GONE
 
             downloadTrackTextView.text = trackFormat
             downloadTotalDurationTextView.text = duration
@@ -1015,8 +1027,9 @@ class PlayerFragment :
         } else {
             currentSong = null
             songTitleTextView.text = null
-            albumTextView.text = null
             artistTextView.text = null
+            albumTextView.text = null
+            genreTextView.text = null
             detailsTextView.text = null
             downloadTrackTextView.text = null
             downloadTotalDurationTextView.text = null

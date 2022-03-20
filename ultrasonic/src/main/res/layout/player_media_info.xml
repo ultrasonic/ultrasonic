@@ -9,7 +9,6 @@
     a:layout_marginEnd="12dp" >
 
     <LinearLayout
-        a:id="@+id/current_playing"
         a:layout_width="wrap_content"
         a:layout_height="wrap_content"
         a:layout_alignParentLeft="true"
@@ -48,6 +47,16 @@
             a:textAppearance="?android:attr/textAppearanceSmall"
             tools:text="Album" />
 
+        <TextView
+            a:id="@+id/current_playing_genre"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:ellipsize="start"
+            a:gravity="right"
+            a:singleLine="true"
+            a:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="Genre" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -56,7 +65,8 @@
         a:layout_alignParentRight="true"
         a:layout_centerVertical="true"
         a:gravity="right"
-        a:orientation="vertical">
+        a:orientation="vertical"
+        tools:ignore="RelativeOverlap">
 
         <TextView
             a:id="@+id/current_playing_track"
@@ -77,17 +87,16 @@
             a:text="@string/util.no_time"
             a:textAppearance="?android:attr/textAppearanceSmall" />
 
-    </LinearLayout>
+        <TextView
+            a:id="@+id/current_file_details"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:ellipsize="start"
+            a:gravity="right"
+            a:singleLine="true"
+            a:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="Details" />
 
-    <TextView
-        a:id="@+id/current_playing_details"
-        a:layout_width="fill_parent"
-        a:layout_height="wrap_content"
-        a:layout_below="@id/current_playing"
-        a:ellipsize="start"
-        a:gravity="center_horizontal"
-        a:singleLine="true"
-        a:textAppearance="?android:attr/textAppearanceSmall"
-        tools:text="Details" />
+    </LinearLayout>
 
 </RelativeLayout>
