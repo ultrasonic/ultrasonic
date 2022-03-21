@@ -995,26 +995,16 @@ class PlayerFragment :
                     ) View.VISIBLE
                     else View.GONE
 
-                var bitRate: String? = null
+                var bitRate: String = ""
                 if (currentSong!!.bitRate != null && currentSong!!.bitRate!! > 0)
                     bitRate = String.format(
                         Util.appContext().getString(R.string.song_details_kbps),
                         currentSong!!.bitRate
                     )
-                bitrateFormatTextView.text =
-                    String.format(
-                        Util.appContext().getString(R.string.song_details_all),
-                        if (bitRate == null) ""
-                        else String.format(Locale.ROOT, "%s ", bitRate),
-                        if (TextUtils.isEmpty(currentSong!!.transcodedSuffix) ||
-                            currentSong!!.transcodedSuffix == currentSong!!.suffix ||
-                            currentSong!!.isVideo
-                        ) currentSong!!.suffix
-                        else String.format(
-                            Locale.ROOT, "%s > %s", currentSong!!.suffix,
-                            currentSong!!.transcodedSuffix
-                        )
-                    )
+                bitrateFormatTextView.text = String.format(
+                    Locale.ROOT, "%s %s",
+                    bitRate, currentSong!!.suffix
+                )
                 bitrateFormatTextView.visibility = View.VISIBLE
             } else {
                 genreTextView.visibility = View.GONE
