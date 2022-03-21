@@ -232,8 +232,8 @@
     <string name="settings.disc_sort_summary">Sort song list by disc number and track number</string>
     <string name="settings.display_bitrate">Display Bitrate and File Suffix</string>
     <string name="settings.display_bitrate_summary">Append artist name with bitrate and file suffix</string>
-    <string name="settings.download_transition">Stay in Downloads on Play</string>
-    <string name="settings.download_transition_summary">Stay in media view when starting playback (do not switch to player view)</string>
+    <string name="settings.download_transition">Show Now Playing on Play</string>
+    <string name="settings.download_transition_summary">Switch to Now Playing after starting playback in media view</string>
     <string name="settings.gapless_playback">Gapless Playback</string>
     <string name="settings.gapless_playback_summary">Enable gapless playback</string>
     <string name="settings.hide_media_summary">Hide music files from other apps.</string>
