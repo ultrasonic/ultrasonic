@@ -17,8 +17,8 @@ fun Response<out ResponseBody>.toStreamResponse(): StreamResponse {
         val contentType = responseBody?.contentType()
         if (
             contentType != null &&
-            contentType.type().equals("application", true) &&
-            contentType.subtype().equals("json", true)
+            contentType.type.equals("application", true) &&
+            contentType.subtype.equals("json", true)
         ) {
             val error = SubsonicAPIClient.jacksonMapper.readValue<SubsonicResponse>(
                 responseBody.byteStream()
@@ -40,7 +40,7 @@ fun Response<out ResponseBody>.toStreamResponse(): StreamResponse {
  * It creates Exceptions from the results returned by the Subsonic API
  */
 @Suppress("ThrowsCount")
-fun <T : SubsonicResponse> Response<out T>.throwOnFailure(): Response<out T> {
+fun <T : SubsonicResponse> Response<T>.throwOnFailure(): Response<T> {
     val response = this
 
     if (response.isSuccessful && response.body()!!.status === SubsonicResponse.Status.OK) {
