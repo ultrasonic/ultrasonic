@@ -21,7 +21,7 @@ class PasswordMD5Interceptor(private val password: String) : Interceptor {
     override fun intercept(chain: Chain): Response {
         val originalRequest = chain.request()
         val salt = getSalt()
-        val updatedUrl = originalRequest.url().newBuilder()
+        val updatedUrl = originalRequest.url.newBuilder()
             .addQueryParameter("t", getPasswordMD5Hash(salt))
             .addQueryParameter("s", salt)
             .build()

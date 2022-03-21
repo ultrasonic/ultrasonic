@@ -96,6 +96,21 @@
     <string name="error.label">Error</string>
     <string name="jukebox.is_default">Jukebox By Default</string>
     <string name="lyrics.nomatch">No lyrics found</string>
+    <string name="language.default">System default</string>
+    <string name="language.zh_CN">Chinese (China)</string>
+    <string name="language.zh_TW">Chinese (Taiwan)</string>
+    <string name="language.cs">Czech</string>
+    <string name="language.nl">Dutch</string>
+    <string name="language.en">English</string>
+    <string name="language.fr">French</string>
+    <string name="language.de">German</string>
+    <string name="language.hu">Hungarian</string>
+    <string name="language.it">Italian</string>
+    <string name="language.es">Spanish</string>
+    <string name="language.pl">Polish</string>
+    <string name="language.pt">Portuguese</string>
+    <string name="language.pt_BR">Portuguese (Brazil)</string>
+    <string name="language.ru">Russian</string>
     <string name="main.albums_alphaByArtist">By Artist</string>
     <string name="main.albums_alphaByName">By Name</string>
     <string name="main.albums_frequent">Most Played</string>
@@ -148,7 +163,7 @@
     <string name="search.title">Search</string>
     <string name="select_album.empty">No media found</string>
     <string name="select_album.n_selected">%d tracks selected</string>
-    <string name="select_album.no_network">Warning: No network available.</string>
+    <string name="select_album.no_network">Warning: No usable network available.\n If you are using mobile data, you may need to allow downloads on metered connections in the settings.</string>
     <string name="select_album.no_sdcard">Error: No SD card available.</string>
     <string name="select_album.play_all">Play All</string>
     <string name="select_artist.all_folders">All Folders</string>
@@ -257,6 +272,8 @@
     <string name="settings.notifications_title">Notifications</string>
     <string name="settings.network_title">Network</string>
     <string name="settings.other_title">Other Settings</string>
+    <string name="settings.override_language">Override the language</string>
+    <string name="settings.override_language_summary">You need to restart the app after changing the language</string>
     <string name="settings.playback_control_title">Playback Control Settings</string>
     <string name="settings.preload">Songs To Preload</string>
     <string name="settings.preload_1">1 song</string>
@@ -466,7 +483,6 @@
     <string name="api.subsonic.upgrade_server">Incompatible versions. Please upgrade Subsonic server.</string>
 
     <!-- Subsonic features  -->
-    <string name="settings.features_title">Features</string>
     <string name="settings.five_star_rating_title">Use five star rating for songs</string>
     <string name="settings.five_star_rating_description">Use five star rating system for songs instead of simply starring/unstarring items.
     </string>
