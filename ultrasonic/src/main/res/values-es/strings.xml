@@ -461,7 +461,6 @@
     <string name="api.subsonic.upgrade_server">Versiones incompatibles. Por favor actualiza el servidor de Subsonic.</string>
 
     <!-- Subsonic features  -->
-    <string name="settings.features_title">Características</string>
     <string name="settings.five_star_rating_title">Use cinco estrellas para las canciones</string>
     <string name="settings.five_star_rating_description">Utilice el sistema de calificación de cinco estrellas para canciones
          en lugar de simplemente marcar / desmarcar elementos.
