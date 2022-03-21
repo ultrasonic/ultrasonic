@@ -60,7 +60,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.BaseAdapter
 import org.moire.ultrasonic.adapters.TrackViewBinder
@@ -141,7 +140,7 @@ class PlayerFragment :
     private lateinit var artistTextView: TextView
     private lateinit var albumTextView: TextView
     private lateinit var genreTextView: TextView
-    private lateinit var detailsTextView: TextView
+    private lateinit var bitrateFormatTextView: TextView
     private lateinit var albumArtImageView: ImageView
     private lateinit var playlistView: RecyclerView
     private lateinit var positionTextView: TextView
@@ -180,7 +179,7 @@ class PlayerFragment :
         artistTextView = view.findViewById(R.id.current_playing_artist)
         albumTextView = view.findViewById(R.id.current_playing_album)
         genreTextView = view.findViewById(R.id.current_playing_genre)
-        detailsTextView = view.findViewById(R.id.current_file_details)
+        bitrateFormatTextView = view.findViewById(R.id.current_playing_bitrate_format)
         albumArtImageView = view.findViewById(R.id.current_playing_album_art_image)
         positionTextView = view.findViewById(R.id.current_playing_position)
         downloadTrackTextView = view.findViewById(R.id.current_playing_track)
@@ -989,35 +988,38 @@ class PlayerFragment :
             if (currentSong!!.year != null && Settings.showNowPlayingDetails)
                 albumTextView.append(String.format(Locale.ROOT, " (%d)", currentSong!!.year))
 
-            genreTextView.text = currentSong!!.genre
-            genreTextView.visibility =
-                if (currentSong!!.genre != null && currentSong!!.genre!!.isNotBlank() &&
-                    Settings.showNowPlayingDetails
-                ) View.VISIBLE
-                else View.GONE
+            if (Settings.showNowPlayingDetails) {
+                genreTextView.text = currentSong!!.genre
+                genreTextView.visibility =
+                    if (currentSong!!.genre != null && currentSong!!.genre!!.isNotBlank()
+                    ) View.VISIBLE
+                    else View.GONE
 
-            var bitRate: String? = null
-            if (currentSong!!.bitRate != null && currentSong!!.bitRate!! > 0)
-                bitRate = String.format(
-                    Util.appContext().getString(R.string.song_details_kbps), currentSong!!.bitRate
-                )
-            detailsTextView.text =
-                String.format(
-                    Util.appContext().getString(R.string.song_details_all),
-                    if (bitRate == null) ""
-                    else String.format(Locale.ROOT, "%s ", bitRate),
-                    if (TextUtils.isEmpty(currentSong!!.transcodedSuffix) ||
-                        currentSong!!.transcodedSuffix == currentSong!!.suffix ||
-                        currentSong!!.isVideo
-                    ) currentSong!!.suffix
-                    else String.format(
-                        Locale.ROOT, "%s > %s", currentSong!!.suffix,
-                        currentSong!!.transcodedSuffix
+                var bitRate: String? = null
+                if (currentSong!!.bitRate != null && currentSong!!.bitRate!! > 0)
+                    bitRate = String.format(
+                        Util.appContext().getString(R.string.song_details_kbps),
+                        currentSong!!.bitRate
                     )
-                )
-            detailsTextView.visibility =
-                if (Settings.showNowPlayingDetails) View.VISIBLE
-                else View.GONE
+                bitrateFormatTextView.text =
+                    String.format(
+                        Util.appContext().getString(R.string.song_details_all),
+                        if (bitRate == null) ""
+                        else String.format(Locale.ROOT, "%s ", bitRate),
+                        if (TextUtils.isEmpty(currentSong!!.transcodedSuffix) ||
+                            currentSong!!.transcodedSuffix == currentSong!!.suffix ||
+                            currentSong!!.isVideo
+                        ) currentSong!!.suffix
+                        else String.format(
+                            Locale.ROOT, "%s > %s", currentSong!!.suffix,
+                            currentSong!!.transcodedSuffix
+                        )
+                    )
+                bitrateFormatTextView.visibility = View.VISIBLE
+            } else {
+                genreTextView.visibility = View.GONE
+                bitrateFormatTextView.visibility = View.GONE
+            }
 
             downloadTrackTextView.text = trackFormat
             downloadTotalDurationTextView.text = duration
@@ -1030,7 +1032,7 @@ class PlayerFragment :
             artistTextView.text = null
             albumTextView.text = null
             genreTextView.text = null
-            detailsTextView.text = null
+            bitrateFormatTextView.text = null
             downloadTrackTextView.text = null
             downloadTotalDurationTextView.text = null
             imageLoaderProvider.getImageLoader()

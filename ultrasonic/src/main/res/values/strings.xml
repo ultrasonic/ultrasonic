@@ -332,9 +332,8 @@
     <string name="main.video" tools:ignore="UnusedResources">Video</string>
     <string name="settings.wifi_required_summary">Only download media on unmetered connections</string>
     <string name="settings.wifi_required_title">Download on Wi-Fi only</string>
-    <string name="song_details.all">%1$s%2$s</string>
+    <string name="song_details.all" translatable="false">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
-    <string name="song_details.nowplaying">%1$s&#160; • &#160;%2$d&#160; • &#160;%3$d kbps %4$s</string>
     <string name="util.bytes_format.byte">0 B</string>
     <string name="util.bytes_format.gigabyte">0.00 GB</string>
     <string name="util.bytes_format.kilobyte">0 KB</string>

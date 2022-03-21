@@ -88,7 +88,7 @@
             a:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            a:id="@+id/current_file_details"
+            a:id="@+id/current_playing_bitrate_format"
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:ellipsize="start"
