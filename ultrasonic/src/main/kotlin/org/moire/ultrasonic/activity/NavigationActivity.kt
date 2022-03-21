@@ -7,6 +7,8 @@
 package org.moire.ultrasonic.activity
 
 import android.app.SearchManager
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Resources
@@ -53,6 +55,7 @@ import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.InfoDialog
+import org.moire.ultrasonic.util.LocaleHelper
 import org.moire.ultrasonic.util.ServerColor
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Storage
@@ -349,6 +352,15 @@ class NavigationActivity : AppCompatActivity() {
             bundle.putBoolean(Constants.INTENT_AUTOPLAY, autoPlay)
             findNavController(R.id.nav_host_fragment).navigate(R.id.searchFragment, bundle)
         }
+    }
+
+    /**
+     * Apply the customized language settings if needed
+     */
+    override fun attachBaseContext(newBase: Context?) {
+        val locale = Settings.overrideLanguage
+        val localeUpdatedContext: ContextWrapper = LocaleHelper.wrap(newBase, locale)
+        super.attachBaseContext(localeUpdatedContext)
     }
 
     private fun loadSettings() {
