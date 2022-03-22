@@ -989,10 +989,8 @@ class PlayerFragment :
 
             if (Settings.showNowPlayingDetails) {
                 genreTextView.text = currentSong!!.genre
-                genreTextView.visibility =
-                    if (currentSong!!.genre != null && currentSong!!.genre!!.isNotBlank()
-                    ) View.VISIBLE
-                    else View.GONE
+                genreTextView.isVisible =
+                    (currentSong!!.genre != null && currentSong!!.genre!!.isNotBlank());
 
                 var bitRate: String = ""
                 if (currentSong!!.bitRate != null && currentSong!!.bitRate!! > 0)
@@ -1004,10 +1002,10 @@ class PlayerFragment :
                     Locale.ROOT, "%s %s",
                     bitRate, currentSong!!.suffix
                 )
-                bitrateFormatTextView.visibility = View.VISIBLE
+                bitrateFormatTextView.isVisible = true
             } else {
-                genreTextView.visibility = View.GONE
-                bitrateFormatTextView.visibility = View.GONE
+                genreTextView.isVisible = false
+                bitrateFormatTextView.isVisible = false
             }
 
             downloadTrackTextView.text = trackFormat
