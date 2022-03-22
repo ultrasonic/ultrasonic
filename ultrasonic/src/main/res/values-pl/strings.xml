@@ -297,7 +297,6 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="settings.use_id3">Przeglądaj używając tagów ID3</string>
     <string name="settings.use_id3_summary">Używa metod z tagów ID3 zamiast metod opartych na systemie plików</string>
     <string name="main.video" tools:ignore="UnusedResources">Wideo</string>
-    <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
     <string name="util.bytes_format.gigabyte">0.00 GB</string>

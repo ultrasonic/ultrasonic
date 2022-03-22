@@ -313,7 +313,6 @@
     <string name="settings.show_artist_picture">Показать изображение исполнителя в списке исполнителей</string>
     <string name="settings.show_artist_picture_summary">Отображает изображение исполнителя в списке исполнителей, если доступно</string>
     <string name="main.video" tools:ignore="UnusedResources">Видео</string>
-    <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
     <string name="util.bytes_format.gigabyte">0.00 GB</string>

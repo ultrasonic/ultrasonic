@@ -322,7 +322,6 @@
     <string name="settings.show_artist_picture">Afficher l’image de l’artiste dans la liste</string>
     <string name="settings.show_artist_picture_summary">Affiche l’image de l’artiste dans la liste des artistes si celle-ci est disponible</string>
     <string name="main.video" tools:ignore="UnusedResources">Vidéo</string>
-    <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d Kb/s</string>
     <string name="util.bytes_format.byte">0 o</string>
     <string name="util.bytes_format.gigabyte">0.00 Go</string>
