@@ -990,7 +990,7 @@ class PlayerFragment :
             if (Settings.showNowPlayingDetails) {
                 genreTextView.text = currentSong!!.genre
                 genreTextView.isVisible =
-                    (currentSong!!.genre != null && currentSong!!.genre!!.isNotBlank());
+                    (currentSong!!.genre != null && currentSong!!.genre!!.isNotBlank())
 
                 var bitRate: String = ""
                 if (currentSong!!.bitRate != null && currentSong!!.bitRate!! > 0)
