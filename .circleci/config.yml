@@ -2,7 +2,7 @@ version: 3
 jobs:
   build:
     docker:
-      - image: circleci/android:api-30
+      - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
     environment:
       JVM_OPTS: -Xmx3200m
@@ -55,7 +55,7 @@ jobs:
           path: build/reports/jacoco/jacocoFullReport/
   push_translations:
     docker:
-      - image: circleci/python:3.6
+      - image: cimg/python:3.6
     working_directory: ~/ultrasonic
     steps:
       - checkout
@@ -75,7 +75,7 @@ jobs:
             tx push -s
   generate_signed_apk:
     docker:
-      - image: circleci/android:api-30
+      - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
     steps:
       - checkout
@@ -104,7 +104,7 @@ jobs:
             - ultrasonic-*.apk*
   publish_github_signed_apk:
     docker:
-      - image: circleci/golang
+      - image: cimg/golang
     steps:
       - attach_workspace:
           at: /tmp/ultrasonic-release

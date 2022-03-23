@@ -398,7 +398,6 @@
     <string name="api.subsonic.upgrade_server">Inkompatible Versionen. Bitte den subsonic Server aktualisieren.</string>
 
     <!-- Subsonic features  -->
-    <string name="settings.features_title">Besonderheiten</string>
     <string name="settings.five_star_rating_title">Fünf-Stern Bewertung</string>
     <string name="settings.five_star_rating_description">Benutze Bewertungssystem mit fünf Sternen anstatt Lieder mit bloß einem Stern zu markieren.</string>
 

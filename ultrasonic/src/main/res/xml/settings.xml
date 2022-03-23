@@ -128,6 +128,12 @@
             a:summary="@string/settings.playback.single_button_bluetooth_device_summary"
             a:title="@string/settings.playback.single_button_bluetooth_device"
             app:iconSpaceReserved="false"/>
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="use_five_star_rating"
+            a:summary="@string/settings.five_star_rating_description"
+            a:title="@string/settings.five_star_rating_title"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/settings.notifications_title"
@@ -349,16 +355,14 @@
             a:summary="@string/settings.hide_media_summary"
             a:title="@string/settings.hide_media_title"
             app:iconSpaceReserved="false"/>
-    </PreferenceCategory>
-    <PreferenceCategory
-        a:title="@string/settings.features_title"
-        app:iconSpaceReserved="false">
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="use_five_star_rating"
-            a:summary="@string/settings.five_star_rating_description"
-            a:title="@string/settings.five_star_rating_title"
-            app:iconSpaceReserved="false" />
+        <ListPreference
+            a:defaultValue=""
+            a:entries="@array/languageNames"
+            a:entryValues="@array/languageValues"
+            a:key="overrideLanguage"
+            a:title="@string/settings.override_language"
+            a:summary="@string/settings.override_language_summary"
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/settings.debug.title"

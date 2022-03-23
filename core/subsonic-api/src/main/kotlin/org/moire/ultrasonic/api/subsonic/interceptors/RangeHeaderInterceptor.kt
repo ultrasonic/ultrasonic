@@ -19,7 +19,7 @@ internal const val TIMEOUT_MILLIS_PER_OFFSET_BYTE = 0.02
 internal class RangeHeaderInterceptor : Interceptor {
     override fun intercept(chain: Chain): Response {
         val originalRequest = chain.request()
-        val headers = originalRequest.headers()
+        val headers = originalRequest.headers
         return if (headers.names().contains("Range")) {
             val offsetValue = headers["Range"] ?: "0"
             val offset = "bytes=$offsetValue-"

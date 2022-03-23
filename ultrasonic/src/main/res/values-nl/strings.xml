@@ -460,7 +460,6 @@
     <string name="api.subsonic.upgrade_server">Incompatibele versies. Werk je Subsonic-server bij.</string>
 
     <!-- Subsonic features  -->
-    <string name="settings.features_title">Functies</string>
     <string name="settings.five_star_rating_title">Vijf sterren gebruiken voor nummers</string>
     <string name="settings.five_star_rating_description">Toon vijf sterren om nummers te beoordelen
          in plaats van items toe te voegen aan of te verwijderen uit de favorieten.

@@ -312,11 +312,15 @@ object Settings {
         Constants.PREFERENCE_VALUE_A2DP
     )
 
+    @JvmStatic
     var debugLogToFile by BooleanSetting(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false)
 
     @JvmStatic
     val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(Util.appContext())
+
+    @JvmStatic
+    val overrideLanguage by StringSetting(Constants.PREFERENCES_KEY_OVERRIDE_LANGUAGE, "")
 
     var useFiveStarRating by BooleanSetting(Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING, false)
 
