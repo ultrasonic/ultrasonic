@@ -329,7 +329,6 @@
     <string name="main.video" tools:ignore="UnusedResources">Vídeo</string>
     <string name="settings.wifi_required_summary">Solo descargar medios en conexiones sin medir</string>
     <string name="settings.wifi_required_title">Descargar solo por Wi-Fi</string>
-    <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
     <string name="util.bytes_format.gigabyte">0.00 GB</string>

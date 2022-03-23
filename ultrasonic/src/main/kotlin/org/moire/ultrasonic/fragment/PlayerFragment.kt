@@ -59,7 +59,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.BaseAdapter
 import org.moire.ultrasonic.adapters.TrackViewBinder
@@ -137,8 +136,10 @@ class PlayerFragment :
     private lateinit var playlistFlipper: ViewFlipper
     private lateinit var emptyTextView: TextView
     private lateinit var songTitleTextView: TextView
-    private lateinit var albumTextView: TextView
     private lateinit var artistTextView: TextView
+    private lateinit var albumTextView: TextView
+    private lateinit var genreTextView: TextView
+    private lateinit var bitrateFormatTextView: TextView
     private lateinit var albumArtImageView: ImageView
     private lateinit var playlistView: RecyclerView
     private lateinit var positionTextView: TextView
@@ -174,8 +175,10 @@ class PlayerFragment :
         playlistFlipper = view.findViewById(R.id.current_playing_playlist_flipper)
         emptyTextView = view.findViewById(R.id.playlist_empty)
         songTitleTextView = view.findViewById(R.id.current_playing_song)
-        albumTextView = view.findViewById(R.id.current_playing_album)
         artistTextView = view.findViewById(R.id.current_playing_artist)
+        albumTextView = view.findViewById(R.id.current_playing_album)
+        genreTextView = view.findViewById(R.id.current_playing_genre)
+        bitrateFormatTextView = view.findViewById(R.id.current_playing_bitrate_format)
         albumArtImageView = view.findViewById(R.id.current_playing_album_art_image)
         positionTextView = view.findViewById(R.id.current_playing_position)
         downloadTrackTextView = view.findViewById(R.id.current_playing_track)
@@ -979,8 +982,32 @@ class PlayerFragment :
         if (currentPlaying != null) {
             currentSong = currentPlaying!!.song
             songTitleTextView.text = currentSong!!.title
-            albumTextView.text = currentSong!!.album
             artistTextView.text = currentSong!!.artist
+            albumTextView.text = currentSong!!.album
+            if (currentSong!!.year != null && Settings.showNowPlayingDetails)
+                albumTextView.append(String.format(Locale.ROOT, " (%d)", currentSong!!.year))
+
+            if (Settings.showNowPlayingDetails) {
+                genreTextView.text = currentSong!!.genre
+                genreTextView.isVisible =
+                    (currentSong!!.genre != null && currentSong!!.genre!!.isNotBlank())
+
+                var bitRate: String = ""
+                if (currentSong!!.bitRate != null && currentSong!!.bitRate!! > 0)
+                    bitRate = String.format(
+                        Util.appContext().getString(R.string.song_details_kbps),
+                        currentSong!!.bitRate
+                    )
+                bitrateFormatTextView.text = String.format(
+                    Locale.ROOT, "%s %s",
+                    bitRate, currentSong!!.suffix
+                )
+                bitrateFormatTextView.isVisible = true
+            } else {
+                genreTextView.isVisible = false
+                bitrateFormatTextView.isVisible = false
+            }
+
             downloadTrackTextView.text = trackFormat
             downloadTotalDurationTextView.text = duration
             imageLoaderProvider.getImageLoader()
@@ -989,8 +1016,10 @@ class PlayerFragment :
         } else {
             currentSong = null
             songTitleTextView.text = null
-            albumTextView.text = null
             artistTextView.text = null
+            albumTextView.text = null
+            genreTextView.text = null
+            bitrateFormatTextView.text = null
             downloadTrackTextView.text = null
             downloadTotalDurationTextView.text = null
             imageLoaderProvider.getImageLoader()

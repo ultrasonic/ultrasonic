@@ -287,7 +287,6 @@
     <string name="settings.use_id3">Sfoglia Utilizzando Tag ID3</string>
     <string name="settings.use_id3_summary">Usa metodi tag ID3 invece dei metodi basati sul filesystem</string>
     <string name="main.video" tools:ignore="UnusedResources">Video</string>
-    <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
     <string name="util.bytes_format.gigabyte">0.00 GB</string>

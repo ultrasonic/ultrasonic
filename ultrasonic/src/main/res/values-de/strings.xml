@@ -315,7 +315,6 @@
     <string name="main.video" tools:ignore="UnusedResources">Film</string>
     <string name="settings.wifi_required_summary">Medien nur über gebührenfreie Verbindungen herunterladen</string>
     <string name="settings.wifi_required_title">Nur über WLAN herunterladen</string>
-    <string name="song_details.all">%1$s%2$s</string>
     <string name="song_details.kbps">%d kbps</string>
     <string name="util.bytes_format.byte">0 B</string>
     <string name="util.bytes_format.gigabyte">0.00 GB</string>

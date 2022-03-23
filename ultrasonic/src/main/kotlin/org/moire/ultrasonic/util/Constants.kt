@@ -90,6 +90,7 @@ object Constants {
     const val PREFERENCES_KEY_CLEAR_SEARCH_HISTORY = "clearSearchHistory"
     const val PREFERENCES_KEY_DOWNLOAD_TRANSITION = "transitionToDownloadOnPlay"
     const val PREFERENCES_KEY_INCREMENT_TIME = "incrementTime"
+    const val PREFERENCES_KEY_SHOW_NOW_PLAYING_DETAILS = "showNowPlayingDetails"
     const val PREFERENCES_KEY_ID3_TAGS = "useId3Tags"
     const val PREFERENCES_KEY_SHOW_ARTIST_PICTURE = "showArtistPicture"
     const val PREFERENCES_KEY_TEMP_LOSS = "tempLoss"

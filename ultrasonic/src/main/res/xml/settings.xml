@@ -54,6 +54,12 @@
         a:key="playbackControlSettings"
         app:iconSpaceReserved="false">
         <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="showNowPlayingDetails"
+            a:summary="@string/settings.show_now_playing_details_summary"
+            a:title="@string/settings.show_now_playing_details"
+            app:iconSpaceReserved="false"/>
+        <CheckBoxPreference
             a:defaultValue="true"
             a:key="useId3Tags"
             a:summary="@string/settings.use_id3_summary"

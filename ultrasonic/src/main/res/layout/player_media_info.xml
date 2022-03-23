@@ -19,9 +19,9 @@
             a:layout_width="wrap_content"
             a:layout_height="wrap_content"
             a:layout_marginEnd="10dip"
-            a:paddingRight="30dip"
             a:ellipsize="marquee"
             a:gravity="left"
+            a:paddingRight="30dip"
             a:singleLine="true"
             a:textAppearance="?android:attr/textAppearanceLarge"
             a:textStyle="bold"
@@ -47,6 +47,16 @@
             a:textAppearance="?android:attr/textAppearanceSmall"
             tools:text="Album" />
 
+        <TextView
+            a:id="@+id/current_playing_genre"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:ellipsize="start"
+            a:gravity="right"
+            a:singleLine="true"
+            a:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="Genre" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -55,7 +65,8 @@
         a:layout_alignParentRight="true"
         a:layout_centerVertical="true"
         a:gravity="right"
-        a:orientation="vertical">
+        a:orientation="vertical"
+        tools:ignore="RelativeOverlap">
 
         <TextView
             a:id="@+id/current_playing_track"
@@ -76,7 +87,16 @@
             a:text="@string/util.no_time"
             a:textAppearance="?android:attr/textAppearanceSmall" />
 
-    </LinearLayout>
+        <TextView
+            a:id="@+id/current_playing_bitrate_format"
+            a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:ellipsize="start"
+            a:gravity="right"
+            a:singleLine="true"
+            a:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="Details" />
 
+    </LinearLayout>
 
 </RelativeLayout>
