@@ -199,7 +199,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         super.onDestroyView()
     }
 
-    private fun downloadBackground(save: Boolean, songs: List<MusicDirectory.Entry?>) {
+    private fun downloadBackground(save: Boolean, songs: List<MusicDirectory.Track?>) {
         val onValid = Runnable {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
             mediaPlayerController.downloadBackground(songs, save)
@@ -296,7 +296,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         Navigation.findNavController(requireView()).navigate(R.id.searchToTrackCollection, bundle)
     }
 
-    private fun onSongSelected(song: MusicDirectory.Entry, append: Boolean) {
+    private fun onSongSelected(song: MusicDirectory.Track, append: Boolean) {
         if (!append) {
             mediaPlayerController.clear()
         }
@@ -312,8 +312,8 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         toast(context, resources.getQuantityString(R.plurals.select_album_n_songs_added, 1, 1))
     }
 
-    private fun onVideoSelected(entry: MusicDirectory.Entry) {
-        playVideo(requireContext(), entry)
+    private fun onVideoSelected(track: MusicDirectory.Track) {
+        playVideo(requireContext(), track)
     }
 
     private fun autoplay() {
@@ -329,7 +329,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
             is ArtistOrIndex -> {
                 onArtistSelected(item)
             }
-            is MusicDirectory.Entry -> {
+            is MusicDirectory.Track -> {
                 if (item.isVideo) {
                     onVideoSelected(item)
                 } else {
@@ -356,7 +356,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         if (found || item !is DownloadFile) return true
 
-        val songs = mutableListOf<MusicDirectory.Entry>()
+        val songs = mutableListOf<MusicDirectory.Track>()
 
         when (menuItem.itemId) {
             R.id.song_menu_play_now -> {

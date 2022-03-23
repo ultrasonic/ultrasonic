@@ -1,7 +1,7 @@
 package org.moire.ultrasonic.domain
 
 import java.io.Serializable
-import org.moire.ultrasonic.domain.MusicDirectory.Entry
+import org.moire.ultrasonic.domain.MusicDirectory.Track
 
 data class Share(
     override var id: String,
@@ -12,7 +12,7 @@ data class Share(
     var lastVisited: String? = null,
     var expires: String? = null,
     var visitCount: Long? = null,
-    private val entries: MutableList<Entry> = mutableListOf()
+    private val tracks: MutableList<Track> = mutableListOf()
 ) : Serializable, GenericEntry() {
     override val name: String?
         get() {
@@ -22,12 +22,12 @@ data class Share(
             return null
         }
 
-    fun getEntries(): List<Entry> {
-        return entries.toList()
+    fun getEntries(): List<Track> {
+        return tracks.toList()
     }
 
-    fun addEntry(entry: Entry) {
-        entries.add(entry)
+    fun addEntry(track: Track) {
+        tracks.add(track)
     }
 
     companion object {

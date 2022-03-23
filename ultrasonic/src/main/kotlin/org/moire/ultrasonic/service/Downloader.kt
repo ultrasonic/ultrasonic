@@ -45,7 +45,7 @@ class Downloader(
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
 
     // This cache helps us to avoid creating duplicate DownloadFile instances when showing Entries
-    private val downloadFileCache = LRUCache<MusicDirectory.Entry, DownloadFile>(100)
+    private val downloadFileCache = LRUCache<MusicDirectory.Track, DownloadFile>(100)
 
     private var executorService: ScheduledExecutorService? = null
     private var wifiLock: WifiManager.WifiLock? = null
@@ -345,7 +345,7 @@ class Downloader(
 
     @Synchronized
     fun addToPlaylist(
-        songs: List<MusicDirectory.Entry>,
+        songs: List<MusicDirectory.Track>,
         save: Boolean,
         autoPlay: Boolean,
         playNext: Boolean,
@@ -407,7 +407,7 @@ class Downloader(
     }
 
     @Synchronized
-    fun downloadBackground(songs: List<MusicDirectory.Entry>, save: Boolean) {
+    fun downloadBackground(songs: List<MusicDirectory.Track>, save: Boolean) {
 
         // By using the counter we ensure that the songs are added in the correct order
         for (song in songs) {
@@ -435,7 +435,7 @@ class Downloader(
 
     @Synchronized
     @Suppress("ReturnCount")
-    fun getDownloadFileForSong(song: MusicDirectory.Entry): DownloadFile {
+    fun getDownloadFileForSong(song: MusicDirectory.Track): DownloadFile {
         for (downloadFile in playlist) {
             if (downloadFile.song == song) {
                 return downloadFile
@@ -513,7 +513,7 @@ class Downloader(
      * Extension function
      * Gathers the download file for a given song, and modifies shouldSave if provided.
      */
-    fun MusicDirectory.Entry.getDownloadFile(save: Boolean? = null): DownloadFile {
+    fun MusicDirectory.Track.getDownloadFile(save: Boolean? = null): DownloadFile {
         return getDownloadFileForSong(this).apply {
             if (save != null) this.shouldSave = save
         }

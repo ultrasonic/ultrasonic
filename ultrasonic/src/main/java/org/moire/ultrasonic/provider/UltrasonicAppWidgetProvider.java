@@ -73,7 +73,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	/**
 	 * Handle a change notification coming over from {@link MediaPlayerController}
 	 */
-	public void notifyChange(Context context, MusicDirectory.Entry currentSong, boolean playing, boolean setAlbum)
+	public void notifyChange(Context context, MusicDirectory.Track currentSong, boolean playing, boolean setAlbum)
 	{
 		if (hasInstances(context))
 		{
@@ -100,7 +100,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	/**
 	 * Update all active widget instances by pushing changes
 	 */
-	private void performUpdate(Context context, MusicDirectory.Entry currentSong, boolean playing, boolean setAlbum)
+	private void performUpdate(Context context, MusicDirectory.Track currentSong, boolean playing, boolean setAlbum)
 	{
 		final Resources res = context.getResources();
 		final RemoteViews views = new RemoteViews(context.getPackageName(), this.layoutId);

@@ -262,14 +262,14 @@ open class RESTMusicService(
     override fun createPlaylist(
         id: String?,
         name: String?,
-        entries: List<MusicDirectory.Entry>
+        tracks: List<MusicDirectory.Track>
     ) {
         if (id == null && name == null)
             throw IllegalArgumentException("Either id or name is required.")
 
-        val pSongIds: MutableList<String> = ArrayList(entries.size)
+        val pSongIds: MutableList<String> = ArrayList(tracks.size)
 
-        for ((id1) in entries) {
+        for ((id1) in tracks) {
             pSongIds.add(id1)
         }
 
@@ -418,7 +418,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getDownloadInputStream(
-        song: MusicDirectory.Entry,
+        song: MusicDirectory.Track,
         offset: Long,
         maxBitrate: Int,
         save: Boolean

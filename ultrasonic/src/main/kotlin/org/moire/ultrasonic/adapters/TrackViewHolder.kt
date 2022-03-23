@@ -44,7 +44,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
     var duration: TextView = view.findViewById(R.id.song_duration)
     var progress: TextView = view.findViewById(R.id.song_status)
 
-    var entry: MusicDirectory.Entry? = null
+    var entry: MusicDirectory.Track? = null
         private set
     var downloadFile: DownloadFile? = null
         private set
@@ -131,7 +131,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         }
     }
 
-    private fun setupStarButtons(song: MusicDirectory.Entry, useFiveStarRating: Boolean) {
+    private fun setupStarButtons(song: MusicDirectory.Track, useFiveStarRating: Boolean) {
         if (useFiveStarRating) {
             // Hide single star
             star.isVisible = false

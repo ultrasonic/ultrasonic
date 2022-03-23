@@ -49,7 +49,7 @@ object FileUtil {
     const val SUFFIX_SMALL = ".jpeg-small"
     private const val UNNAMED = "unnamed"
 
-    fun getSongFile(song: MusicDirectory.Entry): String {
+    fun getSongFile(song: MusicDirectory.Track): String {
         val dir = getAlbumDirectory(song)
 
         // Do not generate new name for offline files. Offline files will have their Path as their Id.

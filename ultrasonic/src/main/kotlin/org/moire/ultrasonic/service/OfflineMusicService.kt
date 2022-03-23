@@ -127,7 +127,7 @@ class OfflineMusicService : MusicService, KoinComponent {
     override fun search(criteria: SearchCriteria): SearchResult {
         val artists: MutableList<ArtistOrIndex> = ArrayList()
         val albums: MutableList<MusicDirectory.Album> = ArrayList()
-        val songs: MutableList<MusicDirectory.Entry> = ArrayList()
+        val songs: MutableList<MusicDirectory.Track> = ArrayList()
         val root = FileUtil.musicDirectory
         var closeness: Int
         for (artistFile in FileUtil.listFiles(root)) {
@@ -227,14 +227,14 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     @Suppress("TooGenericExceptionCaught")
     @Throws(Exception::class)
-    override fun createPlaylist(id: String?, name: String?, entries: List<MusicDirectory.Entry>) {
+    override fun createPlaylist(id: String?, name: String?, tracks: List<MusicDirectory.Track>) {
         val playlistFile =
             FileUtil.getPlaylistFile(activeServerProvider.getActiveServer().name, name)
         val fw = FileWriter(playlistFile)
         val bw = BufferedWriter(fw)
         try {
             fw.write("#EXTM3U\n")
-            for (e in entries) {
+            for (e in tracks) {
                 var filePath = FileUtil.getSongFile(e)
                 if (!Storage.isPathExists(filePath)) {
                     val ext = FileUtil.getExtension(filePath)
@@ -471,7 +471,7 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     @Throws(OfflineException::class)
     override fun getDownloadInputStream(
-        song: MusicDirectory.Entry,
+        song: MusicDirectory.Track,
         offset: Long,
         maxBitrate: Int,
         save: Boolean
@@ -502,8 +502,8 @@ class OfflineMusicService : MusicService, KoinComponent {
         return FileUtil.getBaseName(name)
     }
 
-    private fun createEntry(file: AbstractFile, name: String?): MusicDirectory.Entry {
-        val entry = MusicDirectory.Entry(file.path)
+    private fun createEntry(file: AbstractFile, name: String?): MusicDirectory.Track {
+        val entry = MusicDirectory.Track(file.path)
         entry.populateWithDataFrom(file, name)
         return entry
     }
@@ -536,7 +536,7 @@ class OfflineMusicService : MusicService, KoinComponent {
      * More extensive variant of Child.populateWithDataFrom(), which also parses the ID3 tags of
      * a given track file.
      */
-    private fun MusicDirectory.Entry.populateWithDataFrom(file: AbstractFile, name: String?) {
+    private fun MusicDirectory.Track.populateWithDataFrom(file: AbstractFile, name: String?) {
         (this as MusicDirectory.Child).populateWithDataFrom(file, name)
 
         val meta = RawMetadata(null)
@@ -610,7 +610,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         file: AbstractFile,
         criteria: SearchCriteria,
         albums: MutableList<MusicDirectory.Album>,
-        songs: MutableList<MusicDirectory.Entry>
+        songs: MutableList<MusicDirectory.Track>
     ) {
         var closeness: Int
         for (albumFile in FileUtil.listMediaFiles(file)) {

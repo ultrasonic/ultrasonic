@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import org.moire.ultrasonic.domain.MusicDirectory.Entry;
+import org.moire.ultrasonic.domain.MusicDirectory.Track;
 import org.moire.ultrasonic.service.MediaPlayerController;
 
 import kotlin.Lazy;
@@ -21,7 +21,7 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 	{
 		if (mediaPlayerControllerLazy.getValue().getCurrentPlaying() == null) return;
 
-		Entry song = mediaPlayerControllerLazy.getValue().getCurrentPlaying().getSong();
+		Track song = mediaPlayerControllerLazy.getValue().getCurrentPlaying().getSong();
 		if (song == null) return;
 
 		Intent avrcpIntent = new Intent(PLAYSTATUS_RESPONSE);

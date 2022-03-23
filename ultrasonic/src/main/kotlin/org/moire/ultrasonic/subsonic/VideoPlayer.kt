@@ -14,14 +14,14 @@ import org.moire.ultrasonic.util.Util
 @Suppress("UtilityClassWithPublicConstructor")
 class VideoPlayer {
     companion object {
-        fun playVideo(context: Context, entry: MusicDirectory.Entry?) {
-            if (!Util.isNetworkConnected() || entry == null) {
+        fun playVideo(context: Context, track: MusicDirectory.Track?) {
+            if (!Util.isNetworkConnected() || track == null) {
                 Util.toast(context, R.string.select_album_no_network)
                 return
             }
             try {
                 val intent = Intent(Intent.ACTION_VIEW)
-                val url = MusicServiceFactory.getMusicService().getVideoUrl(entry.id)
+                val url = MusicServiceFactory.getMusicService().getVideoUrl(track.id)
                 intent.setDataAndType(
                     Uri.parse(url),
                     "video/*"

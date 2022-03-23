@@ -40,7 +40,7 @@ public class ShufflePlayBuffer
 	private static final int CAPACITY = 50;
 	private static final int REFILL_THRESHOLD = 40;
 
-	private final List<MusicDirectory.Entry> buffer = new ArrayList<>();
+	private final List<MusicDirectory.Track> buffer = new ArrayList<>();
 	private ScheduledExecutorService executorService;
 	private int currentServer;
 
@@ -64,11 +64,11 @@ public class ShufflePlayBuffer
 		Timber.i("ShufflePlayBuffer destroyed");
 	}
 
-	public List<MusicDirectory.Entry> get(int size)
+	public List<MusicDirectory.Track> get(int size)
 	{
 		clearBufferIfNecessary();
 
-		List<MusicDirectory.Entry> result = new ArrayList<>(size);
+		List<MusicDirectory.Track> result = new ArrayList<>(size);
 		synchronized (buffer)
 		{
 			while (!buffer.isEmpty() && result.size() < size)

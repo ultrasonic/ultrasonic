@@ -44,13 +44,13 @@ class ShareHandler(val context: Context) {
 
     fun createShare(
         fragment: Fragment,
-        entries: List<MusicDirectory.Entry?>?,
+        tracks: List<MusicDirectory.Track?>?,
         swipe: SwipeRefreshLayout?,
         cancellationToken: CancellationToken
     ) {
         val askForDetails = Settings.shouldAskForShareDetails
         val shareDetails = ShareDetails()
-        shareDetails.Entries = entries
+        shareDetails.Entries = tracks
         if (askForDetails) {
             showDialog(fragment, shareDetails, swipe, cancellationToken)
         } else {

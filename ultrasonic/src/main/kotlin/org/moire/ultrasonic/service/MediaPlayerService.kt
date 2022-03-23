@@ -340,7 +340,7 @@ class MediaPlayerService : Service() {
         localMediaPlayer.setPlayerState(PlayerState.STARTED, localMediaPlayer.currentPlaying)
     }
 
-    private fun updateWidget(playerState: PlayerState, song: MusicDirectory.Entry?) {
+    private fun updateWidget(playerState: PlayerState, song: MusicDirectory.Track?) {
         val started = playerState === PlayerState.STARTED
         val context = this@MediaPlayerService
 
@@ -589,7 +589,7 @@ class MediaPlayerService : Service() {
         context: Context,
         notificationBuilder: NotificationCompat.Builder,
         playerState: PlayerState,
-        song: MusicDirectory.Entry?
+        song: MusicDirectory.Track?
     ): IntArray {
         // Init
         val compactActionList = ArrayList<Int>()

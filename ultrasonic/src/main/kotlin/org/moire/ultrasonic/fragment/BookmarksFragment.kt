@@ -61,7 +61,7 @@ class BookmarksFragment : TrackCollectionFragment() {
     /**
      * Custom playback function which uses the restore functionality. A bit of a hack..
      */
-    private fun playNow(songs: List<MusicDirectory.Entry>) {
+    private fun playNow(songs: List<MusicDirectory.Track>) {
         if (songs.isNotEmpty()) {
 
             val position = songs[0].bookmarkPosition

@@ -80,10 +80,10 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
-    private var playlistCache: List<MusicDirectory.Entry>? = null
-    private var starredSongsCache: List<MusicDirectory.Entry>? = null
-    private var randomSongsCache: List<MusicDirectory.Entry>? = null
-    private var searchSongsCache: List<MusicDirectory.Entry>? = null
+    private var playlistCache: List<MusicDirectory.Track>? = null
+    private var starredSongsCache: List<MusicDirectory.Track>? = null
+    private var randomSongsCache: List<MusicDirectory.Track>? = null
+    private var searchSongsCache: List<MusicDirectory.Track>? = null
 
     private val isOffline get() = ActiveServerProvider.isOffline()
     private val useId3Tags get() = Settings.shouldUseId3Tags
@@ -1070,7 +1070,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         return section.toString()
     }
 
-    private fun playSongs(songs: List<MusicDirectory.Entry?>?) {
+    private fun playSongs(songs: List<MusicDirectory.Track?>?) {
         mediaPlayerController.addToPlaylist(
             songs,
             save = false,
@@ -1081,7 +1081,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         )
     }
 
-    private fun playSong(song: MusicDirectory.Entry) {
+    private fun playSong(song: MusicDirectory.Track) {
         mediaPlayerController.addToPlaylist(
             listOf(song),
             save = false,

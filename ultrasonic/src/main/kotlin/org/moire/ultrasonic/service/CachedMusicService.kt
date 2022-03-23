@@ -218,9 +218,9 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     }
 
     @Throws(Exception::class)
-    override fun createPlaylist(id: String?, name: String?, entries: List<MusicDirectory.Entry>) {
+    override fun createPlaylist(id: String?, name: String?, tracks: List<MusicDirectory.Track>) {
         cachedPlaylists.clear()
-        musicService.createPlaylist(id, name, entries)
+        musicService.createPlaylist(id, name, tracks)
     }
 
     @Throws(Exception::class)
@@ -276,7 +276,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
 
     @Throws(Exception::class)
     override fun getDownloadInputStream(
-        song: MusicDirectory.Entry,
+        song: MusicDirectory.Track,
         offset: Long,
         maxBitrate: Int,
         save: Boolean

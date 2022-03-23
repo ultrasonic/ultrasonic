@@ -38,7 +38,7 @@ import timber.log.Timber
  *
  */
 class DownloadFile(
-    val song: MusicDirectory.Entry,
+    val song: MusicDirectory.Track,
     save: Boolean
 ) : KoinComponent, Identifiable {
     val partialFile: String

@@ -33,7 +33,7 @@ class DownloadHandler(
         autoPlay: Boolean,
         playNext: Boolean,
         shuffle: Boolean,
-        songs: List<MusicDirectory.Entry?>
+        songs: List<MusicDirectory.Track?>
     ) {
         val onValid = Runnable {
             if (!append && !playNext) {
@@ -195,15 +195,15 @@ class DownloadHandler(
         isArtist: Boolean
     ) {
         val activity = fragment.activity as Activity
-        val task = object : ModalBackgroundTask<List<MusicDirectory.Entry>>(
+        val task = object : ModalBackgroundTask<List<MusicDirectory.Track>>(
             activity,
             false
         ) {
 
             @Throws(Throwable::class)
-            override fun doInBackground(): List<MusicDirectory.Entry> {
+            override fun doInBackground(): List<MusicDirectory.Track> {
                 val musicService = getMusicService()
-                val songs: MutableList<MusicDirectory.Entry> = LinkedList()
+                val songs: MutableList<MusicDirectory.Track> = LinkedList()
                 val root: MusicDirectory
                 if (!isOffline() && isArtist && Settings.shouldUseId3Tags) {
                     getSongsForArtist(id, songs)
@@ -235,7 +235,7 @@ class DownloadHandler(
             @Throws(Exception::class)
             private fun getSongsRecursively(
                 parent: MusicDirectory,
-                songs: MutableList<MusicDirectory.Entry>
+                songs: MutableList<MusicDirectory.Track>
             ) {
                 if (songs.size > maxSongs) {
                     return
@@ -259,7 +259,7 @@ class DownloadHandler(
             @Throws(Exception::class)
             private fun getSongsForArtist(
                 id: String,
-                songs: MutableCollection<MusicDirectory.Entry>
+                songs: MutableCollection<MusicDirectory.Track>
             ) {
                 if (songs.size > maxSongs) {
                     return
@@ -280,7 +280,7 @@ class DownloadHandler(
                 }
             }
 
-            override fun done(songs: List<MusicDirectory.Entry>) {
+            override fun done(songs: List<MusicDirectory.Track>) {
                 if (Settings.shouldSortByDisc) {
                     Collections.sort(songs, EntryByDiscAndTrackComparator())
                 }

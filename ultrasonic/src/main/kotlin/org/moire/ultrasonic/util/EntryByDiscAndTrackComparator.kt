@@ -7,8 +7,8 @@ class EntryByDiscAndTrackComparator : Comparator<MusicDirectory.Child> {
     override fun compare(x: MusicDirectory.Child, y: MusicDirectory.Child): Int {
         val discX = x.discNumber
         val discY = y.discNumber
-        val trackX = if (x is MusicDirectory.Entry) x.track else null
-        val trackY = if (y is MusicDirectory.Entry) y.track else null
+        val trackX = if (x is MusicDirectory.Track) x.track else null
+        val trackY = if (y is MusicDirectory.Track) y.track else null
         val albumX = x.album
         val albumY = y.album
         val pathX = x.path

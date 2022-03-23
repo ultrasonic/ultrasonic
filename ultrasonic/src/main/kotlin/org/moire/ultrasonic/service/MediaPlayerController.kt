@@ -65,7 +65,7 @@ class MediaPlayerController(
 
     @Synchronized
     fun restore(
-        songs: List<MusicDirectory.Entry?>?,
+        songs: List<MusicDirectory.Track?>?,
         currentPlayingIndex: Int,
         currentPlayingPosition: Int,
         autoPlay: Boolean,
@@ -165,7 +165,7 @@ class MediaPlayerController(
     @Synchronized
     @Suppress("LongParameterList")
     fun addToPlaylist(
-        songs: List<MusicDirectory.Entry?>?,
+        songs: List<MusicDirectory.Track?>?,
         save: Boolean,
         autoPlay: Boolean,
         playNext: Boolean,
@@ -202,7 +202,7 @@ class MediaPlayerController(
     }
 
     @Synchronized
-    fun downloadBackground(songs: List<MusicDirectory.Entry?>?, save: Boolean) {
+    fun downloadBackground(songs: List<MusicDirectory.Track?>?, save: Boolean) {
         if (songs == null) return
         val filteredSongs = songs.filterNotNull()
         downloader.downloadBackground(filteredSongs, save)
@@ -325,7 +325,7 @@ class MediaPlayerController(
 
     @Synchronized
     // TODO: Make it require not null
-    fun delete(songs: List<MusicDirectory.Entry?>) {
+    fun delete(songs: List<MusicDirectory.Track?>) {
         for (song in songs.filterNotNull()) {
             downloader.getDownloadFileForSong(song).delete()
         }
@@ -333,7 +333,7 @@ class MediaPlayerController(
 
     @Synchronized
     // TODO: Make it require not null
-    fun unpin(songs: List<MusicDirectory.Entry?>) {
+    fun unpin(songs: List<MusicDirectory.Track?>) {
         for (song in songs.filterNotNull()) {
             downloader.getDownloadFileForSong(song).unpin()
         }
@@ -509,7 +509,7 @@ class MediaPlayerController(
     val playListDuration: Long
         get() = downloader.downloadListDuration
 
-    fun getDownloadFileForSong(song: MusicDirectory.Entry): DownloadFile {
+    fun getDownloadFileForSong(song: MusicDirectory.Track): DownloadFile {
         return downloader.getDownloadFileForSong(song)
     }
 

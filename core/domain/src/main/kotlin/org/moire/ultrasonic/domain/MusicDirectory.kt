@@ -20,9 +20,9 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         return filter { it.isDirectory && includeDirs || !it.isDirectory && includeFiles }
     }
 
-    fun getTracks(): List<Entry> {
+    fun getTracks(): List<Track> {
         return mapNotNull {
-            it as? Entry
+            it as? Track
         }
     }
 
@@ -54,9 +54,8 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
         abstract var isVideo: Boolean
     }
 
-    // TODO: Rename to Track
     @Entity
-    data class Entry(
+    data class Track(
         @PrimaryKey override var id: String,
         override var parent: String? = null,
         override var isDirectory: Boolean = false,
@@ -97,7 +96,7 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
             private const val serialVersionUID = -3339106650010798108L
         }
 
-        fun compareTo(other: Entry): Int {
+        fun compareTo(other: Track): Int {
             when {
                 this.closeness == other.closeness -> {
                     return 0
@@ -111,7 +110,7 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
             }
         }
 
-        override fun compareTo(other: Identifiable) = compareTo(other as Entry)
+        override fun compareTo(other: Identifiable) = compareTo(other as Track)
     }
 
     data class Album(

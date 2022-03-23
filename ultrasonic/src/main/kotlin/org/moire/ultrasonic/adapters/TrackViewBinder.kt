@@ -45,7 +45,7 @@ class TrackViewBinder(
         val diffAdapter = adapter as BaseAdapter<*>
 
         when (item) {
-            is MusicDirectory.Entry -> {
+            is MusicDirectory.Track -> {
                 downloadFile = downloader.getDownloadFileForSong(item)
             }
             is DownloadFile -> {

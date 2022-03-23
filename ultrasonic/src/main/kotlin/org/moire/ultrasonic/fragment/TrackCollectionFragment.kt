@@ -249,7 +249,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
     private fun playNow(
         append: Boolean,
-        selectedSongs: List<MusicDirectory.Entry> = getSelectedSongs()
+        selectedSongs: List<MusicDirectory.Track> = getSelectedSongs()
     ) {
         if (selectedSongs.isNotEmpty()) {
             downloadHandler.download(
@@ -314,10 +314,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun getAllSongs(): List<MusicDirectory.Entry> {
+    private fun getAllSongs(): List<MusicDirectory.Track> {
         return viewAdapter.getCurrentList().filter {
-            it is MusicDirectory.Entry && !it.isDirectory
-        } as List<MusicDirectory.Entry>
+            it is MusicDirectory.Track && !it.isDirectory
+        } as List<MusicDirectory.Track>
     }
 
     internal fun selectAllOrNone() {
@@ -338,7 +338,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         }
     }
 
-    internal open fun enableButtons(selection: List<MusicDirectory.Entry> = getSelectedSongs()) {
+    internal open fun enableButtons(selection: List<MusicDirectory.Track> = getSelectedSongs()) {
         val enabled = selection.isNotEmpty()
         var unpinEnabled = false
         var deleteEnabled = false
@@ -378,7 +378,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
     private fun downloadBackground(
         save: Boolean,
-        songs: List<MusicDirectory.Entry?>
+        songs: List<MusicDirectory.Track?>
     ) {
         val onValid = Runnable {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
@@ -403,7 +403,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         onValid.run()
     }
 
-    internal fun delete(songs: List<MusicDirectory.Entry> = getSelectedSongs()) {
+    internal fun delete(songs: List<MusicDirectory.Track> = getSelectedSongs()) {
         Util.toast(
             context,
             resources.getQuantityString(
@@ -414,7 +414,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         mediaPlayerController.delete(songs)
     }
 
-    internal fun unpin(songs: List<MusicDirectory.Entry> = getSelectedSongs()) {
+    internal fun unpin(songs: List<MusicDirectory.Track> = getSelectedSongs()) {
         Util.toast(
             context,
             resources.getQuantityString(
@@ -533,10 +533,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         }
     }
 
-    internal fun getSelectedSongs(): List<MusicDirectory.Entry> {
+    internal fun getSelectedSongs(): List<MusicDirectory.Track> {
         // Walk through selected set and get the Entries based on the saved ids.
         return viewAdapter.getCurrentList().mapNotNull {
-            if (it is MusicDirectory.Entry && viewAdapter.isSelected(it.longId))
+            if (it is MusicDirectory.Track && viewAdapter.isSelected(it.longId))
                 it
             else
                 null
@@ -655,7 +655,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 playAll()
             }
             R.id.song_menu_share -> {
-                if (item is MusicDirectory.Entry) {
+                if (item is MusicDirectory.Track) {
                     shareHandler.createShare(
                         this, listOf(item), refreshListView,
                         cancellationToken!!
@@ -669,10 +669,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         return true
     }
 
-    internal fun getClickedSong(item: MusicDirectory.Child): List<MusicDirectory.Entry> {
+    internal fun getClickedSong(item: MusicDirectory.Child): List<MusicDirectory.Track> {
         // This can probably be done better
         return viewAdapter.getCurrentList().mapNotNull {
-            if (it is MusicDirectory.Entry && (it.id == item.id))
+            if (it is MusicDirectory.Track && (it.id == item.id))
                 it
             else
                 null
@@ -692,7 +692,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                     bundle
                 )
             }
-            item is MusicDirectory.Entry && item.isVideo -> {
+            item is MusicDirectory.Track && item.isVideo -> {
                 VideoPlayer.playVideo(requireContext(), item)
             }
             else -> {

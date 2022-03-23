@@ -75,7 +75,7 @@ interface MusicService {
     fun getPlaylists(refresh: Boolean): List<Playlist>
 
     @Throws(Exception::class)
-    fun createPlaylist(id: String?, name: String?, entries: List<MusicDirectory.Entry>)
+    fun createPlaylist(id: String?, name: String?, tracks: List<MusicDirectory.Track>)
 
     @Throws(Exception::class)
     fun deletePlaylist(id: String)
@@ -123,7 +123,7 @@ interface MusicService {
      */
     @Throws(Exception::class)
     fun getDownloadInputStream(
-        song: MusicDirectory.Entry,
+        song: MusicDirectory.Track,
         offset: Long,
         maxBitrate: Int,
         save: Boolean
