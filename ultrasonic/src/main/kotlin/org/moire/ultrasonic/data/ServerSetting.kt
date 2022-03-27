@@ -19,7 +19,8 @@ import androidx.room.PrimaryKey
  */
 @Entity
 data class ServerSetting(
-    @PrimaryKey var id: Int,
+    // Default ID is 0, which will trigger SQLite to generate a unique ID.
+    @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name = "index") var index: Int,
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "url") var url: String,
@@ -37,6 +38,6 @@ data class ServerSetting(
     @ColumnInfo(name = "podcastSupport") var podcastSupport: Boolean? = null
 ) {
     constructor() : this (
-        -1, 0, "", "", null, "", "", false, false, false, null, null
+        0, 0, "", "", null, "", "", false, false, false, null, null
     )
 }

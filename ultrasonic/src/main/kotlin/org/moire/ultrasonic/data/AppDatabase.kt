@@ -10,9 +10,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
  * This could be settings or data that are not specific to any remote music database
  */
 @Database(
-    entities = [ServerSetting::class],
-    version = 4,
-    exportSchema = true
+        entities = [ServerSetting::class],
+        version = 5,
+        exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
 
