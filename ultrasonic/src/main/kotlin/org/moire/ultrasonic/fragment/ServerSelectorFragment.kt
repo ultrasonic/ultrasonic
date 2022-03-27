@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.adapters.ServerRowAdapter
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.fragment.EditServerFragment.Companion.EDIT_SERVER_INTENT_INDEX
 import org.moire.ultrasonic.model.ServerSettingsModel
@@ -103,11 +104,10 @@ class ServerSelectorFragment : Fragment() {
         super.onResume()
         val serverList = serverSettingsModel.getServerList()
         serverList.observe(
-            this,
-            { t ->
-                serverRowAdapter!!.setData(t.toTypedArray())
-            }
-        )
+            this
+        ) { t ->
+            serverRowAdapter!!.setData(t.toTypedArray())
+        }
     }
 
     /**

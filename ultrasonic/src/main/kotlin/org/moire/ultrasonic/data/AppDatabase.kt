@@ -9,7 +9,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
  * Room Database to be used to store global data for the whole app.
  * This could be settings or data that are not specific to any remote music database
  */
-@Database(entities = [ServerSetting::class], version = 4)
+@Database(
+    entities = [ServerSetting::class],
+    version = 4,
+    exportSchema = true
+)
 abstract class AppDatabase : RoomDatabase() {
 
     /**
@@ -173,5 +177,91 @@ val MIGRATION_4_3: Migration = object : Migration(4, 3) {
         database.execSQL(
             "ALTER TABLE ServerSettingMigration RENAME TO ServerSetting"
         )
+    }
+}
+
+val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+                    CREATE TABLE IF NOT EXISTS `_new_ServerSetting` (
+                    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                    `index` INTEGER NOT NULL, 
+                    `name` TEXT NOT NULL, 
+                    `url` TEXT NOT NULL, 
+                    `color` INTEGER, 
+                    `userName` TEXT NOT NULL, 
+                    `password` TEXT NOT NULL, 
+                    `jukeboxByDefault` INTEGER NOT NULL, 
+                    `allowSelfSignedCertificate` INTEGER NOT NULL, 
+                    `ldapSupport` INTEGER NOT NULL, 
+                    `musicFolderId` TEXT, 
+                    `minimumApiVersion` TEXT, 
+                    `chatSupport` INTEGER, 
+                    `bookmarkSupport` INTEGER, 
+                    `shareSupport` INTEGER, 
+                    `podcastSupport` INTEGER
+                    )
+            """.trimIndent()
+        )
+        database.execSQL(
+            """
+                    INSERT INTO `_new_ServerSetting` (
+                    `ldapSupport`,`musicFolderId`,`color`,`index`,`userName`,`minimumApiVersion`,
+                    `jukeboxByDefault`,`url`,`password`,`shareSupport`,`bookmarkSupport`,`name`,
+                    `podcastSupport`,`id`,`allowSelfSignedCertificate`,`chatSupport`
+                    ) 
+                    SELECT `ldapSupport`,`musicFolderId`,`color`,`index`,`userName`,
+                    `minimumApiVersion`,`jukeboxByDefault`,`url`,`password`,`shareSupport`,
+                    `bookmarkSupport`,`name`,`podcastSupport`,`id`,`allowSelfSignedCertificate`,
+                    `chatSupport` 
+                    FROM `ServerSetting`
+            """.trimIndent()
+        )
+        database.execSQL("DROP TABLE `ServerSetting`")
+        database.execSQL("ALTER TABLE `_new_ServerSetting` RENAME TO `ServerSetting`")
+    }
+}
+
+val MIGRATION_5_4: Migration = object : Migration(5, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+                    CREATE TABLE IF NOT EXISTS `_new_ServerSetting` (
+                    `id` INTEGER PRIMARY KEY NOT NULL, 
+                    `index` INTEGER NOT NULL, 
+                    `name` TEXT NOT NULL, 
+                    `url` TEXT NOT NULL, 
+                    `color` INTEGER, 
+                    `userName` TEXT NOT NULL, 
+                    `password` TEXT NOT NULL, 
+                    `jukeboxByDefault` INTEGER NOT NULL, 
+                    `allowSelfSignedCertificate` INTEGER NOT NULL, 
+                    `ldapSupport` INTEGER NOT NULL, 
+                    `musicFolderId` TEXT, 
+                    `minimumApiVersion` TEXT, 
+                    `chatSupport` INTEGER, 
+                    `bookmarkSupport` INTEGER, 
+                    `shareSupport` INTEGER, 
+                    `podcastSupport` INTEGER
+                    )
+            """.trimIndent()
+        )
+        database.execSQL(
+            """
+                    INSERT INTO `_new_ServerSetting` (
+                    `ldapSupport`,`musicFolderId`,`color`,`index`,`userName`,`minimumApiVersion`,
+                    `jukeboxByDefault`,`url`,`password`,`shareSupport`,`bookmarkSupport`,`name`,
+                    `podcastSupport`,`id`,`allowSelfSignedCertificate`,`chatSupport`
+                    ) 
+                    SELECT `ldapSupport`,`musicFolderId`,`color`,`index`,`userName`,
+                    `minimumApiVersion`,`jukeboxByDefault`,`url`,`password`,`shareSupport`,
+                    `bookmarkSupport`,`name`,`podcastSupport`,`id`,`allowSelfSignedCertificate`,
+                    `chatSupport` 
+                    FROM `ServerSetting`
+            """.trimIndent()
+        )
+        database.execSQL("DROP TABLE `ServerSetting`")
+        database.execSQL("ALTER TABLE `_new_ServerSetting` RENAME TO `ServerSetting`")
     }
 }
