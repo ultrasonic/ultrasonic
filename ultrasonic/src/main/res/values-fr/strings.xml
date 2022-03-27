@@ -368,8 +368,6 @@
     <string name="share_default_greeting">Regardez cette musique que j\'ai partagée depuis %s</string>
     <string name="share_via">Partager des titres via</string>
     <string name="menu.share">Partager</string>
-    <string name="settings.show_all_songs_by_artist">Voir tous les titres par artiste</string>
-    <string name="settings.show_all_songs_by_artist_summary">Ajouter une nouvelle entrée dans la vue artiste pour accéder à toutes les titres d\'un artiste</string>
     <string name="download.menu_show_artist">Afficher l\'artiste</string>
     <string name="albumArt">Pochette d\'album</string>
     <string name="common_multiple_years">Années multiples</string>
