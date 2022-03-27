@@ -20,6 +20,7 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
@@ -148,7 +149,7 @@ class ImageLoader(
      * Download a cover art file and cache it on disk
      */
     fun cacheCoverArt(
-        track: MusicDirectory.Track
+        track: Track
     ) {
 
         // Synchronize on the entry so that we don't download concurrently for

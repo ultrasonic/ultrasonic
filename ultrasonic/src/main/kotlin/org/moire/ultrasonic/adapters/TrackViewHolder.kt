@@ -15,7 +15,7 @@ import io.reactivex.rxjava3.disposables.Disposable
 import org.koin.core.component.KoinComponent
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.DownloadStatus
 import org.moire.ultrasonic.service.MusicServiceFactory
@@ -44,7 +44,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
     var duration: TextView = view.findViewById(R.id.song_duration)
     var progress: TextView = view.findViewById(R.id.song_status)
 
-    var entry: MusicDirectory.Track? = null
+    var entry: Track? = null
         private set
     var downloadFile: DownloadFile? = null
         private set
@@ -131,7 +131,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         }
     }
 
-    private fun setupStarButtons(song: MusicDirectory.Track, useFiveStarRating: Boolean) {
+    private fun setupStarButtons(song: Track, useFiveStarRating: Boolean) {
         if (useFiveStarRating) {
             // Hide single star
             star.isVisible = false

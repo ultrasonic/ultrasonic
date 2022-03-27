@@ -6,7 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import org.moire.ultrasonic.domain.MusicDirectory.Track;
+import org.moire.ultrasonic.domain.Track;
 import org.moire.ultrasonic.service.MediaPlayerController;
 
 import kotlin.Lazy;

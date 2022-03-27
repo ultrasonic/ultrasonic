@@ -1,7 +1,6 @@
 package org.moire.ultrasonic.domain
 
 import java.io.Serializable
-import org.moire.ultrasonic.domain.MusicDirectory.Track
 
 data class Share(
     override var id: String,

@@ -12,7 +12,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.Identifiable
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.Downloader
 
@@ -45,7 +45,7 @@ class TrackViewBinder(
         val diffAdapter = adapter as BaseAdapter<*>
 
         when (item) {
-            is MusicDirectory.Track -> {
+            is Track -> {
                 downloadFile = downloader.getDownloadFileForSong(item)
             }
             is DownloadFile -> {

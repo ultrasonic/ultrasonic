@@ -55,6 +55,7 @@ import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.SearchResult
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.DownloadFile
 import timber.log.Timber
 
@@ -438,7 +439,7 @@ object Util {
     @JvmStatic
     fun getSongsFromBookmarks(bookmarks: Iterable<Bookmark>): MusicDirectory {
         val musicDirectory = MusicDirectory()
-        var song: MusicDirectory.Track
+        var song: Track
         for (bookmark in bookmarks) {
             song = bookmark.track
             song.bookmarkPosition = bookmark.position
@@ -450,7 +451,7 @@ object Util {
     /**
      * Broadcasts the given song info as the new song being played.
      */
-    fun broadcastNewTrackInfo(context: Context, song: MusicDirectory.Track?) {
+    fun broadcastNewTrackInfo(context: Context, song: Track?) {
         val intent = Intent(EVENT_META_CHANGED)
         if (song != null) {
             intent.putExtra("title", song.title)
@@ -476,7 +477,7 @@ object Util {
     ) {
         if (!Settings.shouldSendBluetoothNotifications) return
 
-        var song: MusicDirectory.Track? = null
+        var song: Track? = null
         val avrcpIntent = Intent(CM_AVRCP_METADATA_CHANGED)
         if (currentPlaying != null) song = currentPlaying.track
 
@@ -489,7 +490,7 @@ object Util {
     fun broadcastA2dpPlayStatusChange(
         context: Context,
         state: PlayerState?,
-        newSong: MusicDirectory.Track?,
+        newSong: Track?,
         listSize: Int,
         id: Int,
         playerPosition: Int
@@ -520,7 +521,7 @@ object Util {
 
     private fun fillIntent(
         intent: Intent,
-        song: MusicDirectory.Track?,
+        song: Track?,
         playerPosition: Int,
         id: Int,
         listSize: Int
@@ -776,7 +777,7 @@ object Util {
     )
 
     fun getMediaDescriptionForEntry(
-        song: MusicDirectory.Track,
+        song: Track,
         mediaId: String? = null,
         groupNameId: Int? = null
     ): MediaDescriptionCompat {
@@ -809,7 +810,7 @@ object Util {
     }
 
     @Suppress("ComplexMethod", "LongMethod")
-    fun readableEntryDescription(song: MusicDirectory.Track): ReadableEntryDescription {
+    fun readableEntryDescription(song: Track): ReadableEntryDescription {
         val artist = StringBuilder(LINE_LENGTH)
         var bitRate: String? = null
         var trackText = ""

@@ -4,8 +4,9 @@
 package org.moire.ultrasonic.domain
 
 import org.moire.ultrasonic.api.subsonic.models.Album
+typealias DomainAlbum = org.moire.ultrasonic.domain.Album
 
-fun Album.toDomainEntity(): MusicDirectory.Album = MusicDirectory.Album(
+fun Album.toDomainEntity(): DomainAlbum = Album(
     id = this@toDomainEntity.id,
     title = this@toDomainEntity.name ?: this@toDomainEntity.title,
     album = this@toDomainEntity.album,
@@ -24,4 +25,4 @@ fun Album.toMusicDirectoryDomainEntity(): MusicDirectory = MusicDirectory().appl
     addAll(this@toMusicDirectoryDomainEntity.songList.map { it.toTrackEntity() })
 }
 
-fun List<Album>.toDomainEntityList(): List<MusicDirectory.Album> = this.map { it.toDomainEntity() }
+fun List<Album>.toDomainEntityList(): List<DomainAlbum> = this.map { it.toDomainEntity() }

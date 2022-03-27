@@ -11,9 +11,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.RepeatMode
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.MediaPlayerService.Companion.executeOnStartedMediaPlayerService
 import org.moire.ultrasonic.service.MediaPlayerService.Companion.getInstance
 import org.moire.ultrasonic.service.MediaPlayerService.Companion.runningInstance
@@ -65,7 +65,7 @@ class MediaPlayerController(
 
     @Synchronized
     fun restore(
-        songs: List<MusicDirectory.Track?>?,
+        songs: List<Track?>?,
         currentPlayingIndex: Int,
         currentPlayingPosition: Int,
         autoPlay: Boolean,
@@ -165,7 +165,7 @@ class MediaPlayerController(
     @Synchronized
     @Suppress("LongParameterList")
     fun addToPlaylist(
-        songs: List<MusicDirectory.Track?>?,
+        songs: List<Track?>?,
         save: Boolean,
         autoPlay: Boolean,
         playNext: Boolean,
@@ -202,7 +202,7 @@ class MediaPlayerController(
     }
 
     @Synchronized
-    fun downloadBackground(songs: List<MusicDirectory.Track?>?, save: Boolean) {
+    fun downloadBackground(songs: List<Track?>?, save: Boolean) {
         if (songs == null) return
         val filteredSongs = songs.filterNotNull()
         downloader.downloadBackground(filteredSongs, save)
@@ -325,7 +325,7 @@ class MediaPlayerController(
 
     @Synchronized
     // TODO: Make it require not null
-    fun delete(songs: List<MusicDirectory.Track?>) {
+    fun delete(songs: List<Track?>) {
         for (song in songs.filterNotNull()) {
             downloader.getDownloadFileForSong(song).delete()
         }
@@ -333,7 +333,7 @@ class MediaPlayerController(
 
     @Synchronized
     // TODO: Make it require not null
-    fun unpin(songs: List<MusicDirectory.Track?>) {
+    fun unpin(songs: List<Track?>) {
         for (song in songs.filterNotNull()) {
             downloader.getDownloadFileForSong(song).unpin()
         }
@@ -509,7 +509,7 @@ class MediaPlayerController(
     val playListDuration: Long
         get() = downloader.downloadListDuration
 
-    fun getDownloadFileForSong(song: MusicDirectory.Track): DownloadFile {
+    fun getDownloadFileForSong(song: Track): DownloadFile {
         return downloader.getDownloadFileForSong(song)
     }
 

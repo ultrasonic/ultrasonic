@@ -2,13 +2,14 @@ package org.moire.ultrasonic.util
 
 import java.util.Comparator
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 
 class EntryByDiscAndTrackComparator : Comparator<MusicDirectory.Child> {
     override fun compare(x: MusicDirectory.Child, y: MusicDirectory.Child): Int {
         val discX = x.discNumber
         val discY = y.discNumber
-        val trackX = if (x is MusicDirectory.Track) x.track else null
-        val trackY = if (y is MusicDirectory.Track) y.track else null
+        val trackX = if (x is Track) x.track else null
+        val trackY = if (y is Track) y.track else null
         val albumX = x.album
         val albumY = y.album
         val pathX = x.path

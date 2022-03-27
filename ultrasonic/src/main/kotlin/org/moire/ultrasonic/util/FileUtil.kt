@@ -27,6 +27,7 @@ import java.util.TreeSet
 import java.util.regex.Pattern
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
@@ -49,7 +50,7 @@ object FileUtil {
     const val SUFFIX_SMALL = ".jpeg-small"
     private const val UNNAMED = "unnamed"
 
-    fun getSongFile(song: MusicDirectory.Track): String {
+    fun getSongFile(song: Track): String {
         val dir = getAlbumDirectory(song)
 
         // Do not generate new name for offline files. Offline files will have their Path as their Id.

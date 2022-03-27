@@ -34,6 +34,7 @@ import org.moire.ultrasonic.adapters.TrackViewBinder
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.model.TrackCollectionModel
 import org.moire.ultrasonic.service.MediaPlayerController
@@ -46,7 +47,6 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
-import org.moire.ultrasonic.util.Util.toast
 
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
@@ -249,7 +249,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
     private fun playNow(
         append: Boolean,
-        selectedSongs: List<MusicDirectory.Track> = getSelectedSongs()
+        selectedSongs: List<Track> = getSelectedSongs()
     ) {
         if (selectedSongs.isNotEmpty()) {
             downloadHandler.download(
@@ -314,10 +314,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun getAllSongs(): List<MusicDirectory.Track> {
+    private fun getAllSongs(): List<Track> {
         return viewAdapter.getCurrentList().filter {
-            it is MusicDirectory.Track && !it.isDirectory
-        } as List<MusicDirectory.Track>
+            it is Track && !it.isDirectory
+        } as List<Track>
     }
 
     internal fun selectAllOrNone() {
@@ -338,7 +338,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         }
     }
 
-    internal open fun enableButtons(selection: List<MusicDirectory.Track> = getSelectedSongs()) {
+    internal open fun enableButtons(selection: List<Track> = getSelectedSongs()) {
         val enabled = selection.isNotEmpty()
         var unpinEnabled = false
         var deleteEnabled = false
@@ -378,7 +378,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
     private fun downloadBackground(
         save: Boolean,
-        songs: List<MusicDirectory.Track?>
+        songs: List<Track?>
     ) {
         val onValid = Runnable {
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
@@ -403,7 +403,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         onValid.run()
     }
 
-    internal fun delete(songs: List<MusicDirectory.Track> = getSelectedSongs()) {
+    internal fun delete(songs: List<Track> = getSelectedSongs()) {
         Util.toast(
             context,
             resources.getQuantityString(
@@ -414,7 +414,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         mediaPlayerController.delete(songs)
     }
 
-    internal fun unpin(songs: List<MusicDirectory.Track> = getSelectedSongs()) {
+    internal fun unpin(songs: List<Track> = getSelectedSongs()) {
         Util.toast(
             context,
             resources.getQuantityString(
@@ -533,10 +533,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         }
     }
 
-    internal fun getSelectedSongs(): List<MusicDirectory.Track> {
+    internal fun getSelectedSongs(): List<Track> {
         // Walk through selected set and get the Entries based on the saved ids.
         return viewAdapter.getCurrentList().mapNotNull {
-            if (it is MusicDirectory.Track && viewAdapter.isSelected(it.longId))
+            if (it is Track && viewAdapter.isSelected(it.longId))
                 it
             else
                 null
@@ -655,7 +655,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 playAll()
             }
             R.id.song_menu_share -> {
-                if (item is MusicDirectory.Track) {
+                if (item is Track) {
                     shareHandler.createShare(
                         this, listOf(item), refreshListView,
                         cancellationToken!!
@@ -669,10 +669,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         return true
     }
 
-    internal fun getClickedSong(item: MusicDirectory.Child): List<MusicDirectory.Track> {
+    internal fun getClickedSong(item: MusicDirectory.Child): List<Track> {
         // This can probably be done better
         return viewAdapter.getCurrentList().mapNotNull {
-            if (it is MusicDirectory.Track && (it.id == item.id))
+            if (it is Track && (it.id == item.id))
                 it
             else
                 null
@@ -692,7 +692,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                     bundle
                 )
             }
-            item is MusicDirectory.Track && item.isVideo -> {
+            item is Track && item.isVideo -> {
                 VideoPlayer.playVideo(requireContext(), item)
             }
             else -> {

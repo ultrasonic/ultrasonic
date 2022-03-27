@@ -10,8 +10,8 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.util.LRUCache
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.ShufflePlayBuffer
@@ -45,7 +45,7 @@ class Downloader(
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
 
     // This cache helps us to avoid creating duplicate DownloadFile instances when showing Entries
-    private val downloadFileCache = LRUCache<MusicDirectory.Track, DownloadFile>(100)
+    private val downloadFileCache = LRUCache<Track, DownloadFile>(100)
 
     private var executorService: ScheduledExecutorService? = null
     private var wifiLock: WifiManager.WifiLock? = null
@@ -345,7 +345,7 @@ class Downloader(
 
     @Synchronized
     fun addToPlaylist(
-        songs: List<MusicDirectory.Track>,
+        songs: List<Track>,
         save: Boolean,
         autoPlay: Boolean,
         playNext: Boolean,
@@ -407,7 +407,7 @@ class Downloader(
     }
 
     @Synchronized
-    fun downloadBackground(songs: List<MusicDirectory.Track>, save: Boolean) {
+    fun downloadBackground(songs: List<Track>, save: Boolean) {
 
         // By using the counter we ensure that the songs are added in the correct order
         for (song in songs) {
@@ -435,7 +435,7 @@ class Downloader(
 
     @Synchronized
     @Suppress("ReturnCount")
-    fun getDownloadFileForSong(song: MusicDirectory.Track): DownloadFile {
+    fun getDownloadFileForSong(song: Track): DownloadFile {
         for (downloadFile in playlist) {
             if (downloadFile.track == song) {
                 return downloadFile
@@ -513,7 +513,7 @@ class Downloader(
      * Extension function
      * Gathers the download file for a given song, and modifies shouldSave if provided.
      */
-    fun MusicDirectory.Track.getDownloadFile(save: Boolean? = null): DownloadFile {
+    fun Track.getDownloadFile(save: Boolean? = null): DownloadFile {
         return getDownloadFileForSong(this).apply {
             if (save != null) this.shouldSave = save
         }

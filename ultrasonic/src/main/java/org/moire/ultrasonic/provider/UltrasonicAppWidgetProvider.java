@@ -14,7 +14,7 @@ import android.widget.RemoteViews;
 
 import org.moire.ultrasonic.R;
 import org.moire.ultrasonic.activity.NavigationActivity;
-import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.domain.Track;
 import org.moire.ultrasonic.imageloader.BitmapUtils;
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver;
 import org.moire.ultrasonic.service.MediaPlayerController;
@@ -73,7 +73,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	/**
 	 * Handle a change notification coming over from {@link MediaPlayerController}
 	 */
-	public void notifyChange(Context context, MusicDirectory.Track currentSong, boolean playing, boolean setAlbum)
+	public void notifyChange(Context context, Track currentSong, boolean playing, boolean setAlbum)
 	{
 		if (hasInstances(context))
 		{
@@ -100,7 +100,7 @@ public class UltrasonicAppWidgetProvider extends AppWidgetProvider
 	/**
 	 * Update all active widget instances by pushing changes
 	 */
-	private void performUpdate(Context context, MusicDirectory.Track currentSong, boolean playing, boolean setAlbum)
+	private void performUpdate(Context context, Track currentSong, boolean playing, boolean setAlbum)
 	{
 		final Resources res = context.getResources();
 		final RemoteViews views = new RemoteViews(context.getPackageName(), this.layoutId);

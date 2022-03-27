@@ -17,7 +17,7 @@ import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Identifiable
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.CacheCleaner
@@ -38,7 +38,7 @@ import timber.log.Timber
  *
  */
 class DownloadFile(
-    val track: MusicDirectory.Track,
+    val track: Track,
     save: Boolean
 ) : KoinComponent, Identifiable {
     val partialFile: String

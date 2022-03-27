@@ -26,12 +26,12 @@ internal val dateFormat: DateFormat by lazy {
     SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())
 }
 
-fun MusicDirectoryChild.toTrackEntity(): MusicDirectory.Track = MusicDirectory.Track(id).apply {
+fun MusicDirectoryChild.toTrackEntity(): Track = Track(id).apply {
     populateCommonProps(this, this@toTrackEntity)
     populateTrackProps(this, this@toTrackEntity)
 }
 
-fun MusicDirectoryChild.toAlbumEntity(): MusicDirectory.Album = MusicDirectory.Album(id).apply {
+fun MusicDirectoryChild.toAlbumEntity(): Album = Album(id).apply {
     populateCommonProps(this, this@toAlbumEntity)
 }
 
@@ -64,7 +64,7 @@ private fun populateCommonProps(
 }
 
 private fun populateTrackProps(
-    track: MusicDirectory.Track,
+    track: Track,
     source: MusicDirectoryChild
 ) {
     track.size = source.size
@@ -93,7 +93,7 @@ fun List<MusicDirectoryChild>.toDomainEntityList(): List<MusicDirectory.Child> {
     return newList
 }
 
-fun List<MusicDirectoryChild>.toTrackList(): List<MusicDirectory.Track> = this.map {
+fun List<MusicDirectoryChild>.toTrackList(): List<Track> = this.map {
     it.toTrackEntity()
 }
 

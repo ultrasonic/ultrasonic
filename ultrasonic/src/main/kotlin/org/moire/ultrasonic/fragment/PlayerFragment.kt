@@ -66,9 +66,9 @@ import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Identifiable
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.RepeatMode
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.LocalMediaPlayer
@@ -118,7 +118,7 @@ class PlayerFragment :
     private val imageLoaderProvider: ImageLoaderProvider by inject()
     private lateinit var executorService: ScheduledExecutorService
     private var currentPlaying: DownloadFile? = null
-    private var currentSong: MusicDirectory.Track? = null
+    private var currentSong: Track? = null
     private lateinit var viewManager: LinearLayoutManager
     private var rxBusSubscription: Disposable? = null
     private var ioScope = CoroutineScope(Dispatchers.IO)
@@ -544,7 +544,7 @@ class PlayerFragment :
             val downloadFile = viewAdapter.getCurrentList()[info!!.position] as DownloadFile
             val menuInflater = requireActivity().menuInflater
             menuInflater.inflate(R.menu.nowplaying_context, menu)
-            val song: MusicDirectory.Track?
+            val song: Track?
 
             song = downloadFile.track
 
@@ -571,7 +571,7 @@ class PlayerFragment :
 
     @Suppress("ComplexMethod", "LongMethod", "ReturnCount")
     private fun menuItemSelected(menuItemId: Int, song: DownloadFile?): Boolean {
-        var track: MusicDirectory.Track? = null
+        var track: Track? = null
         val bundle: Bundle
         if (song != null) {
             track = song.track
@@ -746,7 +746,7 @@ class PlayerFragment :
             }
             R.id.menu_item_share -> {
                 val mediaPlayerController = mediaPlayerController
-                val tracks: MutableList<MusicDirectory.Track?> = ArrayList()
+                val tracks: MutableList<Track?> = ArrayList()
                 val downloadServiceSongs = mediaPlayerController.playList
                 for (downloadFile in downloadServiceSongs) {
                     val playlistEntry = downloadFile.track
@@ -758,7 +758,7 @@ class PlayerFragment :
             R.id.menu_item_share_song -> {
                 if (currentSong == null) return true
 
-                val tracks: MutableList<MusicDirectory.Track?> = ArrayList()
+                val tracks: MutableList<Track?> = ArrayList()
                 tracks.add(currentSong)
 
                 shareHandler.createShare(this, tracks, null, cancellationToken)

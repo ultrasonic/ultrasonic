@@ -15,8 +15,8 @@ import java.util.Locale
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.Share
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.BackgroundTask
 import org.moire.ultrasonic.util.CancellationToken
@@ -44,7 +44,7 @@ class ShareHandler(val context: Context) {
 
     fun createShare(
         fragment: Fragment,
-        tracks: List<MusicDirectory.Track?>?,
+        tracks: List<Track?>?,
         swipe: SwipeRefreshLayout?,
         cancellationToken: CancellationToken
     ) {

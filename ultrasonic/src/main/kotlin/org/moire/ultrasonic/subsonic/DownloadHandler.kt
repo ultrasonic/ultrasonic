@@ -8,6 +8,7 @@ import java.util.LinkedList
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.Constants
@@ -33,7 +34,7 @@ class DownloadHandler(
         autoPlay: Boolean,
         playNext: Boolean,
         shuffle: Boolean,
-        songs: List<MusicDirectory.Track?>
+        songs: List<Track?>
     ) {
         val onValid = Runnable {
             if (!append && !playNext) {
@@ -195,15 +196,15 @@ class DownloadHandler(
         isArtist: Boolean
     ) {
         val activity = fragment.activity as Activity
-        val task = object : ModalBackgroundTask<List<MusicDirectory.Track>>(
+        val task = object : ModalBackgroundTask<List<Track>>(
             activity,
             false
         ) {
 
             @Throws(Throwable::class)
-            override fun doInBackground(): List<MusicDirectory.Track> {
+            override fun doInBackground(): List<Track> {
                 val musicService = getMusicService()
-                val songs: MutableList<MusicDirectory.Track> = LinkedList()
+                val songs: MutableList<Track> = LinkedList()
                 val root: MusicDirectory
                 if (!isOffline() && isArtist && Settings.shouldUseId3Tags) {
                     getSongsForArtist(id, songs)
@@ -235,7 +236,7 @@ class DownloadHandler(
             @Throws(Exception::class)
             private fun getSongsRecursively(
                 parent: MusicDirectory,
-                songs: MutableList<MusicDirectory.Track>
+                songs: MutableList<Track>
             ) {
                 if (songs.size > maxSongs) {
                     return
@@ -259,7 +260,7 @@ class DownloadHandler(
             @Throws(Exception::class)
             private fun getSongsForArtist(
                 id: String,
-                songs: MutableCollection<MusicDirectory.Track>
+                songs: MutableCollection<Track>
             ) {
                 if (songs.size > maxSongs) {
                     return
@@ -280,7 +281,7 @@ class DownloadHandler(
                 }
             }
 
-            override fun done(songs: List<MusicDirectory.Track>) {
+            override fun done(songs: List<Track>) {
                 if (Settings.shouldSortByDisc) {
                     Collections.sort(songs, EntryByDiscAndTrackComparator())
                 }

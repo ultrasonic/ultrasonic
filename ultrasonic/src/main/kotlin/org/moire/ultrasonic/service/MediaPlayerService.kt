@@ -28,9 +28,9 @@ import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.NavigationActivity
 import org.moire.ultrasonic.app.UApp
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.RepeatMode
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.imageloader.BitmapUtils
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2
@@ -340,7 +340,7 @@ class MediaPlayerService : Service() {
         localMediaPlayer.setPlayerState(PlayerState.STARTED, localMediaPlayer.currentPlaying)
     }
 
-    private fun updateWidget(playerState: PlayerState, song: MusicDirectory.Track?) {
+    private fun updateWidget(playerState: PlayerState, song: Track?) {
         val started = playerState === PlayerState.STARTED
         val context = this@MediaPlayerService
 
@@ -589,7 +589,7 @@ class MediaPlayerService : Service() {
         context: Context,
         notificationBuilder: NotificationCompat.Builder,
         playerState: PlayerState,
-        song: MusicDirectory.Track?
+        song: Track?
     ): IntArray {
         // Init
         val compactActionList = ArrayList<Int>()
