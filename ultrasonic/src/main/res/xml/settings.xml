@@ -35,7 +35,8 @@
             a:key="showAllSongsByArtist"
             a:summary="@string/settings.show_all_songs_by_artist_summary"
             a:title="@string/settings.show_all_songs_by_artist"
-            app:iconSpaceReserved="false"/>
+            app:iconSpaceReserved="false"
+            app:isPreferenceVisible="false" />
         <CheckBoxPreference
             a:defaultValue="true"
             a:key="showTrackNumber"
