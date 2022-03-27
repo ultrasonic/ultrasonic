@@ -70,12 +70,6 @@ interface ServerSettingDao {
     fun liveServerCount(): LiveData<Int?>
 
     /**
-     * Retrieves the greatest value of the Id column in the table
-     */
-    @Query("SELECT MAX([id]) FROM serverSetting")
-    suspend fun getMaxId(): Int?
-
-    /**
      * Retrieves the greatest value of the Index column in the table
      */
     @Query("SELECT MAX([index]) FROM serverSetting")

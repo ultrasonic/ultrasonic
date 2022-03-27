@@ -127,7 +127,6 @@ class ServerSettingsModel(
 
         appScope.launch {
             serverSetting.index = (repository.count() ?: 0) + 1
-            serverSetting.id = (repository.getMaxId() ?: 0) + 1
             repository.insert(serverSetting)
             Timber.d("saveNewItem saved server setting: $serverSetting")
         }
@@ -142,12 +141,11 @@ class ServerSettingsModel(
 
         runBlocking {
             demo.index = (repository.count() ?: 0) + 1
-            demo.id = (repository.getMaxId() ?: 0) + 1
             repository.insert(demo)
             Timber.d("Added demo server")
         }
 
-        return demo.id
+        return demo.index
     }
 
     /**
