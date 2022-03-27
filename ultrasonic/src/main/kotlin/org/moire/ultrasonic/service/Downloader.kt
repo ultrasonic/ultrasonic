@@ -234,7 +234,7 @@ class Downloader(
         get() {
             var totalDuration: Long = 0
             for (downloadFile in playlist) {
-                val song = downloadFile.song
+                val song = downloadFile.track
                 if (!song.isDirectory) {
                     if (song.artist != null) {
                         if (song.duration != null) {
@@ -437,17 +437,17 @@ class Downloader(
     @Suppress("ReturnCount")
     fun getDownloadFileForSong(song: MusicDirectory.Track): DownloadFile {
         for (downloadFile in playlist) {
-            if (downloadFile.song == song) {
+            if (downloadFile.track == song) {
                 return downloadFile
             }
         }
         for (downloadFile in activelyDownloading) {
-            if (downloadFile.song == song) {
+            if (downloadFile.track == song) {
                 return downloadFile
             }
         }
         for (downloadFile in downloadQueue) {
-            if (downloadFile.song == song) {
+            if (downloadFile.track == song) {
                 return downloadFile
             }
         }

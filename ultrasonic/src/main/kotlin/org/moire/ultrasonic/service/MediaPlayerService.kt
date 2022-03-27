@@ -364,7 +364,7 @@ class MediaPlayerService : Service() {
             Settings.isNotificationAlwaysEnabled
 
         val show = playerState === PlayerState.STARTED || showWhenPaused
-        val song = currentPlaying?.song
+        val song = currentPlaying?.track
 
         if (isStateChanged) {
             when {
@@ -396,7 +396,7 @@ class MediaPlayerService : Service() {
         }
 
         if (isTrackChanged) {
-            Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying?.song)
+            Util.broadcastNewTrackInfo(this@MediaPlayerService, currentPlaying?.track)
         }
 
         // Update widget
@@ -424,7 +424,7 @@ class MediaPlayerService : Service() {
             val index = downloader.currentPlayingIndex
 
             if (currentPlaying != null) {
-                val song = currentPlaying.song
+                val song = currentPlaying.track
                 if (song.bookmarkPosition > 0 && Settings.shouldClearBookmark) {
                     val musicService = getMusicService()
                     try {
@@ -523,7 +523,7 @@ class MediaPlayerService : Service() {
 
         // Init
         val context = applicationContext
-        val song = currentPlaying?.song
+        val song = currentPlaying?.track
         val stopIntent = Util.getPendingIntentForMediaAction(
             context,
             KeyEvent.KEYCODE_MEDIA_STOP,

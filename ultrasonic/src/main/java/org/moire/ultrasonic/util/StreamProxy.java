@@ -180,7 +180,7 @@ public class StreamProxy implements Runnable
 		{
 			Timber.i("Streaming song in background");
 			DownloadFile downloadFile = currentPlaying == null? null : currentPlaying.get();
-			MusicDirectory.Track song = downloadFile.getSong();
+			MusicDirectory.Track song = downloadFile.getTrack();
 			long fileSize = downloadFile.getBitRate() * ((song.getDuration() != null) ? song.getDuration() : 0) * 1000 / 8;
 			Timber.i("Streaming fileSize: %d", fileSize);
 

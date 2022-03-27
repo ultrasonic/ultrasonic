@@ -453,7 +453,7 @@ class MediaPlayerController(
 
     fun toggleSongStarred() {
         if (localMediaPlayer.currentPlaying == null) return
-        val song = localMediaPlayer.currentPlaying!!.song
+        val song = localMediaPlayer.currentPlaying!!.track
 
         Thread {
             val musicService = getMusicService()
@@ -477,7 +477,7 @@ class MediaPlayerController(
     fun setSongRating(rating: Int) {
         if (!Settings.useFiveStarRating) return
         if (localMediaPlayer.currentPlaying == null) return
-        val song = localMediaPlayer.currentPlaying!!.song
+        val song = localMediaPlayer.currentPlaying!!.track
         song.userRating = rating
         Thread {
             try {

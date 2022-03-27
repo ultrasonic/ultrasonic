@@ -77,7 +77,7 @@ class TrackViewBinder(
                 }
             } else {
                 // Minimize or maximize the Text view (if song title is very long)
-                if (!downloadFile.song.isDirectory) {
+                if (!downloadFile.track.isDirectory) {
                     holder.maximizeOrMinimize()
                 }
             }
@@ -86,7 +86,7 @@ class TrackViewBinder(
         }
 
         holder.itemView.setOnClickListener {
-            if (checkable && !downloadFile.song.isVideo) {
+            if (checkable && !downloadFile.track.isVideo) {
                 val nowChecked = !holder.check.isChecked
                 holder.isChecked = nowChecked
             } else {

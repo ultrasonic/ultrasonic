@@ -67,7 +67,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         isSelected: Boolean = false
     ) {
         val useFiveStarRating = Settings.useFiveStarRating
-        val song = file.song
+        val song = file.track
         downloadFile = file
         entry = song
 

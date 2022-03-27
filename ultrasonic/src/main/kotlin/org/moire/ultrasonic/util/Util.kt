@@ -478,7 +478,7 @@ object Util {
 
         var song: MusicDirectory.Track? = null
         val avrcpIntent = Intent(CM_AVRCP_METADATA_CHANGED)
-        if (currentPlaying != null) song = currentPlaying.song
+        if (currentPlaying != null) song = currentPlaying.track
 
         fillIntent(avrcpIntent, song, playerPosition, id, listSize)
 

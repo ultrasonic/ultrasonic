@@ -303,7 +303,7 @@ class LocalMediaPlayer : KoinComponent {
     val playerDuration: Int
         get() {
             if (currentPlaying != null) {
-                val duration = currentPlaying!!.song.duration
+                val duration = currentPlaying!!.track.duration
                 if (duration != null) {
                     return duration * 1000
                 }
@@ -391,7 +391,7 @@ class LocalMediaPlayer : KoinComponent {
             setPlayerState(PlayerState.PREPARING, downloadFile)
 
             mediaPlayer.setOnBufferingUpdateListener { mp, percent ->
-                val song = downloadFile.song
+                val song = downloadFile.track
 
                 if (percent == 100) {
                     mp.setOnBufferingUpdateListener(null)
@@ -512,8 +512,8 @@ class LocalMediaPlayer : KoinComponent {
         }
 
         var duration = 0
-        if (downloadFile.song.duration != null) {
-            duration = downloadFile.song.duration!! * 1000
+        if (downloadFile.track.duration != null) {
+            duration = downloadFile.track.duration!! * 1000
         }
 
         mediaPlayer.setOnCompletionListener(object : OnCompletionListener {

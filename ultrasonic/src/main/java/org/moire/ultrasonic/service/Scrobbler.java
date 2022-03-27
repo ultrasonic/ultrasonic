@@ -18,7 +18,7 @@ public class Scrobbler
 	{
 		if (song == null || !ActiveServerProvider.Companion.isScrobblingEnabled()) return;
 
-		final String id = song.getSong().getId();
+		final String id = song.getTrack().getId();
 		if (id == null) return;
 
 		// Avoid duplicate registrations.

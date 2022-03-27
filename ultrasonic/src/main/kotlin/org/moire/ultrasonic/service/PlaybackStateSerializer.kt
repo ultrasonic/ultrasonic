@@ -61,7 +61,7 @@ class PlaybackStateSerializer : KoinComponent {
         val state = State()
 
         for (downloadFile in songs) {
-            state.songs.add(downloadFile.song)
+            state.songs.add(downloadFile.track)
         }
 
         state.currentPlayingIndex = currentPlayingIndex

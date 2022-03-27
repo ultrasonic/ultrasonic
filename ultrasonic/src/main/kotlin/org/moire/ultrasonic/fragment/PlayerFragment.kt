@@ -507,7 +507,7 @@ class PlayerFragment :
         val downloadFile = mediaPlayerController.currentPlaying
 
         if (downloadFile != null) {
-            currentSong = downloadFile.song
+            currentSong = downloadFile.track
         }
 
         if (useFiveStarRating) starMenuItem.isVisible = false
@@ -546,7 +546,7 @@ class PlayerFragment :
             menuInflater.inflate(R.menu.nowplaying_context, menu)
             val song: MusicDirectory.Track?
 
-            song = downloadFile.song
+            song = downloadFile.track
 
             if (song.parent == null) {
                 val menuItem = menu.findItem(R.id.menu_show_album)
@@ -574,7 +574,7 @@ class PlayerFragment :
         var track: MusicDirectory.Track? = null
         val bundle: Bundle
         if (song != null) {
-            track = song.song
+            track = song.track
         }
 
         when (menuItemId) {
@@ -749,7 +749,7 @@ class PlayerFragment :
                 val tracks: MutableList<MusicDirectory.Track?> = ArrayList()
                 val downloadServiceSongs = mediaPlayerController.playList
                 for (downloadFile in downloadServiceSongs) {
-                    val playlistEntry = downloadFile.song
+                    val playlistEntry = downloadFile.track
                     tracks.add(playlistEntry)
                 }
                 shareHandler.createShare(this, tracks, null, cancellationToken)
@@ -785,7 +785,7 @@ class PlayerFragment :
         ioScope.launch {
 
             val entries = mediaPlayerController.playList.map {
-                it.song
+                it.track
             }
             val musicService = getMusicService()
             musicService.createPlaylist(null, playlistName, entries)
@@ -903,7 +903,7 @@ class PlayerFragment :
 
                     val songRemoved = String.format(
                         resources.getString(R.string.download_song_removed),
-                        file.song.title
+                        file.track.title
                     )
                     Util.toast(context, songRemoved)
 
@@ -980,7 +980,7 @@ class PlayerFragment :
         val trackFormat =
             String.format(Locale.getDefault(), "%d / %d", currentSongIndex, totalSongs)
         if (currentPlaying != null) {
-            currentSong = currentPlaying!!.song
+            currentSong = currentPlaying!!.track
             songTitleTextView.text = currentSong!!.title
             artistTextView.text = currentSong!!.artist
             albumTextView.text = currentSong!!.album

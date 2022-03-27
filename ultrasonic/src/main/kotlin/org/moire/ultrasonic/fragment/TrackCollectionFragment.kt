@@ -122,8 +122,8 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
         viewAdapter.register(
             TrackViewBinder(
-                onItemClick = { onItemClick(it.song) },
-                onContextMenuClick = { menu, id -> onContextMenuItemSelected(menu, id.song) },
+                onItemClick = { onItemClick(it.track) },
+                onContextMenuClick = { menu, id -> onContextMenuItemSelected(menu, id.track) },
                 checkable = true,
                 draggable = false,
                 context = requireContext(),

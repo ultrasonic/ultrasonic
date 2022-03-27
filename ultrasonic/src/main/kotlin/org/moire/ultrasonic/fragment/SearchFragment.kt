@@ -360,7 +360,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         when (menuItem.itemId) {
             R.id.song_menu_play_now -> {
-                songs.add(item.song)
+                songs.add(item.track)
                 downloadHandler.download(
                     fragment = this,
                     append = false,
@@ -372,7 +372,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 )
             }
             R.id.song_menu_play_next -> {
-                songs.add(item.song)
+                songs.add(item.track)
                 downloadHandler.download(
                     fragment = this,
                     append = true,
@@ -384,7 +384,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 )
             }
             R.id.song_menu_play_last -> {
-                songs.add(item.song)
+                songs.add(item.track)
                 downloadHandler.download(
                     fragment = this,
                     append = true,
@@ -396,7 +396,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 )
             }
             R.id.song_menu_pin -> {
-                songs.add(item.song)
+                songs.add(item.track)
                 toast(
                     context,
                     resources.getQuantityString(
@@ -408,7 +408,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 downloadBackground(true, songs)
             }
             R.id.song_menu_download -> {
-                songs.add(item.song)
+                songs.add(item.track)
                 toast(
                     context,
                     resources.getQuantityString(
@@ -420,7 +420,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 downloadBackground(false, songs)
             }
             R.id.song_menu_unpin -> {
-                songs.add(item.song)
+                songs.add(item.track)
                 toast(
                     context,
                     resources.getQuantityString(
@@ -432,7 +432,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
                 mediaPlayerController.unpin(songs)
             }
             R.id.song_menu_share -> {
-                songs.add(item.song)
+                songs.add(item.track)
                 shareHandler.createShare(this, songs, searchRefresh, cancellationToken!!)
             }
         }
