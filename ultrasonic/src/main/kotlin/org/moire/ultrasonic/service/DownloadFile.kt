@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.Locale
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -221,7 +222,7 @@ class DownloadFile(
     }
 
     override fun toString(): String {
-        return String.format("DownloadFile (%s)", track)
+        return String.format(Locale.ROOT, "DownloadFile (%s)", track)
     }
 
     private inner class DownloadTask : CancellableTask() {
@@ -293,7 +294,9 @@ class DownloadFile(
 
                     if (isCancelled) {
                         status.postValue(DownloadStatus.CANCELLED)
-                        throw Exception(String.format("Download of '%s' was cancelled", track))
+                        throw RuntimeException(
+                            String.format(Locale.ROOT, "Download of '%s' was cancelled", track)
+                        )
                     }
 
                     if (track.artistId != null) {
@@ -339,7 +342,7 @@ class DownloadFile(
         }
 
         override fun toString(): String {
-            return String.format("DownloadTask (%s)", track)
+            return String.format(Locale.ROOT, "DownloadTask (%s)", track)
         }
 
         private fun cacheMetadata(artistId: String) {
