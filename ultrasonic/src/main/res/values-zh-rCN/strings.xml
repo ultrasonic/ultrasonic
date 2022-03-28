@@ -369,8 +369,6 @@
     <string name="share_default_greeting">看看我从 %s 分享的这首音乐</string>
     <string name="share_via">分享歌曲通过</string>
     <string name="menu.share">分享</string>
-    <string name="settings.show_all_songs_by_artist">按艺术家显示所有歌曲</string>
-    <string name="settings.show_all_songs_by_artist_summary">在艺术家视图中添加新条目以访问艺术家的所有歌曲</string>
     <string name="download.menu_show_artist">显示艺术家</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>

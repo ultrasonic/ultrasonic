@@ -396,8 +396,6 @@
     <string name="share_default_greeting">Check out this music I shared from %s</string>
     <string name="share_via">Share songs via</string>
     <string name="menu.share">Share</string>
-    <string name="settings.show_all_songs_by_artist">Show All Songs By Artist</string>
-    <string name="settings.show_all_songs_by_artist_summary">Add new entry in artist view to access all songs for an artist</string>
     <string name="download.menu_show_artist">Show Artist</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>
