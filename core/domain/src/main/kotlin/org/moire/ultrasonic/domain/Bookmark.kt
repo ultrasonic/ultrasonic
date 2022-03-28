@@ -2,7 +2,6 @@ package org.moire.ultrasonic.domain
 
 import java.io.Serializable
 import java.util.Date
-import org.moire.ultrasonic.domain.MusicDirectory.Entry
 
 data class Bookmark(
     val position: Int = 0,
@@ -10,7 +9,7 @@ data class Bookmark(
     val comment: String,
     val created: Date? = null,
     val changed: Date? = null,
-    val entry: Entry
+    val track: Track
 ) : Serializable {
     companion object {
         private const val serialVersionUID = 8988990025189807803L

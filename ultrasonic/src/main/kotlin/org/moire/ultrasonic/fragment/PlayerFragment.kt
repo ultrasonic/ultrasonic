@@ -66,9 +66,9 @@ import org.moire.ultrasonic.audiofx.EqualizerController
 import org.moire.ultrasonic.audiofx.VisualizerController
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Identifiable
-import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.RepeatMode
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.LocalMediaPlayer
@@ -118,7 +118,7 @@ class PlayerFragment :
     private val imageLoaderProvider: ImageLoaderProvider by inject()
     private lateinit var executorService: ScheduledExecutorService
     private var currentPlaying: DownloadFile? = null
-    private var currentSong: MusicDirectory.Entry? = null
+    private var currentSong: Track? = null
     private lateinit var viewManager: LinearLayoutManager
     private var rxBusSubscription: Disposable? = null
     private var ioScope = CoroutineScope(Dispatchers.IO)
@@ -507,7 +507,7 @@ class PlayerFragment :
         val downloadFile = mediaPlayerController.currentPlaying
 
         if (downloadFile != null) {
-            currentSong = downloadFile.song
+            currentSong = downloadFile.track
         }
 
         if (useFiveStarRating) starMenuItem.isVisible = false
@@ -544,9 +544,9 @@ class PlayerFragment :
             val downloadFile = viewAdapter.getCurrentList()[info!!.position] as DownloadFile
             val menuInflater = requireActivity().menuInflater
             menuInflater.inflate(R.menu.nowplaying_context, menu)
-            val song: MusicDirectory.Entry?
+            val song: Track?
 
-            song = downloadFile.song
+            song = downloadFile.track
 
             if (song.parent == null) {
                 val menuItem = menu.findItem(R.id.menu_show_album)
@@ -571,21 +571,21 @@ class PlayerFragment :
 
     @Suppress("ComplexMethod", "LongMethod", "ReturnCount")
     private fun menuItemSelected(menuItemId: Int, song: DownloadFile?): Boolean {
-        var entry: MusicDirectory.Entry? = null
+        var track: Track? = null
         val bundle: Bundle
         if (song != null) {
-            entry = song.song
+            track = song.track
         }
 
         when (menuItemId) {
             R.id.menu_show_artist -> {
-                if (entry == null) return false
+                if (track == null) return false
 
                 if (Settings.shouldUseId3Tags) {
                     bundle = Bundle()
-                    bundle.putString(Constants.INTENT_ID, entry.artistId)
-                    bundle.putString(Constants.INTENT_NAME, entry.artist)
-                    bundle.putString(Constants.INTENT_PARENT_ID, entry.artistId)
+                    bundle.putString(Constants.INTENT_ID, track.artistId)
+                    bundle.putString(Constants.INTENT_NAME, track.artist)
+                    bundle.putString(Constants.INTENT_PARENT_ID, track.artistId)
                     bundle.putBoolean(Constants.INTENT_ARTIST, true)
                     Navigation.findNavController(requireView())
                         .navigate(R.id.playerToSelectAlbum, bundle)
@@ -593,24 +593,24 @@ class PlayerFragment :
                 return true
             }
             R.id.menu_show_album -> {
-                if (entry == null) return false
+                if (track == null) return false
 
-                val albumId = if (Settings.shouldUseId3Tags) entry.albumId else entry.parent
+                val albumId = if (Settings.shouldUseId3Tags) track.albumId else track.parent
                 bundle = Bundle()
                 bundle.putString(Constants.INTENT_ID, albumId)
-                bundle.putString(Constants.INTENT_NAME, entry.album)
-                bundle.putString(Constants.INTENT_PARENT_ID, entry.parent)
+                bundle.putString(Constants.INTENT_NAME, track.album)
+                bundle.putString(Constants.INTENT_PARENT_ID, track.parent)
                 bundle.putBoolean(Constants.INTENT_IS_ALBUM, true)
                 Navigation.findNavController(requireView())
                     .navigate(R.id.playerToSelectAlbum, bundle)
                 return true
             }
             R.id.menu_lyrics -> {
-                if (entry == null) return false
+                if (track == null) return false
 
                 bundle = Bundle()
-                bundle.putString(Constants.INTENT_ARTIST, entry.artist)
-                bundle.putString(Constants.INTENT_TITLE, entry.title)
+                bundle.putString(Constants.INTENT_ARTIST, track.artist)
+                bundle.putString(Constants.INTENT_TITLE, track.title)
                 Navigation.findNavController(requireView()).navigate(R.id.playerToLyrics, bundle)
                 return true
             }
@@ -746,22 +746,22 @@ class PlayerFragment :
             }
             R.id.menu_item_share -> {
                 val mediaPlayerController = mediaPlayerController
-                val entries: MutableList<MusicDirectory.Entry?> = ArrayList()
+                val tracks: MutableList<Track?> = ArrayList()
                 val downloadServiceSongs = mediaPlayerController.playList
                 for (downloadFile in downloadServiceSongs) {
-                    val playlistEntry = downloadFile.song
-                    entries.add(playlistEntry)
+                    val playlistEntry = downloadFile.track
+                    tracks.add(playlistEntry)
                 }
-                shareHandler.createShare(this, entries, null, cancellationToken)
+                shareHandler.createShare(this, tracks, null, cancellationToken)
                 return true
             }
             R.id.menu_item_share_song -> {
                 if (currentSong == null) return true
 
-                val entries: MutableList<MusicDirectory.Entry?> = ArrayList()
-                entries.add(currentSong)
+                val tracks: MutableList<Track?> = ArrayList()
+                tracks.add(currentSong)
 
-                shareHandler.createShare(this, entries, null, cancellationToken)
+                shareHandler.createShare(this, tracks, null, cancellationToken)
                 return true
             }
             else -> return false
@@ -785,7 +785,7 @@ class PlayerFragment :
         ioScope.launch {
 
             val entries = mediaPlayerController.playList.map {
-                it.song
+                it.track
             }
             val musicService = getMusicService()
             musicService.createPlaylist(null, playlistName, entries)
@@ -903,7 +903,7 @@ class PlayerFragment :
 
                     val songRemoved = String.format(
                         resources.getString(R.string.download_song_removed),
-                        file.song.title
+                        file.track.title
                     )
                     Util.toast(context, songRemoved)
 
@@ -980,7 +980,7 @@ class PlayerFragment :
         val trackFormat =
             String.format(Locale.getDefault(), "%d / %d", currentSongIndex, totalSongs)
         if (currentPlaying != null) {
-            currentSong = currentPlaying!!.song
+            currentSong = currentPlaying!!.track
             songTitleTextView.text = currentSong!!.title
             artistTextView.text = currentSong!!.artist
             albumTextView.text = currentSong!!.album

@@ -7,6 +7,7 @@
 package org.moire.ultrasonic.service
 
 import java.io.InputStream
+import org.moire.ultrasonic.domain.Album
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
@@ -21,6 +22,7 @@ import org.moire.ultrasonic.domain.PodcastsChannel
 import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.domain.UserInfo
 
 @Suppress("TooManyFunctions")
@@ -57,7 +59,7 @@ interface MusicService {
     fun getMusicDirectory(id: String, name: String?, refresh: Boolean): MusicDirectory
 
     @Throws(Exception::class)
-    fun getArtist(id: String, name: String?, refresh: Boolean): List<MusicDirectory.Album>
+    fun getArtist(id: String, name: String?, refresh: Boolean): List<Album>
 
     @Throws(Exception::class)
     fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory
@@ -75,7 +77,7 @@ interface MusicService {
     fun getPlaylists(refresh: Boolean): List<Playlist>
 
     @Throws(Exception::class)
-    fun createPlaylist(id: String?, name: String?, entries: List<MusicDirectory.Entry>)
+    fun createPlaylist(id: String?, name: String?, tracks: List<Track>)
 
     @Throws(Exception::class)
     fun deletePlaylist(id: String)
@@ -95,7 +97,7 @@ interface MusicService {
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): List<MusicDirectory.Album>
+    ): List<Album>
 
     @Throws(Exception::class)
     fun getAlbumList2(
@@ -103,7 +105,7 @@ interface MusicService {
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): List<MusicDirectory.Album>
+    ): List<Album>
 
     @Throws(Exception::class)
     fun getRandomSongs(size: Int): MusicDirectory
@@ -123,7 +125,7 @@ interface MusicService {
      */
     @Throws(Exception::class)
     fun getDownloadInputStream(
-        song: MusicDirectory.Entry,
+        song: Track,
         offset: Long,
         maxBitrate: Int,
         save: Boolean

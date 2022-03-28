@@ -105,7 +105,7 @@ class NowPlayingFragment : Fragment() {
             val file = mediaPlayerController.currentPlaying
 
             if (file != null) {
-                val song = file.song
+                val song = file.track
                 val title = song.title
                 val artist = song.artist
 

@@ -234,7 +234,7 @@ public class JukeboxMediaPlayer
 		List<String> ids = new ArrayList<>();
 		for (DownloadFile file : downloader.getAll())
 		{
-			ids.add(file.getSong().getId());
+			ids.add(file.getTrack().getId());
 		}
 
 		tasks.add(new SetPlaylist(ids));

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Util
 
@@ -14,14 +14,14 @@ import org.moire.ultrasonic.util.Util
 @Suppress("UtilityClassWithPublicConstructor")
 class VideoPlayer {
     companion object {
-        fun playVideo(context: Context, entry: MusicDirectory.Entry?) {
-            if (!Util.isNetworkConnected() || entry == null) {
+        fun playVideo(context: Context, track: Track?) {
+            if (!Util.isNetworkConnected() || track == null) {
                 Util.toast(context, R.string.select_album_no_network)
                 return
             }
             try {
                 val intent = Intent(Intent.ACTION_VIEW)
-                val url = MusicServiceFactory.getMusicService().getVideoUrl(entry.id)
+                val url = MusicServiceFactory.getMusicService().getVideoUrl(track.id)
                 intent.setDataAndType(
                     Uri.parse(url),
                     "video/*"

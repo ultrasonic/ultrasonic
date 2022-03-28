@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import java.io.File
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -26,11 +26,11 @@ class BitmapUtils {
         }
 
         fun getAlbumArtBitmapFromDisk(
-            entry: MusicDirectory.Entry?,
+            track: Track?,
             size: Int
         ): Bitmap? {
-            if (entry == null) return null
-            val albumArtFile = FileUtil.getAlbumArtFile(entry)
+            if (track == null) return null
+            val albumArtFile = FileUtil.getAlbumArtFile(track)
             val bitmap: Bitmap? = null
             if (albumArtFile != null && File(albumArtFile).exists()) {
                 return getBitmapFromDisk(albumArtFile, size, bitmap)

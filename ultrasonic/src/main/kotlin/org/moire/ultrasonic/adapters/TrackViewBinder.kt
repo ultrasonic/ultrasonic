@@ -12,7 +12,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.domain.Identifiable
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.Downloader
 
@@ -45,7 +45,7 @@ class TrackViewBinder(
         val diffAdapter = adapter as BaseAdapter<*>
 
         when (item) {
-            is MusicDirectory.Entry -> {
+            is Track -> {
                 downloadFile = downloader.getDownloadFileForSong(item)
             }
             is DownloadFile -> {
@@ -77,7 +77,7 @@ class TrackViewBinder(
                 }
             } else {
                 // Minimize or maximize the Text view (if song title is very long)
-                if (!downloadFile.song.isDirectory) {
+                if (!downloadFile.track.isDirectory) {
                     holder.maximizeOrMinimize()
                 }
             }
@@ -86,7 +86,7 @@ class TrackViewBinder(
         }
 
         holder.itemView.setOnClickListener {
-            if (checkable && !downloadFile.song.isVideo) {
+            if (checkable && !downloadFile.track.isVideo) {
                 val nowChecked = !holder.check.isChecked
                 holder.isChecked = nowChecked
             } else {

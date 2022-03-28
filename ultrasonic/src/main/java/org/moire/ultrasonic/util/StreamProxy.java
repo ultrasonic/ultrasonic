@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.util;
 
-import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.domain.Track;
 import org.moire.ultrasonic.service.DownloadFile;
 import org.moire.ultrasonic.service.Supplier;
 
@@ -180,7 +180,7 @@ public class StreamProxy implements Runnable
 		{
 			Timber.i("Streaming song in background");
 			DownloadFile downloadFile = currentPlaying == null? null : currentPlaying.get();
-			MusicDirectory.Entry song = downloadFile.getSong();
+			Track song = downloadFile.getTrack();
 			long fileSize = downloadFile.getBitRate() * ((song.getDuration() != null) ? song.getDuration() : 0) * 1000 / 8;
 			Timber.i("Streaming fileSize: %d", fileSize);
 

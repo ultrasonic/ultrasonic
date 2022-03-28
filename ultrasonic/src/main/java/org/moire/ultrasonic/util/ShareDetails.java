@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.util;
 
-import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.domain.Track;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ public class ShareDetails
 	public String Description;
 	public boolean ShareOnServer;
 	public long Expiration;
-	public List<MusicDirectory.Entry> Entries;
+	public List<Track> Entries;
 }

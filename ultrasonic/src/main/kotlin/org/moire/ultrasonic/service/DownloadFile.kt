@@ -12,12 +12,13 @@ import androidx.lifecycle.MutableLiveData
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.Locale
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Identifiable
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.CacheCleaner
@@ -38,12 +39,12 @@ import timber.log.Timber
  *
  */
 class DownloadFile(
-    val song: MusicDirectory.Entry,
+    val track: Track,
     save: Boolean
 ) : KoinComponent, Identifiable {
     val partialFile: String
     lateinit var completeFile: String
-    val saveFile: String = FileUtil.getSongFile(song)
+    val saveFile: String = FileUtil.getSongFile(track)
     var shouldSave = save
     private var downloadTask: CancellableTask? = null
     var isFailed = false
@@ -104,7 +105,7 @@ class DownloadFile(
      * Returns the effective bit rate.
      */
     fun getBitRate(): Int {
-        return if (song.bitRate == null) desiredBitRate else song.bitRate!!
+        return if (track.bitRate == null) desiredBitRate else track.bitRate!!
     }
 
     @Synchronized
@@ -221,7 +222,7 @@ class DownloadFile(
     }
 
     override fun toString(): String {
-        return String.format("DownloadFile (%s)", song)
+        return String.format(Locale.ROOT, "DownloadFile (%s)", track)
     }
 
     private inner class DownloadTask : CancellableTask() {
@@ -259,7 +260,7 @@ class DownloadFile(
 
                 // Some devices seem to throw error on partial file which doesn't exist
                 val needsDownloading: Boolean
-                val duration = song.duration
+                val duration = track.duration
                 val fileLength = Storage.getFromPath(partialFile)?.length ?: 0
 
                 needsDownloading = (
@@ -269,7 +270,7 @@ class DownloadFile(
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
                     val (inStream, isPartial) = musicService.getDownloadInputStream(
-                        song, fileLength, desiredBitRate, shouldSave
+                        track, fileLength, desiredBitRate, shouldSave
                     )
 
                     inputStream = inStream
@@ -293,11 +294,13 @@ class DownloadFile(
 
                     if (isCancelled) {
                         status.postValue(DownloadStatus.CANCELLED)
-                        throw Exception(String.format("Download of '%s' was cancelled", song))
+                        throw RuntimeException(
+                            String.format(Locale.ROOT, "Download of '%s' was cancelled", track)
+                        )
                     }
 
-                    if (song.artistId != null) {
-                        cacheMetadata(song.artistId!!)
+                    if (track.artistId != null) {
+                        cacheMetadata(track.artistId!!)
                     }
 
                     downloadAndSaveCoverArt()
@@ -328,7 +331,7 @@ class DownloadFile(
                         status.postValue(DownloadStatus.FAILED)
                         --retryCount
                     }
-                    Timber.w(all, "Failed to download '%s'.", song)
+                    Timber.w(all, "Failed to download '%s'.", track)
                 }
             } finally {
                 inputStream.safeClose()
@@ -339,7 +342,7 @@ class DownloadFile(
         }
 
         override fun toString(): String {
-            return String.format("DownloadTask (%s)", song)
+            return String.format(Locale.ROOT, "DownloadTask (%s)", track)
         }
 
         private fun cacheMetadata(artistId: String) {
@@ -367,9 +370,9 @@ class DownloadFile(
 
         private fun downloadAndSaveCoverArt() {
             try {
-                if (!TextUtils.isEmpty(song.coverArt)) {
+                if (!TextUtils.isEmpty(track.coverArt)) {
                     // Download the largest size that we can display in the UI
-                    imageLoaderProvider.getImageLoader().cacheCoverArt(song)
+                    imageLoaderProvider.getImageLoader().cacheCoverArt(track)
                 }
             } catch (all: Exception) {
                 Timber.e(all, "Failed to get cover art.")
@@ -392,8 +395,8 @@ class DownloadFile(
     }
 
     private fun setProgress(totalBytesCopied: Long) {
-        if (song.size != null) {
-            progress.postValue((totalBytesCopied * 100 / song.size!!).toInt())
+        if (track.size != null) {
+            progress.postValue((totalBytesCopied * 100 / track.size!!).toInt())
         }
     }
 
@@ -404,7 +407,7 @@ class DownloadFile(
     }
 
     override val id: String
-        get() = song.id
+        get() = track.id
 
     companion object {
         const val MAX_RETRIES = 5

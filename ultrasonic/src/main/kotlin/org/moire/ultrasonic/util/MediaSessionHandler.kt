@@ -188,7 +188,7 @@ class MediaSessionHandler : KoinComponent {
         val metadata = MediaMetadataCompat.Builder()
         if (currentPlaying != null) {
             try {
-                val song = currentPlaying.song
+                val song = currentPlaying.track
                 val cover = BitmapUtils.getAlbumArtBitmapFromDisk(
                     song, Util.getMinDisplayMetric()
                 )
@@ -278,7 +278,7 @@ class MediaSessionHandler : KoinComponent {
 
         val queue = playlist.mapIndexed { id, file ->
             MediaSessionCompat.QueueItem(
-                Util.getMediaDescriptionForEntry(file.song),
+                Util.getMediaDescriptionForEntry(file.track),
                 id.toLong()
             )
         }

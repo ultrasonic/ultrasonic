@@ -15,14 +15,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.AlbumRowBinder
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Album
 import org.moire.ultrasonic.model.AlbumListModel
 import org.moire.ultrasonic.util.Constants
 
 /**
  * Displays a list of Albums from the media library
  */
-class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
+class AlbumListFragment : EntryListFragment<Album>() {
 
     /**
      * The ViewModel to use to get the data
@@ -45,7 +45,7 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
     override fun getLiveData(
         args: Bundle?,
         refresh: Boolean
-    ): LiveData<List<MusicDirectory.Album>> {
+    ): LiveData<List<Album>> {
         if (args == null) throw IllegalArgumentException("Required arguments are missing")
 
         val refresh2 = args.getBoolean(Constants.INTENT_REFRESH) || refresh
@@ -83,7 +83,7 @@ class AlbumListFragment : EntryListFragment<MusicDirectory.Album>() {
         emptyTextView.setText(R.string.select_album_empty)
     }
 
-    override fun onItemClick(item: MusicDirectory.Album) {
+    override fun onItemClick(item: Album) {
         val bundle = Bundle()
         bundle.putString(Constants.INTENT_ID, item.id)
         bundle.putBoolean(Constants.INTENT_IS_ALBUM, item.isDirectory)

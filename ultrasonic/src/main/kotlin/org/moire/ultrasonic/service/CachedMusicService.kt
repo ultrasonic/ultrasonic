@@ -13,6 +13,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.MetaDatabase
+import org.moire.ultrasonic.domain.Album
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
@@ -27,6 +28,7 @@ import org.moire.ultrasonic.domain.PodcastsChannel
 import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.domain.UserInfo
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.LRUCache
@@ -41,7 +43,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
 
     // Old style TimeLimitedCache
     private val cachedMusicDirectories: LRUCache<String, TimeLimitedCache<MusicDirectory?>>
-    private val cachedArtist: LRUCache<String, TimeLimitedCache<List<MusicDirectory.Album>>>
+    private val cachedArtist: LRUCache<String, TimeLimitedCache<List<Album>>>
     private val cachedAlbum: LRUCache<String, TimeLimitedCache<MusicDirectory?>>
     private val cachedUserInfo: LRUCache<String, TimeLimitedCache<UserInfo?>>
     private val cachedLicenseValid = TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS)
@@ -149,7 +151,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
 
     @Throws(Exception::class)
     override fun getArtist(id: String, name: String?, refresh: Boolean):
-        List<MusicDirectory.Album> {
+        List<Album> {
         checkSettingsChanged()
         var cache = if (refresh) null else cachedArtist[id]
         var dir = cache?.get()
@@ -218,9 +220,9 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     }
 
     @Throws(Exception::class)
-    override fun createPlaylist(id: String?, name: String?, entries: List<MusicDirectory.Entry>) {
+    override fun createPlaylist(id: String?, name: String?, tracks: List<Track>) {
         cachedPlaylists.clear()
-        musicService.createPlaylist(id, name, entries)
+        musicService.createPlaylist(id, name, tracks)
     }
 
     @Throws(Exception::class)
@@ -249,7 +251,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): List<MusicDirectory.Album> {
+    ): List<Album> {
         return musicService.getAlbumList(type, size, offset, musicFolderId)
     }
 
@@ -259,7 +261,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): List<MusicDirectory.Album> {
+    ): List<Album> {
         return musicService.getAlbumList2(type, size, offset, musicFolderId)
     }
 
@@ -276,7 +278,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
 
     @Throws(Exception::class)
     override fun getDownloadInputStream(
-        song: MusicDirectory.Entry,
+        song: Track,
         offset: Long,
         maxBitrate: Int,
         save: Boolean

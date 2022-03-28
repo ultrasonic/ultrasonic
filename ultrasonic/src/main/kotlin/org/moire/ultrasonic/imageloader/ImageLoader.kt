@@ -20,6 +20,7 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
@@ -148,28 +149,28 @@ class ImageLoader(
      * Download a cover art file and cache it on disk
      */
     fun cacheCoverArt(
-        entry: MusicDirectory.Entry
+        track: Track
     ) {
 
         // Synchronize on the entry so that we don't download concurrently for
         // the same song.
-        synchronized(entry) {
+        synchronized(track) {
             // Always download the large size..
             val size = config.largeSize
 
             // Check cache to avoid downloading existing files
-            val file = FileUtil.getAlbumArtFile(entry)
+            val file = FileUtil.getAlbumArtFile(track)
 
             // Return if have a cache hit
             if (file != null && File(file).exists()) return
             File(file!!).createNewFile()
 
             // Can't load empty string ids
-            val id = entry.coverArt
+            val id = track.coverArt
             if (TextUtils.isEmpty(id)) return
 
             // Query the API
-            Timber.d("Loading cover art for: %s", entry)
+            Timber.d("Loading cover art for: %s", track)
             val response = API.getCoverArt(id!!, size.toLong()).execute().toStreamResponse()
             response.throwOnFailure()
 

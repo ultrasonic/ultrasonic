@@ -1,15 +1,15 @@
 package org.moire.ultrasonic.receiver;
 
+import static org.koin.java.KoinJavaComponent.inject;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import org.moire.ultrasonic.domain.MusicDirectory.Entry;
+import org.moire.ultrasonic.domain.Track;
 import org.moire.ultrasonic.service.MediaPlayerController;
 
 import kotlin.Lazy;
-
-import static org.koin.java.KoinJavaComponent.inject;
 
 public class A2dpIntentReceiver extends BroadcastReceiver
 {
@@ -21,7 +21,7 @@ public class A2dpIntentReceiver extends BroadcastReceiver
 	{
 		if (mediaPlayerControllerLazy.getValue().getCurrentPlaying() == null) return;
 
-		Entry song = mediaPlayerControllerLazy.getValue().getCurrentPlaying().getSong();
+		Track song = mediaPlayerControllerLazy.getValue().getCurrentPlaying().getTrack();
 		if (song == null) return;
 
 		Intent avrcpIntent = new Intent(PLAYSTATUS_RESPONSE);

@@ -25,6 +25,7 @@ import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
@@ -80,10 +81,10 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
-    private var playlistCache: List<MusicDirectory.Entry>? = null
-    private var starredSongsCache: List<MusicDirectory.Entry>? = null
-    private var randomSongsCache: List<MusicDirectory.Entry>? = null
-    private var searchSongsCache: List<MusicDirectory.Entry>? = null
+    private var playlistCache: List<Track>? = null
+    private var starredSongsCache: List<Track>? = null
+    private var randomSongsCache: List<Track>? = null
+    private var searchSongsCache: List<Track>? = null
 
     private val isOffline get() = ActiveServerProvider.isOffline()
     private val useId3Tags get() = Settings.shouldUseId3Tags
@@ -1070,7 +1071,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         return section.toString()
     }
 
-    private fun playSongs(songs: List<MusicDirectory.Entry?>?) {
+    private fun playSongs(songs: List<Track?>?) {
         mediaPlayerController.addToPlaylist(
             songs,
             save = false,
@@ -1081,7 +1082,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         )
     }
 
-    private fun playSong(song: MusicDirectory.Entry) {
+    private fun playSong(song: Track) {
         mediaPlayerController.addToPlaylist(
             listOf(song),
             save = false,

@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ItemViewBinder
 import org.koin.core.component.KoinComponent
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Album
 import org.moire.ultrasonic.imageloader.ImageLoader
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.Settings.shouldUseId3Tags
@@ -31,11 +31,11 @@ import timber.log.Timber
  * Creates a Row in a RecyclerView which contains the details of an Album
  */
 class AlbumRowBinder(
-    val onItemClick: (MusicDirectory.Album) -> Unit,
-    val onContextMenuClick: (MenuItem, MusicDirectory.Album) -> Boolean,
+    val onItemClick: (Album) -> Unit,
+    val onContextMenuClick: (MenuItem, Album) -> Boolean,
     private val imageLoader: ImageLoader,
     context: Context
-) : ItemViewBinder<MusicDirectory.Album, AlbumRowBinder.ViewHolder>(), KoinComponent {
+) : ItemViewBinder<Album, AlbumRowBinder.ViewHolder>(), KoinComponent {
 
     private val starDrawable: Drawable =
         Util.getDrawableFromAttribute(context, R.attr.star_full)
@@ -46,7 +46,7 @@ class AlbumRowBinder(
     val layout = R.layout.list_item_album
     val contextMenuLayout = R.menu.context_menu_artist
 
-    override fun onBindViewHolder(holder: ViewHolder, item: MusicDirectory.Album) {
+    override fun onBindViewHolder(holder: ViewHolder, item: Album) {
         holder.album.text = item.title
         holder.artist.text = item.artist
         holder.details.setOnClickListener { onItemClick(item) }
@@ -86,7 +86,7 @@ class AlbumRowBinder(
     /**
      * Handles the star / unstar action for an album
      */
-    private fun onStarClick(entry: MusicDirectory.Album, star: ImageView) {
+    private fun onStarClick(entry: Album, star: ImageView) {
         entry.starred = !entry.starred
         star.setImageDrawable(if (entry.starred) starDrawable else starHollowDrawable)
         val musicService = getMusicService()

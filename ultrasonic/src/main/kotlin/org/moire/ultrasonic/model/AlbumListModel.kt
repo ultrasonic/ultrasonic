@@ -6,14 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Album
 import org.moire.ultrasonic.service.MusicService
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 
 class AlbumListModel(application: Application) : GenericListModel(application) {
 
-    val list: MutableLiveData<List<MusicDirectory.Album>> = MutableLiveData()
+    val list: MutableLiveData<List<Album>> = MutableLiveData()
     var lastType: String? = null
     private var loadedUntil: Int = 0
 
@@ -21,7 +21,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         refresh: Boolean,
         swipe: SwipeRefreshLayout,
         args: Bundle
-    ): LiveData<List<MusicDirectory.Album>> {
+    ): LiveData<List<Album>> {
         // Don't reload the data if navigating back to the view that was active before.
         // This way, we keep the scroll position
         val albumListType = args.getString(Constants.INTENT_ALBUM_LIST_TYPE)!!
@@ -56,7 +56,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         var offset = args.getInt(Constants.INTENT_ALBUM_LIST_OFFSET, 0)
         val append = args.getBoolean(Constants.INTENT_APPEND, false)
 
-        val musicDirectory: List<MusicDirectory.Album>
+        val musicDirectory: List<Album>
         val musicFolderId = if (showSelectFolderHeader(args)) {
             activeServerProvider.getActiveServer().musicFolderId
         } else {
@@ -98,7 +98,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         currentListIsSortable = isCollectionSortable(albumListType)
 
         if (append && list.value != null) {
-            val newList = ArrayList<MusicDirectory.Album>()
+            val newList = ArrayList<Album>()
             newList.addAll(list.value!!)
             newList.addAll(musicDirectory)
             list.postValue(newList)

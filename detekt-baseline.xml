@@ -1,41 +1,24 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='UTF-8'?>
 <SmellBaseline>
-  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided&gt;$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
-    <ID>ComplexCondition:FilePickerAdapter.kt$FilePickerAdapter$currentDirectory.absolutePath == "/" || currentDirectory.absolutePath == "/storage" || currentDirectory.absolutePath == "/storage/emulated" || currentDirectory.absolutePath == "/mnt"</ID>
+    <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided>$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
     <ID>ComplexMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
-    <ID>ComplexMethod:FilePickerAdapter.kt$FilePickerAdapter$private fun fileLister(currentDirectory: File)</ID>
-    <ID>ComplexMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
-    <ID>ComplexMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun enableButtons()</ID>
-    <ID>ComplexMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
-    <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile$String.format("DownloadFile (%s)", song)</ID>
-    <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile.DownloadTask$String.format("Download of '%s' was cancelled", song)</ID>
-    <ID>ImplicitDefaultLocale:DownloadFile.kt$DownloadFile.DownloadTask$String.format("DownloadTask (%s)", song)</ID>
-    <ID>ImplicitDefaultLocale:EditServerFragment.kt$EditServerFragment.&lt;no name provided&gt;$String.format( "%s %s", resources.getString(R.string.settings_connection_failure), getErrorMessage(error) )</ID>
+    <ID>ImplicitDefaultLocale:EditServerFragment.kt$EditServerFragment.&lt;no name provided>$String.format( "%s %s", resources.getString(R.string.settings_connection_failure), getErrorMessage(error) )</ID>
     <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Failed to write log to %s", file)</ID>
     <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Log file rotated, logging into file %s", file?.name)</ID>
     <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Logging into file %s", file?.name)</ID>
     <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$String.format("BufferTask (%s)", downloadFile)</ID>
     <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$String.format("CheckCompletionTask (%s)", downloadFile)</ID>
     <ID>ImplicitDefaultLocale:ShareHandler.kt$ShareHandler$String.format("%d:%s", timeSpanAmount, timeSpanType)</ID>
-    <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%02d.", trackNumber)</ID>
-    <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s ", bitRate)</ID>
-    <ID>ImplicitDefaultLocale:SongView.kt$SongView$String.format("%s &gt; %s", suffix, transcodedSuffix)</ID>
-    <ID>LargeClass:TrackCollectionFragment.kt$TrackCollectionFragment : Fragment</ID>
     <ID>LongMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>LongMethod:EditServerFragment.kt$EditServerFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer$@Synchronized private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:ShareHandler.kt$ShareHandler$private fun showDialog( fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout?, cancellationToken: CancellationToken )</ID>
-    <ID>LongMethod:SongView.kt$SongView$fun setSong(song: MusicDirectory.Entry, checkable: Boolean, draggable: Boolean)</ID>
-    <ID>LongMethod:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
-    <ID>LongMethod:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
-    <ID>LongMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun updateDisplay(refresh: Boolean)</ID>
-    <ID>LongMethod:TrackCollectionFragment.kt$TrackCollectionFragment$private fun updateInterfaceWithEntries(musicDirectory: MusicDirectory)</ID>
-    <ID>LongParameterList:ServerRowAdapter.kt$ServerRowAdapter$( private var context: Context, private var data: Array&lt;ServerSetting&gt;, private val model: ServerSettingsModel, private val activeServerProvider: ActiveServerProvider, private val manageMode: Boolean, private val serverDeletedCallback: ((Int) -&gt; Unit), private val serverEditRequestedCallback: ((Int) -&gt; Unit) )</ID>
+    <ID>LongParameterList:ServerRowAdapter.kt$ServerRowAdapter$( private var context: Context, private var data: Array&lt;ServerSetting>, private val model: ServerSettingsModel, private val activeServerProvider: ActiveServerProvider, private val manageMode: Boolean, private val serverDeletedCallback: ((Int) -> Unit), private val serverEditRequestedCallback: ((Int) -> Unit) )</ID>
     <ID>MagicNumber:ActiveServerProvider.kt$ActiveServerProvider$8192</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided&gt;$60000</ID>
+    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided>$60000</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$100000</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$8</ID>
     <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$86400L</ID>
@@ -44,25 +27,17 @@
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$3</ID>
     <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$4</ID>
     <ID>MagicNumber:RESTMusicService.kt$RESTMusicService$206</ID>
-    <ID>MagicNumber:SongView.kt$SongView$3</ID>
-    <ID>MagicNumber:SongView.kt$SongView$4</ID>
-    <ID>MagicNumber:SongView.kt$SongView$60</ID>
     <ID>NestedBlockDepth:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>NestedBlockDepth:DownloadHandler.kt$DownloadHandler$private fun downloadRecursively( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
     <ID>NestedBlockDepth:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
-    <ID>ReturnCount:ServerRowAdapter.kt$ServerRowAdapter$ private fun popupMenuItemClick(menuItem: MenuItem, position: Int): Boolean</ID>
-    <ID>ReturnCount:TrackCollectionFragment.kt$TrackCollectionFragment$override fun onContextItemSelected(menuItem: MenuItem): Boolean</ID>
-    <ID>TooGenericExceptionCaught:DownloadFile.kt$DownloadFile$e: Exception</ID>
     <ID>TooGenericExceptionCaught:FileLoggerTree.kt$FileLoggerTree$x: Throwable</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$ex: Exception</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$exception: Throwable</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$x: Exception</ID>
     <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:SongView.kt$SongView$e: Exception</ID>
-    <ID>TooGenericExceptionThrown:DownloadFile.kt$DownloadFile.DownloadTask$throw Exception(String.format("Download of '%s' was cancelled", song))</ID>
+    <ID>TooGenericExceptionThrown:DownloadFile.kt$DownloadFile.DownloadTask$throw RuntimeException( String.format(Locale.ROOT, "Download of '%s' was cancelled", track) )</ID>
     <ID>TooManyFunctions:MediaPlayerService.kt$MediaPlayerService : Service</ID>
     <ID>TooManyFunctions:RESTMusicService.kt$RESTMusicService : MusicService</ID>
-    <ID>TooManyFunctions:TrackCollectionFragment.kt$TrackCollectionFragment : Fragment</ID>
     <ID>UtilityClassWithPublicConstructor:FragmentTitle.kt$FragmentTitle</ID>
   </CurrentIssues>
 </SmellBaseline>

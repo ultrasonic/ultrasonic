@@ -1,6 +1,6 @@
 package org.moire.ultrasonic.service;
 
-import org.moire.ultrasonic.domain.MusicDirectory;
+import org.moire.ultrasonic.domain.Track;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class State implements Serializable
 {
     public static final long serialVersionUID = -6346438781062572270L;
 
-    public List<MusicDirectory.Entry> songs = new ArrayList<>();
+    public List<Track> songs = new ArrayList<>();
     public int currentPlayingIndex;
     public int currentPlayingPosition;
 }

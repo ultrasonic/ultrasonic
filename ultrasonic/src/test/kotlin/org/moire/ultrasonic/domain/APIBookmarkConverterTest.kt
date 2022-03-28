@@ -27,7 +27,7 @@ class APIBookmarkConverterTest {
             comment `should be equal to` entity.comment
             created `should be equal to` entity.created?.time
             changed `should be equal to` entity.changed?.time
-            entry `should be equal to` entity.entry.toTrackEntity()
+            track `should be equal to` entity.entry.toTrackEntity()
         }
     }
 

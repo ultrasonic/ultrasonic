@@ -26,12 +26,12 @@ internal val dateFormat: DateFormat by lazy {
     SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())
 }
 
-fun MusicDirectoryChild.toTrackEntity(): MusicDirectory.Entry = MusicDirectory.Entry(id).apply {
+fun MusicDirectoryChild.toTrackEntity(): Track = Track(id).apply {
     populateCommonProps(this, this@toTrackEntity)
     populateTrackProps(this, this@toTrackEntity)
 }
 
-fun MusicDirectoryChild.toAlbumEntity(): MusicDirectory.Album = MusicDirectory.Album(id).apply {
+fun MusicDirectoryChild.toAlbumEntity(): Album = Album(id).apply {
     populateCommonProps(this, this@toAlbumEntity)
 }
 
@@ -64,20 +64,20 @@ private fun populateCommonProps(
 }
 
 private fun populateTrackProps(
-    entry: MusicDirectory.Entry,
+    track: Track,
     source: MusicDirectoryChild
 ) {
-    entry.size = source.size
-    entry.contentType = source.contentType
-    entry.suffix = source.suffix
-    entry.transcodedContentType = source.transcodedContentType
-    entry.transcodedSuffix = source.transcodedSuffix
-    entry.track = source.track
-    entry.albumId = source.albumId
-    entry.bitRate = source.bitRate
-    entry.type = source.type
-    entry.userRating = source.userRating
-    entry.averageRating = source.averageRating
+    track.size = source.size
+    track.contentType = source.contentType
+    track.suffix = source.suffix
+    track.transcodedContentType = source.transcodedContentType
+    track.transcodedSuffix = source.transcodedSuffix
+    track.track = source.track
+    track.albumId = source.albumId
+    track.bitRate = source.bitRate
+    track.type = source.type
+    track.userRating = source.userRating
+    track.averageRating = source.averageRating
 }
 
 fun List<MusicDirectoryChild>.toDomainEntityList(): List<MusicDirectory.Child> {
@@ -93,7 +93,7 @@ fun List<MusicDirectoryChild>.toDomainEntityList(): List<MusicDirectory.Child> {
     return newList
 }
 
-fun List<MusicDirectoryChild>.toTrackList(): List<MusicDirectory.Entry> = this.map {
+fun List<MusicDirectoryChild>.toTrackList(): List<Track> = this.map {
     it.toTrackEntity()
 }
 

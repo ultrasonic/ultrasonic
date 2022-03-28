@@ -19,6 +19,7 @@ import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
+import org.moire.ultrasonic.domain.Album
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.ChatMessage
@@ -33,6 +34,7 @@ import org.moire.ultrasonic.domain.PodcastsChannel
 import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Share
+import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.domain.UserInfo
 import org.moire.ultrasonic.domain.toArtistList
 import org.moire.ultrasonic.domain.toDomainEntitiesList
@@ -143,7 +145,7 @@ open class RESTMusicService(
         id: String,
         name: String?,
         refresh: Boolean
-    ): List<MusicDirectory.Album> {
+    ): List<Album> {
         val response = API.getArtist(id).execute().throwOnFailure()
 
         return response.body()!!.artist.toDomainEntityList()
@@ -262,14 +264,14 @@ open class RESTMusicService(
     override fun createPlaylist(
         id: String?,
         name: String?,
-        entries: List<MusicDirectory.Entry>
+        tracks: List<Track>
     ) {
         if (id == null && name == null)
             throw IllegalArgumentException("Either id or name is required.")
 
-        val pSongIds: MutableList<String> = ArrayList(entries.size)
+        val pSongIds: MutableList<String> = ArrayList(tracks.size)
 
-        for ((id1) in entries) {
+        for ((id1) in tracks) {
             pSongIds.add(id1)
         }
 
@@ -350,7 +352,7 @@ open class RESTMusicService(
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): List<MusicDirectory.Album> {
+    ): List<Album> {
         val response = API.getAlbumList(
             fromName(type),
             size,
@@ -370,7 +372,7 @@ open class RESTMusicService(
         size: Int,
         offset: Int,
         musicFolderId: String?
-    ): List<MusicDirectory.Album> {
+    ): List<Album> {
         val response = API.getAlbumList2(
             fromName(type),
             size,
@@ -418,7 +420,7 @@ open class RESTMusicService(
 
     @Throws(Exception::class)
     override fun getDownloadInputStream(
-        song: MusicDirectory.Entry,
+        song: Track,
         offset: Long,
         maxBitrate: Int,
         save: Boolean
