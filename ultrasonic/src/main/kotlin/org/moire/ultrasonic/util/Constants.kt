@@ -108,7 +108,6 @@ object Constants {
     const val PREFERENCES_KEY_DEFAULT_SHARE_GREETING = "sharingDefaultGreeting"
     const val PREFERENCES_KEY_SHARE_ON_SERVER = "sharingCreateOnServer"
     const val PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION = "sharingDefaultExpiration"
-    const val PREFERENCES_KEY_SHOW_ALL_SONGS_BY_ARTIST = "showAllSongsByArtist"
     const val PREFERENCES_KEY_USE_FIVE_STAR_RATING = "use_five_star_rating"
     const val PREFERENCES_KEY_CATEGORY_NOTIFICATIONS = "notificationsCategory"
     const val PREFERENCES_KEY_FIRST_RUN_EXECUTED = "firstRunExecuted"

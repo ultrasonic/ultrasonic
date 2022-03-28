@@ -42,7 +42,7 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 ## Supported (tested) Subsonic API implementations
 
 - [Subsonic](http://www.subsonic.org/pages/index.jsp)
-- [Airsonic](https://github.com/airsonic/airsonic)
+- [Airsonic-Advanced](https://github.com/airsonic-advanced/airsonic-advanced)
 - [Supysonic](https://github.com/spl0k/supysonic)
 - [Ampache](https://ampache.org/)
 

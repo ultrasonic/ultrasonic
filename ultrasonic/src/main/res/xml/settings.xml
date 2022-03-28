@@ -31,12 +31,6 @@
             a:title="@string/settings.use_folder_for_album_artist"
             app:iconSpaceReserved="false"/>
         <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="showAllSongsByArtist"
-            a:summary="@string/settings.show_all_songs_by_artist_summary"
-            a:title="@string/settings.show_all_songs_by_artist"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
             a:defaultValue="true"
             a:key="showTrackNumber"
             a:summary="@string/settings.show_track_number_summary"
