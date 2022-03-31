@@ -39,7 +39,4 @@ data class ServerSetting(
     constructor() : this (
         -1, 0, "", "", null, "", "", false, false, false, null, null
     )
-    constructor(name: String, url: String) : this(
-        -1, 0, name, url, null, "", "", false, false, false, null, null
-    )
 }

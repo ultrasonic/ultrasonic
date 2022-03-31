@@ -157,18 +157,14 @@ class NavigationActivity : AppCompatActivity() {
             setMenuForServerCapabilities()
         }
 
-        // Determine first run and migrate server settings to DB as early as possible
-        var showWelcomeScreen = Util.isFirstRun()
-        val areServersMigrated: Boolean = serverSettingsModel.migrateFromPreferences()
+        // Determine if this is a first run
+        val showWelcomeScreen = Util.isFirstRun()
 
         // Migrate Feature storage if needed
         // TODO: Remove in December 2022
         if (!Settings.hasKey(Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING)) {
             Settings.migrateFeatureStorage()
         }
-
-        // If there are any servers in the DB, do not show the welcome screen
-        showWelcomeScreen = showWelcomeScreen and !areServersMigrated
 
         loadSettings()
 
@@ -194,14 +190,14 @@ class NavigationActivity : AppCompatActivity() {
             recreate()
         }
 
-        serverRepository.liveServerCount().observe(
-            this,
-            { count ->
-                cachedServerCount = count ?: 0
-                updateNavigationHeaderForServer()
-            }
-        )
-        ActiveServerProvider.liveActiveServerId.observe(this, { updateNavigationHeaderForServer() })
+        serverRepository.liveServerCount().observe(this) { count ->
+            cachedServerCount = count ?: 0
+            updateNavigationHeaderForServer()
+        }
+
+        ActiveServerProvider.liveActiveServerId.observe(this) {
+            updateNavigationHeaderForServer()
+        }
     }
 
     private fun updateNavigationHeaderForServer() {

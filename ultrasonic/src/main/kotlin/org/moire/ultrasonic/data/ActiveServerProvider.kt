@@ -19,8 +19,6 @@ import timber.log.Timber
 /**
  * This class can be used to retrieve the properties of the Active Server
  * It caches the settings read up from the DB to improve performance.
- *
- * TODO: There seems to be some confusion whether offline id is 0 or -1. Clean this up (carefully!)
  */
 class ActiveServerProvider(
     private val repository: ServerSettingDao
@@ -35,7 +33,7 @@ class ActiveServerProvider(
      */
     @JvmOverloads
     fun getActiveServer(serverId: Int = getActiveServerId()): ServerSetting {
-        if (serverId > 0) {
+        if (serverId > OFFLINE_DB_ID) {
             if (cachedServer != null && cachedServer!!.id == serverId) return cachedServer!!
 
             // Ideally this is the only call where we block the thread while using the repository
@@ -53,22 +51,11 @@ class ActiveServerProvider(
                 return cachedServer!!
             }
 
-            setActiveServerId(0)
+            // Fallback to Offline
+            setActiveServerId(OFFLINE_DB_ID)
         }
 
-        return ServerSetting(
-            id = -1,
-            index = 0,
-            name = UApp.applicationContext().getString(R.string.main_offline),
-            url = "http://localhost",
-            userName = "",
-            password = "",
-            jukeboxByDefault = false,
-            allowSelfSignedCertificate = false,
-            ldapSupport = false,
-            musicFolderId = "",
-            minimumApiVersion = null
-        )
+        return OFFLINE_DB
     }
 
     /**
@@ -77,9 +64,9 @@ class ActiveServerProvider(
      */
     fun setActiveServerByIndex(index: Int) {
         Timber.d("setActiveServerByIndex $index")
-        if (index < 1) {
+        if (index <= OFFLINE_DB_INDEX) {
             // Offline mode is selected
-            setActiveServerId(0)
+            setActiveServerId(OFFLINE_DB_ID)
             return
         }
 
@@ -103,22 +90,20 @@ class ActiveServerProvider(
 
         Timber.i("Switching to new database, id:$activeServer")
         cachedServerId = activeServer
-        return Room.databaseBuilder(
-            UApp.applicationContext(),
-            MetaDatabase::class.java,
-            METADATA_DB + cachedServerId
-        )
-            .fallbackToDestructiveMigrationOnDowngrade()
-            .build()
+        return buildDatabase(cachedServerId)
     }
 
     val offlineMetaDatabase: MetaDatabase by lazy {
-        Room.databaseBuilder(
+        buildDatabase(OFFLINE_DB_ID)
+    }
+
+    private fun buildDatabase(id: Int?): MetaDatabase {
+        return Room.databaseBuilder(
             UApp.applicationContext(),
             MetaDatabase::class.java,
-            METADATA_DB + 0
+            METADATA_DB + id
         )
-            .fallbackToDestructiveMigrationOnDowngrade()
+            .fallbackToDestructiveMigration()
             .build()
     }
 
@@ -177,8 +162,24 @@ class ActiveServerProvider(
     }
 
     companion object {
-
         const val METADATA_DB = "$DB_FILENAME-meta-"
+        const val OFFLINE_DB_ID = -1
+        const val OFFLINE_DB_INDEX = 0
+
+        val OFFLINE_DB = ServerSetting(
+            id = OFFLINE_DB_ID,
+            index = OFFLINE_DB_INDEX,
+            name = UApp.applicationContext().getString(R.string.main_offline),
+            url = "http://localhost",
+            userName = "",
+            password = "",
+            jukeboxByDefault = false,
+            allowSelfSignedCertificate = false,
+            ldapSupport = false,
+            musicFolderId = "",
+            minimumApiVersion = null
+        )
+
         val liveActiveServerId: MutableLiveData<Int> = MutableLiveData(getActiveServerId())
 
         /**
@@ -186,7 +187,7 @@ class ActiveServerProvider(
          * @return True, if the "Offline" mode is selected
          */
         fun isOffline(): Boolean {
-            return getActiveServerId() < 1
+            return getActiveServerId() == OFFLINE_DB_ID
         }
 
         /**

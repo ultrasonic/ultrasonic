@@ -83,6 +83,8 @@ class PlaybackStateSerializer : KoinComponent {
                 lock.lock()
                 deserializeNow(afterDeserialized)
                 setup.set(true)
+            } catch (all: Exception) {
+                Timber.e(all, "Had a problem deserializing:")
             } finally {
                 lock.unlock()
             }
