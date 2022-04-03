@@ -6,20 +6,34 @@
  */
 package org.moire.ultrasonic.service
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import androidx.core.net.toUri
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player
+import androidx.media3.common.Player.STATE_BUFFERING
+import androidx.media3.common.Timeline
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import com.google.common.util.concurrent.MoreExecutors
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.PlayerState
-import org.moire.ultrasonic.domain.RepeatMode
 import org.moire.ultrasonic.domain.Track
-import org.moire.ultrasonic.service.MediaPlayerService.Companion.executeOnStartedMediaPlayerService
-import org.moire.ultrasonic.service.MediaPlayerService.Companion.getInstance
-import org.moire.ultrasonic.service.MediaPlayerService.Companion.runningInstance
+import org.moire.ultrasonic.playback.LegacyPlaylistManager
+import org.moire.ultrasonic.playback.PlaybackService
+import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1
+import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2
+import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
+import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4
+import org.moire.ultrasonic.service.DownloadService.Companion.getInstance
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
+import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
-import org.moire.ultrasonic.util.ShufflePlayBuffer
 import timber.log.Timber
 
 /**
@@ -32,8 +46,8 @@ class MediaPlayerController(
     private val playbackStateSerializer: PlaybackStateSerializer,
     private val externalStorageMonitor: ExternalStorageMonitor,
     private val downloader: Downloader,
-    private val shufflePlayBuffer: ShufflePlayBuffer,
-    private val localMediaPlayer: LocalMediaPlayer
+    private val legacyPlaylistManager: LegacyPlaylistManager,
+    val context: Context
 ) : KoinComponent {
 
     private var created = false
@@ -42,22 +56,142 @@ class MediaPlayerController(
     var showVisualization = false
     private var autoPlayStart = false
 
+    private val scrobbler = Scrobbler()
+
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
     private val activeServerProvider: ActiveServerProvider by inject()
+
+    private var sessionToken =
+        SessionToken(context, ComponentName(context, PlaybackService::class.java))
+
+    private var mediaControllerFuture = MediaController.Builder(
+        context,
+        sessionToken
+    ).buildAsync()
+
+    var controller: MediaController? = null
 
     fun onCreate() {
         if (created) return
         externalStorageMonitor.onCreate { reset() }
         isJukeboxEnabled = activeServerProvider.getActiveServer().jukeboxByDefault
+
+        mediaControllerFuture.addListener({
+            controller = mediaControllerFuture.get()
+
+            controller?.addListener(object : Player.Listener {
+                /*
+                 * This will be called everytime the playlist has changed.
+                 */
+                override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+                    legacyPlaylistManager.rebuildPlaylist(controller!!)
+                }
+
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    translatePlaybackState(playbackState = playbackState)
+                    playerStateChangedHandler()
+                    publishPlaybackState()
+                }
+
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    translatePlaybackState(isPlaying = isPlaying)
+                    playerStateChangedHandler()
+                    publishPlaybackState()
+                }
+
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                    legacyPlaylistManager.updateCurrentPlaying(mediaItem)
+                    publishPlaybackState()
+                }
+            })
+
+            //controller?.play()
+        }, MoreExecutors.directExecutor())
+
         created = true
         Timber.i("MediaPlayerController created")
+    }
+
+    @Suppress("DEPRECATION")
+    fun translatePlaybackState(
+        playbackState: Int = controller?.playbackState ?: 0,
+        isPlaying: Boolean = controller?.isPlaying ?: false
+    ) {
+        legacyPlayerState = when (playbackState) {
+            STATE_BUFFERING -> PlayerState.DOWNLOADING
+            Player.STATE_ENDED -> {
+                PlayerState.COMPLETED
+            }
+            Player.STATE_IDLE -> {
+                PlayerState.IDLE
+            }
+            Player.STATE_READY -> {
+                if (isPlaying) {
+                    PlayerState.STARTED
+                } else {
+                    PlayerState.PAUSED
+                }
+            }
+            else -> {
+                PlayerState.IDLE
+            }
+        }
+    }
+
+    private fun playerStateChangedHandler() {
+
+        val playerState = legacyPlayerState
+        val currentPlaying = legacyPlaylistManager.currentPlaying
+
+        when {
+            playerState === PlayerState.PAUSED -> {
+                // TODO: Save playlist
+//                playbackStateSerializer.serialize(
+//                    downloader.getPlaylist(), downloader.currentPlayingIndex, playerPosition
+//                )
+            }
+            playerState === PlayerState.STARTED -> {
+                scrobbler.scrobble(currentPlaying, false)
+            }
+            playerState === PlayerState.COMPLETED -> {
+                scrobbler.scrobble(currentPlaying, true)
+            }
+        }
+
+        //Update widget
+        if (currentPlaying != null) {
+            updateWidget(playerState, currentPlaying.track)
+        }
+
+        Timber.d("Processed player state change")
+    }
+
+    private fun publishPlaybackState() {
+        RxBus.playerStatePublisher.onNext(
+            RxBus.StateWithTrack(
+                state = legacyPlayerState,
+                track = legacyPlaylistManager.currentPlaying,
+                index = currentMediaItemIndex
+            )
+        )
+    }
+
+    private fun updateWidget(playerState: PlayerState, song: Track?) {
+        val started = playerState === PlayerState.STARTED
+        val context = UApp.applicationContext()
+
+        UltrasonicAppWidgetProvider4X1.getInstance().notifyChange(context, song, started, false)
+        UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(context, song, started, true)
+        UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(context, song, started, false)
+        UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(context, song, started, false)
     }
 
     fun onDestroy() {
         if (!created) return
         val context = UApp.applicationContext()
         externalStorageMonitor.onDestroy()
-        context.stopService(Intent(context, MediaPlayerService::class.java))
+        context.stopService(Intent(context, DownloadService::class.java))
+        legacyPlaylistManager.onDestroy()
         downloader.onDestroy()
         created = false
         Timber.i("MediaPlayerController destroyed")
@@ -73,33 +207,30 @@ class MediaPlayerController(
     ) {
         addToPlaylist(
             songs,
-            save = false,
+            cachePermanently = false,
             autoPlay = false,
             playNext = false,
             shuffle = false,
             newPlaylist = newPlaylist
         )
+
         if (currentPlayingIndex != -1) {
-            executeOnStartedMediaPlayerService { mediaPlayerService: MediaPlayerService ->
-                mediaPlayerService.play(currentPlayingIndex, autoPlayStart)
-                if (localMediaPlayer.currentPlaying != null) {
-                    if (autoPlay && jukeboxMediaPlayer.isEnabled) {
-                        jukeboxMediaPlayer.skip(
-                            downloader.currentPlayingIndex,
-                            currentPlayingPosition / 1000
-                        )
-                    } else {
-                        if (localMediaPlayer.currentPlaying!!.isCompleteFileAvailable) {
-                            localMediaPlayer.play(
-                                localMediaPlayer.currentPlaying,
-                                currentPlayingPosition,
-                                autoPlay
-                            )
-                        }
-                    }
-                }
-                autoPlayStart = false
+            if (jukeboxMediaPlayer.isEnabled) {
+                jukeboxMediaPlayer.skip(
+                    currentPlayingIndex,
+                    currentPlayingPosition / 1000
+                )
+            } else {
+                seekTo(currentPlayingIndex, currentPlayingPosition)
             }
+
+            if (autoPlay) {
+                prepare()
+                play()
+            }
+
+            autoPlayStart = false
+
         }
     }
 
@@ -110,93 +241,139 @@ class MediaPlayerController(
 
     @Synchronized
     fun play(index: Int) {
-        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
-            service.play(index, true)
-        }
+        controller?.seekTo(index, 0L)
+        controller?.play()
     }
 
     @Synchronized
     fun play() {
-        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
-            service.play()
+        if (jukeboxMediaPlayer.isEnabled) {
+            jukeboxMediaPlayer.start()
+        } else {
+            controller?.play()
         }
+    }
+
+    @Synchronized
+    fun prepare() {
+        controller?.prepare()
     }
 
     @Synchronized
     fun resumeOrPlay() {
-        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
-            service.resumeOrPlay()
-        }
+        controller?.play()
     }
 
     @Synchronized
     fun togglePlayPause() {
-        if (localMediaPlayer.playerState === PlayerState.IDLE) autoPlayStart = true
-        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
-            service.togglePlayPause()
+        if (playbackState == Player.STATE_IDLE) autoPlayStart = true
+        if (controller?.isPlaying == false) {
+            controller?.pause()
+        } else {
+            controller?.play()
         }
     }
 
-    @Synchronized
-    fun start() {
-        executeOnStartedMediaPlayerService { service: MediaPlayerService ->
-            service.start()
-        }
-    }
 
     @Synchronized
     fun seekTo(position: Int) {
-        val mediaPlayerService = runningInstance
-        mediaPlayerService?.seekTo(position)
+        controller?.seekTo(position.toLong())
+    }
+
+    @Synchronized
+    fun seekTo(index: Int, position: Int) {
+        controller?.seekTo(index, position.toLong())
     }
 
     @Synchronized
     fun pause() {
-        val mediaPlayerService = runningInstance
-        mediaPlayerService?.pause()
+        if (jukeboxMediaPlayer.isEnabled) {
+            jukeboxMediaPlayer.stop()
+        } else {
+            controller?.pause()
+        }
     }
 
     @Synchronized
     fun stop() {
-        val mediaPlayerService = runningInstance
-        mediaPlayerService?.stop()
+        if (jukeboxMediaPlayer.isEnabled) {
+            jukeboxMediaPlayer.stop()
+        } else {
+            controller?.stop()
+        }
     }
 
+
     @Synchronized
+    @Deprecated("Use InsertionMode Syntax")
     @Suppress("LongParameterList")
     fun addToPlaylist(
         songs: List<Track?>?,
-        save: Boolean,
+        cachePermanently: Boolean,
         autoPlay: Boolean,
         playNext: Boolean,
         shuffle: Boolean,
         newPlaylist: Boolean
     ) {
         if (songs == null) return
-        val filteredSongs = songs.filterNotNull()
-        downloader.addToPlaylist(filteredSongs, save, autoPlay, playNext, newPlaylist)
-        jukeboxMediaPlayer.updatePlaylist()
-        if (shuffle) shuffle()
-        val isLastTrack = (downloader.getPlaylist().size - 1 == downloader.currentPlayingIndex)
 
-        if (!playNext && !autoPlay && isLastTrack) {
-            val mediaPlayerService = runningInstance
-            mediaPlayerService?.setNextPlaying()
+        val insertionMode = when {
+            newPlaylist -> InsertionMode.CLEAR
+            playNext -> InsertionMode.AFTER_CURRENT
+            else -> InsertionMode.APPEND
         }
 
+        val filteredSongs = songs.filterNotNull()
+
+        addToPlaylist(
+            filteredSongs, cachePermanently, autoPlay, shuffle, insertionMode
+        )
+    }
+
+    @Synchronized
+    fun addToPlaylist(
+        songs: List<Track>,
+        cachePermanently: Boolean,
+        autoPlay: Boolean,
+        shuffle: Boolean,
+        insertionMode: InsertionMode
+    ) {
+        var insertAt = 0
+
+        if (insertionMode == InsertionMode.CLEAR) {
+            clear()
+        }
+
+        when (insertionMode) {
+            InsertionMode.CLEAR -> clear()
+            InsertionMode.APPEND -> insertAt = mediaItemCount
+            InsertionMode.AFTER_CURRENT -> insertAt = currentMediaItemIndex
+        }
+
+        val mediaItems: List<MediaItem> = songs.map {
+            val downloadFile = downloader.getDownloadFileForSong(it)
+            if (cachePermanently) downloadFile.shouldSave = true
+            val result = it.toMediaItem()
+            legacyPlaylistManager.addToCache(result, downloader.getDownloadFileForSong(it))
+            result
+        }
+
+        controller?.addMediaItems(insertAt, mediaItems)
+
+        jukeboxMediaPlayer.updatePlaylist()
+
+        if (shuffle) isShufflePlayEnabled = true
+
         if (autoPlay) {
+            prepare()
             play(0)
         } else {
-            if (localMediaPlayer.currentPlaying == null && downloader.getPlaylist().isNotEmpty()) {
-                localMediaPlayer.currentPlaying = downloader.getPlaylist()[0]
-                downloader.getPlaylist()[0].setPlaying(true)
-            }
             downloader.checkDownloads()
         }
 
         playbackStateSerializer.serialize(
-            downloader.getPlaylist(),
-            downloader.currentPlayingIndex,
+            legacyPlaylistManager.playlist,
+            currentMediaItemIndex,
             playerPosition
         )
     }
@@ -206,17 +383,12 @@ class MediaPlayerController(
         if (songs == null) return
         val filteredSongs = songs.filterNotNull()
         downloader.downloadBackground(filteredSongs, save)
+
         playbackStateSerializer.serialize(
-            downloader.getPlaylist(),
-            downloader.currentPlayingIndex,
+            legacyPlaylistManager.playlist,
+            currentMediaItemIndex,
             playerPosition
         )
-    }
-
-    @Synchronized
-    fun setCurrentPlaying(index: Int) {
-        val mediaPlayerService = runningInstance
-        mediaPlayerService?.setCurrentPlaying(index)
     }
 
     fun stopJukeboxService() {
@@ -225,58 +397,46 @@ class MediaPlayerController(
 
     @set:Synchronized
     var isShufflePlayEnabled: Boolean
-        get() = shufflePlayBuffer.isEnabled
+        get() = controller?.shuffleModeEnabled == true
         set(enabled) {
-            shufflePlayBuffer.isEnabled = enabled
+            controller?.shuffleModeEnabled = enabled
             if (enabled) {
-                clear()
                 downloader.checkDownloads()
             }
         }
 
     @Synchronized
-    fun shuffle() {
-        downloader.shuffle()
-        playbackStateSerializer.serialize(
-            downloader.getPlaylist(),
-            downloader.currentPlayingIndex,
-            playerPosition
-        )
-        jukeboxMediaPlayer.updatePlaylist()
-        val mediaPlayerService = runningInstance
-        mediaPlayerService?.setNextPlaying()
+    fun toggleShuffle() {
+        isShufflePlayEnabled = !isShufflePlayEnabled
     }
+
+    val bufferedPercentage: Int
+        get() = controller?.bufferedPercentage ?: 0
 
     @Synchronized
     fun moveItemInPlaylist(oldPos: Int, newPos: Int) {
-        downloader.moveItemInPlaylist(oldPos, newPos)
+        controller?.moveMediaItem(oldPos, newPos)
     }
 
     @set:Synchronized
-    var repeatMode: RepeatMode
-        get() = Settings.repeatMode
-        set(repeatMode) {
-            Settings.repeatMode = repeatMode
-            val mediaPlayerService = runningInstance
-            mediaPlayerService?.setNextPlaying()
+    var repeatMode: Int
+        get() = controller?.repeatMode ?: 0
+        set(newMode) {
+            controller?.repeatMode = newMode
         }
 
     @Synchronized
     @JvmOverloads
     fun clear(serialize: Boolean = true) {
-        val mediaPlayerService = runningInstance
-        if (mediaPlayerService != null) {
-            mediaPlayerService.clear(serialize)
-        } else {
-            // If no MediaPlayerService is available, just empty the playlist
-            downloader.clearPlaylist()
-            if (serialize) {
-                playbackStateSerializer.serialize(
-                    downloader.getPlaylist(),
-                    downloader.currentPlayingIndex, playerPosition
-                )
-            }
+
+        controller?.clearMediaItems()
+
+        if (controller != null && serialize) {
+            playbackStateSerializer.serialize(
+                listOf(), -1, 0
+            )
         }
+
         jukeboxMediaPlayer.updatePlaylist()
     }
 
@@ -289,11 +449,12 @@ class MediaPlayerController(
     fun clearIncomplete() {
         reset()
 
-        downloader.clearIncomplete()
+        downloader.clearActiveDownloads()
+        downloader.clearBackground()
 
         playbackStateSerializer.serialize(
-            downloader.getPlaylist(),
-            downloader.currentPlayingIndex,
+            legacyPlaylistManager.playlist,
+            currentMediaItemIndex,
             playerPosition
         )
 
@@ -301,26 +462,17 @@ class MediaPlayerController(
     }
 
     @Synchronized
-    // TODO: If a playlist contains an item twice, this call will wrongly remove all
+    // FIXME
+    // With the new API we can only remove by index!!
     fun removeFromPlaylist(downloadFile: DownloadFile) {
-        if (downloadFile == localMediaPlayer.currentPlaying) {
-            reset()
-            currentPlaying = null
-        }
-        downloader.removeFromPlaylist(downloadFile)
 
         playbackStateSerializer.serialize(
-            downloader.getPlaylist(),
-            downloader.currentPlayingIndex,
+            legacyPlaylistManager.playlist,
+            legacyPlaylistManager.currentPlayingIndex,
             playerPosition
         )
 
         jukeboxMediaPlayer.updatePlaylist()
-
-        if (downloadFile == localMediaPlayer.nextPlaying) {
-            val mediaPlayerService = runningInstance
-            mediaPlayerService?.setNextPlaying()
-        }
     }
 
     @Synchronized
@@ -341,80 +493,56 @@ class MediaPlayerController(
 
     @Synchronized
     fun previous() {
-        val index = downloader.currentPlayingIndex
-        if (index == -1) {
-            return
-        }
-
-        // Restart song if played more than five seconds.
-        @Suppress("MagicNumber")
-        if (playerPosition > 5000 || index == 0) {
-            play(index)
-        } else {
-            play(index - 1)
-        }
+        controller?.seekToPrevious()
     }
 
     @Synchronized
     operator fun next() {
-        val index = downloader.currentPlayingIndex
-        if (index != -1) {
-            when (repeatMode) {
-                RepeatMode.SINGLE, RepeatMode.OFF -> {
-                    // Play next if exists
-                    if (index + 1 >= 0 && index + 1 < downloader.getPlaylist().size) {
-                        play(index + 1)
-                    }
-                }
-                RepeatMode.ALL -> {
-                    play((index + 1) % downloader.getPlaylist().size)
-                }
-                else -> {
-                }
-            }
-        }
+        controller?.seekToNext()
     }
 
     @Synchronized
     fun reset() {
-        val mediaPlayerService = runningInstance
-        if (mediaPlayerService != null) localMediaPlayer.reset()
+        controller?.clearMediaItems()
     }
 
     @get:Synchronized
     val playerPosition: Int
         get() {
-            val mediaPlayerService = runningInstance ?: return 0
-            return mediaPlayerService.playerPosition
+            return if (jukeboxMediaPlayer.isEnabled) {
+                jukeboxMediaPlayer.positionSeconds * 1000
+            } else {
+                controller?.currentPosition?.toInt() ?: 0
+            }
         }
 
     @get:Synchronized
     val playerDuration: Int
         get() {
-            val mediaPlayerService = runningInstance ?: return 0
-            return mediaPlayerService.playerDuration
+            return controller?.duration?.toInt() ?: return 0
         }
 
+    @Deprecated("Use Controller.playbackState and Controller.isPlaying")
     @set:Synchronized
-    var playerState: PlayerState
-        get() = localMediaPlayer.playerState
-        set(state) {
-            val mediaPlayerService = runningInstance
-            if (mediaPlayerService != null)
-                localMediaPlayer.setPlayerState(state, localMediaPlayer.currentPlaying)
-        }
+    var legacyPlayerState: PlayerState = PlayerState.IDLE
+
+    val playbackState: Int
+        get() = controller?.playbackState ?: 0
+
+    val isPlaying: Boolean
+        get() = controller?.isPlaying ?: false
 
     @set:Synchronized
     var isJukeboxEnabled: Boolean
         get() = jukeboxMediaPlayer.isEnabled
         set(jukeboxEnabled) {
             jukeboxMediaPlayer.isEnabled = jukeboxEnabled
-            playerState = PlayerState.IDLE
+
             if (jukeboxEnabled) {
                 jukeboxMediaPlayer.startJukeboxService()
                 reset()
 
-                // Cancel current download, if necessary.
+                // Cancel current downloads
                 downloader.clearActiveDownloads()
             } else {
                 jukeboxMediaPlayer.stopJukeboxService()
@@ -441,19 +569,12 @@ class MediaPlayerController(
     }
 
     fun setVolume(volume: Float) {
-        if (runningInstance != null) localMediaPlayer.setVolume(volume)
-    }
-
-    private fun updateNotification() {
-        runningInstance?.updateNotification(
-            localMediaPlayer.playerState,
-            localMediaPlayer.currentPlaying
-        )
+        controller?.volume = volume
     }
 
     fun toggleSongStarred() {
-        if (localMediaPlayer.currentPlaying == null) return
-        val song = localMediaPlayer.currentPlaying!!.track
+        if (legacyPlaylistManager.currentPlaying == null) return
+        val song = legacyPlaylistManager.currentPlaying!!.track
 
         Thread {
             val musicService = getMusicService()
@@ -469,15 +590,16 @@ class MediaPlayerController(
         }.start()
 
         // Trigger an update
-        localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
+        // TODO Update Metadata of MediaItem...
+        //localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
         song.starred = !song.starred
     }
 
     @Suppress("TooGenericExceptionCaught") // The interface throws only generic exceptions
     fun setSongRating(rating: Int) {
         if (!Settings.useFiveStarRating) return
-        if (localMediaPlayer.currentPlaying == null) return
-        val song = localMediaPlayer.currentPlaying!!.track
+        if (legacyPlaylistManager.currentPlaying == null) return
+        val song = legacyPlaylistManager.currentPlaying!!.track
         song.userRating = rating
         Thread {
             try {
@@ -487,27 +609,33 @@ class MediaPlayerController(
             }
         }.start()
         // TODO this would be better handled with a Rx command
-        updateNotification()
+        //updateNotification()
     }
 
-    @set:Synchronized
-    var currentPlaying: DownloadFile?
-        get() = localMediaPlayer.currentPlaying
-        set(currentPlaying) {
-            if (runningInstance != null) localMediaPlayer.setCurrentPlaying(currentPlaying)
-        }
+    val currentMediaItem: MediaItem?
+        get() = controller?.currentMediaItem
 
+    val currentMediaItemIndex: Int
+        get() = controller?.currentMediaItemIndex ?: -1
+
+    @Deprecated("Use currentMediaItem")
+    val currentPlayingLegacy: DownloadFile?
+        get() = legacyPlaylistManager.currentPlaying
+
+    val mediaItemCount: Int
+        get() = controller?.mediaItemCount ?: 0
+
+    @Deprecated("Use mediaItemCount")
     val playlistSize: Int
-        get() = downloader.getPlaylist().size
+        get() = legacyPlaylistManager.playlist.size
 
-    val currentPlayingNumberOnPlaylist: Int
-        get() = downloader.currentPlayingIndex
-
+    @Deprecated("Use native APIs")
     val playList: List<DownloadFile>
-        get() = downloader.getPlaylist()
+        get() = legacyPlaylistManager.playlist
 
+    @Deprecated("Use timeline")
     val playListDuration: Long
-        get() = downloader.downloadListDuration
+        get() = legacyPlaylistManager.playlistDuration
 
     fun getDownloadFileForSong(song: Track): DownloadFile {
         return downloader.getDownloadFileForSong(song)
@@ -516,4 +644,30 @@ class MediaPlayerController(
     init {
         Timber.i("MediaPlayerController constructed")
     }
+
+    enum class InsertionMode {
+        CLEAR, APPEND, AFTER_CURRENT
+    }
+}
+
+
+fun Track.toMediaItem(): MediaItem {
+
+    val filePath = FileUtil.getSongFile(this)
+    val bitrate = Settings.maxBitRate
+    val uri = "$id|$bitrate|$filePath"
+
+    val metadata = MediaMetadata.Builder()
+    metadata.setTitle(title)
+        .setArtist(artist)
+        .setAlbumTitle(album)
+        .setMediaUri(uri.toUri())
+        .setAlbumArtist(artist)
+
+    val mediaItem = MediaItem.Builder()
+        .setUri(uri)
+        .setMediaId(id)
+        .setMediaMetadata(metadata.build())
+
+    return mediaItem.build()
 }

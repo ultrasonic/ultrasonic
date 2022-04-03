@@ -54,7 +54,7 @@ class DownloadsFragment : MultiListFragment<DownloadFile>() {
 
         viewAdapter.register(
             TrackViewBinder(
-                { },
+                { _, _ -> },
                 { _, _ -> true },
                 checkable = false,
                 draggable = false,

@@ -100,6 +100,9 @@ dependencies {
     implementation libs.constraintLayout
     implementation libs.preferences
     implementation libs.media
+    implementation libs.media3exoplayer
+    implementation libs.media3session
+    implementation libs.media3okhttp
 
     implementation libs.navigationFragment
     implementation libs.navigationUi

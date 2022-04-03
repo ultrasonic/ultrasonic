@@ -56,18 +56,17 @@
         </activity>
 
         <service
-            android:name=".service.MediaPlayerService"
+            android:name=".service.DownloadService"
             android:label="Ultrasonic Media Player Service"
             android:exported="false">
         </service>
 
-        <service
-            tools:ignore="ExportedService"
-            android:name=".service.AutoMediaBrowserService"
+        <service android:name=".playback.PlaybackService"
             android:label="@string/common.appname"
             android:exported="true">
 
             <intent-filter>
+                <action android:name="androidx.media3.session.MediaLibraryService" />
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
@@ -146,13 +145,6 @@
             android:name=".provider.SearchSuggestionProvider"
             android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
 
-        <receiver
-            android:name=".receiver.A2dpIntentReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.android.music.playstatusrequest"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

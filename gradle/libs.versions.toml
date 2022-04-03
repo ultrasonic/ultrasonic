@@ -11,6 +11,7 @@ detekt                 = "1.19.0"
 jacoco                 = "0.8.7"
 preferences            = "1.1.1"
 media                  = "1.3.1"
+media3                 = "1.0.0-alpha03"
 
 androidSupport         = "28.0.0"
 androidLegacySupport   = "1.0.0"
@@ -66,6 +67,9 @@ navigationUiKtx         = { module = "androidx.navigation:navigation-ui-ktx", ve
 navigationFeature       = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigation" }
 preferences             = { module = "androidx.preference:preference", version.ref = "preferences" }
 media                   = { module = "androidx.media:media", version.ref = "media" }
+media3exoplayer         = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+media3okhttp            = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "media3" }
+media3session           = { module = "androidx.media3:media3-session", version.ref = "media3" }
 
 kotlinStdlib            = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinReflect           = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }

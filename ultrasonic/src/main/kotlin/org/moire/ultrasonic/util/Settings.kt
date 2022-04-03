@@ -9,56 +9,17 @@ package org.moire.ultrasonic.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import androidx.preference.PreferenceManager
 import java.util.regex.Pattern
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.domain.RepeatMode
 
 /**
  * Contains convenience functions for reading and writing preferences
  */
 object Settings {
     private val PATTERN = Pattern.compile(":")
-
-    var repeatMode: RepeatMode
-        get() {
-            val preferences = preferences
-            return RepeatMode.valueOf(
-                preferences.getString(
-                    Constants.PREFERENCES_KEY_REPEAT_MODE,
-                    RepeatMode.OFF.name
-                )!!
-            )
-        }
-        set(repeatMode) {
-            val preferences = preferences
-            val editor = preferences.edit()
-            editor.putString(Constants.PREFERENCES_KEY_REPEAT_MODE, repeatMode.name)
-            editor.apply()
-        }
-
-    // After API26 foreground services must be used for music playback,
-    // and they must have a notification
-    val isNotificationEnabled: Boolean
-        get() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false)
-        }
-
-    // After API26 foreground services must be used for music playback,
-    // and they must have a notification
-    val isNotificationAlwaysEnabled: Boolean
-        get() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false)
-        }
-
-    var isLockScreenEnabled by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS)
 
     @JvmStatic
     var theme by StringSetting(

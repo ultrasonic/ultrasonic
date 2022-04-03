@@ -109,7 +109,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         viewAdapter.register(
             TrackViewBinder(
-                onItemClick = ::onItemClick,
+                onItemClick = { file, _ -> onItemClick(file) },
                 onContextMenuClick = ::onContextMenuItemSelected,
                 checkable = false,
                 draggable = false,
@@ -151,7 +151,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         val arguments = arguments
         val autoPlay = arguments != null &&
-            arguments.getBoolean(Constants.INTENT_AUTOPLAY, false)
+                arguments.getBoolean(Constants.INTENT_AUTOPLAY, false)
         val query = arguments?.getString(Constants.INTENT_QUERY)
 
         // If started with a query, enter it to the searchView
@@ -303,13 +303,12 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
         }
         mediaPlayerController.addToPlaylist(
             listOf(song),
-            save = false,
+            cachePermanently = false,
             autoPlay = false,
-            playNext = false,
             shuffle = false,
-            newPlaylist = false
+            insertionMode = MediaPlayerController.InsertionMode.APPEND
         )
-        mediaPlayerController.play(mediaPlayerController.playlistSize - 1)
+        mediaPlayerController.play(mediaPlayerController.mediaItemCount - 1)
         toast(context, resources.getQuantityString(R.plurals.select_album_n_songs_added, 1, 1))
     }
 

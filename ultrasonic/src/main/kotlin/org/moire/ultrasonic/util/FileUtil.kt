@@ -406,7 +406,7 @@ object FileUtil {
         return path.substringBeforeLast('/')
     }
 
-    fun getSaveFile(name: String): String {
+    fun getPinnedFile(name: String): String {
         val baseName = getBaseName(name)
         if (baseName.endsWith(".partial") || baseName.endsWith(".complete")) {
             return "${getBaseName(baseName)}.${getExtension(name)}"

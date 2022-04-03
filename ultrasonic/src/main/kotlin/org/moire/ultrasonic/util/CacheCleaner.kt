@@ -233,7 +233,7 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
         ) {
             if (file.isFile && (isPartial(file) || isComplete(file))) {
                 files.add(file)
-            } else {
+            } else if (file.isDirectory) {
                 // Depth-first
                 for (child in listFiles(file)) {
                     findCandidatesForDeletion(child, files, dirs)
@@ -257,7 +257,7 @@ class CacheCleaner : CoroutineScope by CoroutineScope(Dispatchers.IO) {
             for (downloadFile in downloader.value.all) {
                 filesToNotDelete.add(downloadFile.partialFile)
                 filesToNotDelete.add(downloadFile.completeFile)
-                filesToNotDelete.add(downloadFile.saveFile)
+                filesToNotDelete.add(downloadFile.pinnedFile)
             }
 
             filesToNotDelete.add(musicDirectory.path)

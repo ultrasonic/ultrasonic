@@ -23,7 +23,7 @@ import androidx.preference.PreferenceFragmentCompat
 import java.io.File
 import kotlin.math.ceil
 import org.koin.core.component.KoinComponent
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.fragment.FragmentTitle.Companion.setTitle
@@ -40,7 +40,6 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.ErrorDialog
 import org.moire.ultrasonic.util.FileUtil.ultrasonicDirectory
 import org.moire.ultrasonic.util.InfoDialog
-import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Settings.preferences
 import org.moire.ultrasonic.util.Settings.shareGreeting
@@ -89,12 +88,7 @@ class SettingsFragment :
     private var debugLogToFile: CheckBoxPreference? = null
     private var customCacheLocation: CheckBoxPreference? = null
 
-    private val mediaPlayerControllerLazy = inject<MediaPlayerController>(
-        MediaPlayerController::class.java
-    )
-    private val mediaSessionHandler = inject<MediaSessionHandler>(
-        MediaSessionHandler::class.java
-    )
+    private val mediaPlayerController: MediaPlayerController by inject()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -220,9 +214,6 @@ class SettingsFragment :
         when (key) {
             Constants.PREFERENCES_KEY_HIDE_MEDIA -> {
                 setHideMedia(sharedPreferences.getBoolean(key, false))
-            }
-            Constants.PREFERENCES_KEY_MEDIA_BUTTONS -> {
-                setMediaButtonsEnabled(sharedPreferences.getBoolean(key, true))
             }
             Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS -> {
                 setBluetoothPreferences(sharedPreferences.getBoolean(key, true))
@@ -433,11 +424,6 @@ class SettingsFragment :
         toast(activity, R.string.settings_hide_media_toast, false)
     }
 
-    private fun setMediaButtonsEnabled(enabled: Boolean) {
-        lockScreenEnabled!!.isEnabled = enabled
-        mediaSessionHandler.value.updateMediaButtonReceiver()
-    }
-
     private fun setBluetoothPreferences(enabled: Boolean) {
         sendBluetoothAlbumArt!!.isEnabled = enabled
     }
@@ -451,8 +437,8 @@ class SettingsFragment :
         Settings.cacheLocationUri = path
 
         // Clear download queue.
-        mediaPlayerControllerLazy.value.clear()
-        mediaPlayerControllerLazy.value.clearCaches()
+        mediaPlayerController.clear()
+        mediaPlayerController.clearCaches()
         Storage.reset()
     }
 

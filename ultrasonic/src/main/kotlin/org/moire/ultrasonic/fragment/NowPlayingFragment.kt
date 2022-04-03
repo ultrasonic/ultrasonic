@@ -47,7 +47,7 @@ class NowPlayingFragment : Fragment() {
     private var nowPlayingTrack: TextView? = null
     private var nowPlayingArtist: TextView? = null
 
-    private var playerStateSubscription: Disposable? = null
+    private var rxBusSubscription: Disposable? = null
     private val mediaPlayerController: MediaPlayerController by inject()
     private val imageLoader: ImageLoaderProvider by inject()
 
@@ -69,8 +69,7 @@ class NowPlayingFragment : Fragment() {
         nowPlayingAlbumArtImage = view.findViewById(R.id.now_playing_image)
         nowPlayingTrack = view.findViewById(R.id.now_playing_trackname)
         nowPlayingArtist = view.findViewById(R.id.now_playing_artist)
-        playerStateSubscription =
-            RxBus.playerStateObservable.subscribe { update() }
+        rxBusSubscription = RxBus.playerStateObservable.subscribe { update() }
     }
 
     override fun onResume() {
@@ -80,13 +79,13 @@ class NowPlayingFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        playerStateSubscription!!.dispose()
+        rxBusSubscription!!.dispose()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun update() {
         try {
-            val playerState = mediaPlayerController.playerState
+            val playerState = mediaPlayerController.legacyPlayerState
 
             if (playerState === PlayerState.PAUSED) {
                 playButton!!.setImageDrawable(
@@ -102,7 +101,7 @@ class NowPlayingFragment : Fragment() {
                 )
             }
 
-            val file = mediaPlayerController.currentPlaying
+            val file = mediaPlayerController.currentPlayingLegacy
 
             if (file != null) {
                 val song = file.track

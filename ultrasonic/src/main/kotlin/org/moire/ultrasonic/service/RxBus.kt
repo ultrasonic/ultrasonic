@@ -20,11 +20,6 @@ class RxBus {
                 .replay(1)
                 .autoConnect(0)
 
-        val mediaButtonEventPublisher: PublishSubject<KeyEvent> =
-            PublishSubject.create()
-        val mediaButtonEventObservable: Observable<KeyEvent> =
-            mediaButtonEventPublisher.observeOn(AndroidSchedulers.mainThread())
-
         val themeChangedEventPublisher: PublishSubject<Unit> =
             PublishSubject.create()
         val themeChangedEventObservable: Observable<Unit> =
@@ -83,7 +78,7 @@ class RxBus {
         }
     }
 
-    data class StateWithTrack(val state: PlayerState, val track: DownloadFile?)
+    data class StateWithTrack(val state: PlayerState, val track: DownloadFile?, val index: Int = -1)
 }
 
 operator fun CompositeDisposable.plusAssign(disposable: Disposable) {

@@ -9,6 +9,7 @@ package org.moire.ultrasonic.service
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import androidx.media.MediaBrowserServiceCompat
@@ -26,7 +27,6 @@ import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Track
-import org.moire.ultrasonic.util.MediaSessionHandler
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -73,7 +73,6 @@ private const val SEARCH_LIMIT = 10
 class AutoMediaBrowserService : MediaBrowserServiceCompat() {
 
     private val lifecycleSupport by inject<MediaPlayerLifecycleSupport>()
-    private val mediaSessionHandler by inject<MediaSessionHandler>()
     private val mediaPlayerController by inject<MediaPlayerController>()
     private val activeServerProvider: ActiveServerProvider by inject()
     private val musicService = MusicServiceFactory.getMusicService()
@@ -108,9 +107,8 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             playFromSearchCommand(it.first)
         }
 
-        mediaSessionHandler.initialize()
 
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(
             {
                 // Ultrasonic may be started from Android Auto. This boots up the necessary components.
@@ -118,7 +116,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                     "AutoMediaBrowserService starting lifecycleSupport and MediaPlayerService..."
                 )
                 lifecycleSupport.onCreate()
-                MediaPlayerService.getInstance()
+                DownloadService.getInstance()
             },
             100
         )
@@ -186,7 +184,6 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     override fun onDestroy() {
         super.onDestroy()
         rxBusSubscription.dispose()
-        mediaSessionHandler.release()
         serviceJob.cancel()
 
         Timber.i("AutoMediaBrowserService onDestroy finished")
@@ -662,7 +659,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 val content = callWithErrorHandling { musicService.getPlaylist(id, name) }
                 playlistCache = content?.getTracks()
             }
-            if (playlistCache != null) playSongs(playlistCache)
+            if (playlistCache != null) playSongs(playlistCache!!)
         }
     }
 
@@ -905,7 +902,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 val content = listStarredSongsInMusicService()
                 starredSongsCache = content?.songs
             }
-            if (starredSongsCache != null) playSongs(starredSongsCache)
+            if (starredSongsCache != null) playSongs(starredSongsCache!!)
         }
     }
 
@@ -959,7 +956,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 val content = callWithErrorHandling { musicService.getRandomSongs(DISPLAY_LIMIT) }
                 randomSongsCache = content?.getTracks()
             }
-            if (randomSongsCache != null) playSongs(randomSongsCache)
+            if (randomSongsCache != null) playSongs(randomSongsCache!!)
         }
     }
 
@@ -1071,27 +1068,25 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         return section.toString()
     }
 
-    private fun playSongs(songs: List<Track?>?) {
+    private fun playSongs(songs: List<Track>) {
         mediaPlayerController.addToPlaylist(
             songs,
-            save = false,
+            cachePermanently = false,
             autoPlay = true,
-            playNext = false,
             shuffle = false,
-            newPlaylist = true
+            insertionMode = MediaPlayerController.InsertionMode.CLEAR
         )
     }
 
     private fun playSong(song: Track) {
         mediaPlayerController.addToPlaylist(
             listOf(song),
-            save = false,
+            cachePermanently = false,
             autoPlay = false,
-            playNext = true,
             shuffle = false,
-            newPlaylist = false
+            insertionMode = MediaPlayerController.InsertionMode.AFTER_CURRENT
         )
-        if (mediaPlayerController.playlistSize > 1) mediaPlayerController.next()
+        if (mediaPlayerController.mediaItemCount > 1) mediaPlayerController.next()
         else mediaPlayerController.play()
     }
 

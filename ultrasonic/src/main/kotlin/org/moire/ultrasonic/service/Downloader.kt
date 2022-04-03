@@ -1,119 +1,130 @@
 package org.moire.ultrasonic.service
 
 import android.net.wifi.WifiManager
+import android.os.Handler
+import android.os.Looper
+import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
-import java.util.ArrayList
-import java.util.PriorityQueue
-import java.util.concurrent.Executors
-import java.util.concurrent.RejectedExecutionException
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.moire.ultrasonic.domain.PlayerState
+import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Track
+import org.moire.ultrasonic.playback.LegacyPlaylistManager
+import org.moire.ultrasonic.subsonic.ImageLoaderProvider
+import org.moire.ultrasonic.util.CacheCleaner
+import org.moire.ultrasonic.util.CancellableTask
+import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.LRUCache
 import org.moire.ultrasonic.util.Settings
-import org.moire.ultrasonic.util.ShufflePlayBuffer
+import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.Util
+import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.util.Locale
+import java.util.PriorityQueue
 
 /**
  * This class is responsible for maintaining the playlist and downloading
  * its items from the network to the filesystem.
  *
- * TODO: Move away from managing the queue with scheduled checks, instead use callbacks when
- * Downloads are finished
+ * TODO: Move entirely to subclass the Media3.DownloadService
  */
 class Downloader(
-    private val shufflePlayBuffer: ShufflePlayBuffer,
-    private val externalStorageMonitor: ExternalStorageMonitor,
-    private val localMediaPlayer: LocalMediaPlayer
+    private val storageMonitor: ExternalStorageMonitor,
+    private val legacyPlaylistManager: LegacyPlaylistManager,
 ) : KoinComponent {
 
-    private val playlist = mutableListOf<DownloadFile>()
+    // Dependencies
+    private val imageLoaderProvider: ImageLoaderProvider by inject()
+    private val activeServerProvider: ActiveServerProvider by inject()
+    private val mediaController: MediaPlayerController by inject()
 
     var started: Boolean = false
+    var shouldStop: Boolean = false
 
     private val downloadQueue = PriorityQueue<DownloadFile>()
     private val activelyDownloading = mutableListOf<DownloadFile>()
 
-    // TODO: The playlist is now published with RX, while the observableDownloads is using LiveData.
-    // Use the same for both
+    // The generic list models expect a LiveData, so even though we are using Rx for many events
+    // surrounding playback the list of Downloads is published as LiveData.
     val observableDownloads = MutableLiveData<List<DownloadFile>>()
 
-    private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
-
     // This cache helps us to avoid creating duplicate DownloadFile instances when showing Entries
-    private val downloadFileCache = LRUCache<Track, DownloadFile>(100)
+    private val downloadFileCache = LRUCache<Track, DownloadFile>(500)
 
-    private var executorService: ScheduledExecutorService? = null
+    private var handler: Handler = Handler(Looper.getMainLooper())
     private var wifiLock: WifiManager.WifiLock? = null
 
-    private var playlistUpdateRevision: Long = 0
-        private set(value) {
-            field = value
-            RxBus.playlistPublisher.onNext(playlist)
-        }
+    private var backgroundPriorityCounter = 100
 
-    var backgroundPriorityCounter = 100
+    private val rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
-    val downloadChecker = Runnable {
-        try {
-            Timber.w("Checking Downloads")
-            checkDownloadsInternal()
-        } catch (all: Exception) {
-            Timber.e(all, "checkDownloads() failed.")
+    var downloadChecker = object : Runnable {
+        override fun run() {
+            try {
+                Timber.w("Checking Downloads")
+                checkDownloadsInternal()
+            } catch (all: Exception) {
+                Timber.e(all, "checkDownloads() failed.")
+            } finally {
+                if (!shouldStop) {
+                    Handler(Looper.getMainLooper()).postDelayed(this, CHECK_INTERVAL)
+                } else {
+                    shouldStop = false
+                }
+            }
         }
     }
 
     fun onDestroy() {
         stop()
-        clearPlaylist()
+        rxBusSubscription.dispose()
         clearBackground()
         observableDownloads.value = listOf()
         Timber.i("Downloader destroyed")
     }
 
+    @Synchronized
     fun start() {
         started = true
-        if (executorService == null) {
-            executorService = Executors.newSingleThreadScheduledExecutor()
-            executorService!!.scheduleWithFixedDelay(
-                downloadChecker, 0L, CHECK_INTERVAL, TimeUnit.SECONDS
-            )
-            Timber.i("Downloader started")
-        }
+
+        // Start our loop
+        handler.postDelayed(downloadChecker, 100)
 
         if (wifiLock == null) {
             wifiLock = Util.createWifiLock(toString())
             wifiLock?.acquire()
         }
+
+        // Check downloads if the playlist changed
+        rxBusSubscription += RxBus.playlistObservable.subscribe {
+            checkDownloads()
+        }
     }
 
     fun stop() {
         started = false
-        executorService?.shutdown()
-        executorService = null
+        shouldStop = true
         wifiLock?.release()
         wifiLock = null
-        MediaPlayerService.runningInstance?.notifyDownloaderStopped()
+        DownloadService.runningInstance?.notifyDownloaderStopped()
         Timber.i("Downloader stopped")
     }
 
     fun checkDownloads() {
-        if (
-            executorService == null ||
-            executorService!!.isTerminated ||
-            executorService!!.isShutdown
-        ) {
+        if (!started) {
             start()
         } else {
             try {
-                executorService?.execute(downloadChecker)
-            } catch (exception: RejectedExecutionException) {
+                handler.postDelayed(downloadChecker, 100)
+            } catch (all: Exception) {
                 Timber.w(
-                    exception,
+                    all,
                     "checkDownloads() can't run, maybe the Downloader is shutting down..."
                 )
             }
@@ -121,22 +132,17 @@ class Downloader(
     }
 
     @Synchronized
-    @Suppress("ComplexMethod", "ComplexCondition")
     fun checkDownloadsInternal() {
-        if (
-            !Util.isExternalStoragePresent() ||
-            !externalStorageMonitor.isExternalStorageAvailable
-        ) {
+        if (!Util.isExternalStoragePresent() || !storageMonitor.isExternalStorageAvailable) {
             return
         }
-        if (shufflePlayBuffer.isEnabled) {
-            checkShufflePlay()
-        }
-        if (jukeboxMediaPlayer.isEnabled || !Util.isNetworkConnected()) {
+
+        if (legacyPlaylistManager.jukeboxMediaPlayer.isEnabled || !Util.isNetworkConnected()) {
             return
         }
 
         Timber.v("Downloader checkDownloadsInternal checking downloads")
+
         // Check the active downloads for failures or completions and remove them
         // Store the result in a flag to know if changes have occurred
         var listChanged = cleanupActiveDownloads()
@@ -145,13 +151,14 @@ class Downloader(
         val preloadCount = Settings.preloadCount
 
         // Start preloading at the current playing song
-        var start = currentPlayingIndex
+        var start = mediaController.currentMediaItemIndex
+
         if (start == -1) start = 0
 
-        val end = (start + preloadCount).coerceAtMost(playlist.size)
+        val end = (start + preloadCount).coerceAtMost(mediaController.mediaItemCount)
 
         for (i in start until end) {
-            val download = playlist[i]
+            val download = legacyPlaylistManager.playlist[i]
 
             // Set correct priority (the lower the number, the higher the priority)
             download.priority = i
@@ -173,10 +180,6 @@ class Downloader(
             activelyDownloading.add(task)
             startDownloadOnService(task)
 
-            // The next file on the playlist is currently downloading
-            if (playlist.indexOf(task) == 1) {
-                localMediaPlayer.setNextPlayerState(PlayerState.DOWNLOADING)
-            }
             listChanged = true
         }
 
@@ -194,10 +197,14 @@ class Downloader(
         observableDownloads.postValue(downloads)
     }
 
-    private fun startDownloadOnService(task: DownloadFile) {
-        task.prepare()
-        MediaPlayerService.executeOnStartedMediaPlayerService {
-            task.download()
+    private fun startDownloadOnService(file: DownloadFile) {
+        if (file.isDownloading) return
+        file.prepare()
+        DownloadService.executeOnStartedMediaPlayerService {
+            FileUtil.createDirectoryForParent(file.pinnedFile)
+            file.isFailed = false
+            file.downloadTask = DownloadTask(file)
+            file.downloadTask!!.start()
         }
     }
 
@@ -225,26 +232,6 @@ class Downloader(
         return (oldSize != activelyDownloading.size)
     }
 
-    @get:Synchronized
-    val currentPlayingIndex: Int
-        get() = playlist.indexOf(localMediaPlayer.currentPlaying)
-
-    @get:Synchronized
-    val downloadListDuration: Long
-        get() {
-            var totalDuration: Long = 0
-            for (downloadFile in playlist) {
-                val song = downloadFile.track
-                if (!song.isDirectory) {
-                    if (song.artist != null) {
-                        if (song.duration != null) {
-                            totalDuration += song.duration!!.toLong()
-                        }
-                    }
-                }
-            }
-            return totalDuration
-        }
 
     @get:Synchronized
     val all: List<DownloadFile>
@@ -252,7 +239,7 @@ class Downloader(
             val temp: MutableList<DownloadFile> = ArrayList()
             temp.addAll(activelyDownloading)
             temp.addAll(downloadQueue)
-            temp.addAll(playlist)
+            temp.addAll(legacyPlaylistManager.playlist)
             return temp.distinct().sorted()
         }
 
@@ -267,7 +254,7 @@ class Downloader(
             temp.addAll(activelyDownloading)
             temp.addAll(downloadQueue)
             temp.addAll(
-                playlist.filter {
+                legacyPlaylistManager.playlist.filter {
                     if (!it.isStatusInitialized) false
                     else when (it.status.value) {
                         DownloadStatus.DOWNLOADING -> true
@@ -278,37 +265,13 @@ class Downloader(
             return temp.distinct().sorted()
         }
 
-    // Public facing playlist (immutable)
-    @Synchronized
-    fun getPlaylist(): List<DownloadFile> = playlist
-
     @Synchronized
     fun clearDownloadFileCache() {
         downloadFileCache.clear()
     }
 
     @Synchronized
-    fun clearPlaylist() {
-        playlist.clear()
-
-        val toRemove = mutableListOf<DownloadFile>()
-
-        // Cancel all active downloads with a high priority
-        for (download in activelyDownloading) {
-            if (download.priority < 100) {
-                download.cancelDownload()
-                toRemove.add(download)
-            }
-        }
-
-        activelyDownloading.removeAll(toRemove)
-
-        playlistUpdateRevision++
-        updateLiveData()
-    }
-
-    @Synchronized
-    private fun clearBackground() {
+    fun clearBackground() {
         // Clear the pending queue
         downloadQueue.clear()
 
@@ -333,78 +296,6 @@ class Downloader(
         updateLiveData()
     }
 
-    @Synchronized
-    fun removeFromPlaylist(downloadFile: DownloadFile) {
-        if (activelyDownloading.contains(downloadFile)) {
-            downloadFile.cancelDownload()
-        }
-        playlist.remove(downloadFile)
-        playlistUpdateRevision++
-        checkDownloads()
-    }
-
-    @Synchronized
-    fun addToPlaylist(
-        songs: List<Track>,
-        save: Boolean,
-        autoPlay: Boolean,
-        playNext: Boolean,
-        newPlaylist: Boolean
-    ) {
-        shufflePlayBuffer.isEnabled = false
-        var offset = 1
-        if (songs.isEmpty()) {
-            return
-        }
-        if (newPlaylist) {
-            playlist.clear()
-        }
-        if (playNext) {
-            if (autoPlay && currentPlayingIndex >= 0) {
-                offset = 0
-            }
-            for (song in songs) {
-                val downloadFile = song.getDownloadFile(save)
-                playlist.add(currentPlayingIndex + offset, downloadFile)
-                offset++
-            }
-        } else {
-            for (song in songs) {
-                val downloadFile = song.getDownloadFile(save)
-                playlist.add(downloadFile)
-            }
-        }
-        playlistUpdateRevision++
-        checkDownloads()
-    }
-
-    fun moveItemInPlaylist(oldPos: Int, newPos: Int) {
-        val item = playlist[oldPos]
-        playlist.remove(item)
-
-        if (newPos < oldPos) {
-            playlist.add(newPos + 1, item)
-        } else {
-            playlist.add(newPos - 1, item)
-        }
-
-        playlistUpdateRevision++
-        checkDownloads()
-    }
-
-    @Synchronized
-    fun clearIncomplete() {
-        val iterator = playlist.iterator()
-        var changedPlaylist = false
-        while (iterator.hasNext()) {
-            val downloadFile = iterator.next()
-            if (!downloadFile.isCompleteFileAvailable) {
-                iterator.remove()
-                changedPlaylist = true
-            }
-        }
-        if (changedPlaylist) playlistUpdateRevision++
-    }
 
     @Synchronized
     fun downloadBackground(songs: List<Track>, save: Boolean) {
@@ -413,30 +304,19 @@ class Downloader(
         for (song in songs) {
             val file = song.getDownloadFile()
             file.shouldSave = save
-            file.priority = backgroundPriorityCounter++
-            downloadQueue.add(file)
+            if (!file.isDownloading) {
+                file.priority = backgroundPriorityCounter++
+                downloadQueue.add(file)
+            }
         }
 
         checkDownloads()
     }
 
     @Synchronized
-    fun shuffle() {
-        playlist.shuffle()
-
-        // Move the current song to the top..
-        if (localMediaPlayer.currentPlaying != null) {
-            playlist.remove(localMediaPlayer.currentPlaying)
-            playlist.add(0, localMediaPlayer.currentPlaying!!)
-        }
-
-        playlistUpdateRevision++
-    }
-
-    @Synchronized
     @Suppress("ReturnCount")
     fun getDownloadFileForSong(song: Track): DownloadFile {
-        for (downloadFile in playlist) {
+        for (downloadFile in legacyPlaylistManager.playlist) {
             if (downloadFile.track == song) {
                 return downloadFile
             }
@@ -459,63 +339,205 @@ class Downloader(
         return downloadFile
     }
 
-    @Synchronized
-    private fun checkShufflePlay() {
-        // Get users desired random playlist size
-        val listSize = Settings.maxSongs
-        val wasEmpty = playlist.isEmpty()
-        val revisionBefore = playlistUpdateRevision
-
-        // First, ensure that list is at least 20 songs long.
-        val size = playlist.size
-        if (size < listSize) {
-            for (song in shufflePlayBuffer[listSize - size]) {
-                val downloadFile = song.getDownloadFile(false)
-                playlist.add(downloadFile)
-                playlistUpdateRevision++
-            }
-        }
-
-        val currIndex = if (localMediaPlayer.currentPlaying == null) 0 else currentPlayingIndex
-
-        // Only shift playlist if playing song #5 or later.
-        if (currIndex > SHUFFLE_BUFFER_LIMIT) {
-            val songsToShift = currIndex - 2
-            for (song in shufflePlayBuffer[songsToShift]) {
-                playlist.add(song.getDownloadFile(false))
-                playlist[0].cancelDownload()
-                playlist.removeAt(0)
-                playlistUpdateRevision++
-            }
-        }
-
-        if (revisionBefore != playlistUpdateRevision) {
-            jukeboxMediaPlayer.updatePlaylist()
-        }
-
-        if (wasEmpty && playlist.isNotEmpty()) {
-            if (jukeboxMediaPlayer.isEnabled) {
-                jukeboxMediaPlayer.skip(0, 0)
-                localMediaPlayer.setPlayerState(PlayerState.STARTED, playlist[0])
-            } else {
-                localMediaPlayer.play(playlist[0])
-            }
-        }
-    }
 
     companion object {
         const val PARALLEL_DOWNLOADS = 3
-        const val CHECK_INTERVAL = 5L
-        const val SHUFFLE_BUFFER_LIMIT = 4
+        const val CHECK_INTERVAL = 5000L
     }
 
     /**
      * Extension function
      * Gathers the download file for a given song, and modifies shouldSave if provided.
      */
-    fun Track.getDownloadFile(save: Boolean? = null): DownloadFile {
+    private fun Track.getDownloadFile(save: Boolean? = null): DownloadFile {
         return getDownloadFileForSong(this).apply {
             if (save != null) this.shouldSave = save
+        }
+    }
+
+    private inner class DownloadTask(private val downloadFile: DownloadFile) : CancellableTask() {
+        val musicService = MusicServiceFactory.getMusicService()
+
+        override fun execute() {
+
+            downloadFile.downloadPrepared = false
+            var inputStream: InputStream? = null
+            var outputStream: OutputStream? = null
+            try {
+                if (Storage.isPathExists(downloadFile.pinnedFile)) {
+                    Timber.i("%s already exists. Skipping.", downloadFile.pinnedFile)
+                    downloadFile.status.postValue(DownloadStatus.PINNED)
+                    return
+                }
+
+                if (Storage.isPathExists(downloadFile.completeFile)) {
+                    var newStatus: DownloadStatus = DownloadStatus.DONE
+                    if (downloadFile.shouldSave) {
+                        if (downloadFile.isPlaying) {
+                            downloadFile.saveWhenDone = true
+                        } else {
+                            Storage.rename(
+                                downloadFile.completeFile,
+                                downloadFile.pinnedFile
+                            )
+                            newStatus = DownloadStatus.PINNED
+                        }
+                    } else {
+                        Timber.i(
+                            "%s already exists. Skipping.",
+                            downloadFile.completeFile
+                        )
+                    }
+                    downloadFile.status.postValue(newStatus)
+                    return
+                }
+
+                downloadFile.status.postValue(DownloadStatus.DOWNLOADING)
+
+                // Some devices seem to throw error on partial file which doesn't exist
+                val needsDownloading: Boolean
+                val duration = downloadFile.track.duration
+                val fileLength = Storage.getFromPath(downloadFile.partialFile)?.length ?: 0
+
+                needsDownloading = (
+                        downloadFile.desiredBitRate == 0 || duration == null || duration == 0 || fileLength == 0L
+                        )
+
+                if (needsDownloading) {
+                    // Attempt partial HTTP GET, appending to the file if it exists.
+                    val (inStream, isPartial) = musicService.getDownloadInputStream(
+                        downloadFile.track, fileLength,
+                        downloadFile.desiredBitRate,
+                        downloadFile.shouldSave
+                    )
+
+                    inputStream = inStream
+
+                    if (isPartial) {
+                        Timber.i("Executed partial HTTP GET, skipping %d bytes", fileLength)
+                    }
+
+                    outputStream = Storage.getOrCreateFileFromPath(downloadFile.partialFile)
+                        .getFileOutputStream(isPartial)
+
+                    val len = inputStream.copyTo(outputStream) { totalBytesCopied ->
+                        downloadFile.setProgress(totalBytesCopied)
+                    }
+
+                    Timber.i("Downloaded %d bytes to %s", len, downloadFile.partialFile)
+
+                    inputStream.close()
+                    outputStream.flush()
+                    outputStream.close()
+
+                    if (isCancelled) {
+                        downloadFile.status.postValue(DownloadStatus.CANCELLED)
+                        throw RuntimeException(
+                            String.format(
+                                Locale.ROOT, "Download of '%s' was cancelled",
+                                downloadFile.track
+                            )
+                        )
+                    }
+
+                    if (downloadFile.track.artistId != null) {
+                        cacheMetadata(downloadFile.track.artistId!!)
+                    }
+
+                    downloadAndSaveCoverArt()
+                }
+
+                if (downloadFile.isPlaying) {
+                    downloadFile.completeWhenDone = true
+                } else {
+                    if (downloadFile.shouldSave) {
+                        Storage.rename(
+                            downloadFile.partialFile,
+                            downloadFile.pinnedFile
+                        )
+                        downloadFile.status.postValue(DownloadStatus.PINNED)
+                        Util.scanMedia(downloadFile.pinnedFile)
+                    } else {
+                        Storage.rename(
+                            downloadFile.partialFile,
+                            downloadFile.completeFile
+                        )
+                        downloadFile.status.postValue(DownloadStatus.DONE)
+                    }
+                }
+            } catch (all: Exception) {
+                outputStream.safeClose()
+                Storage.delete(downloadFile.completeFile)
+                Storage.delete(downloadFile.pinnedFile)
+                if (!isCancelled) {
+                    downloadFile.isFailed = true
+                    if (downloadFile.retryCount > 1) {
+                        downloadFile.status.postValue(DownloadStatus.RETRYING)
+                        --downloadFile.retryCount
+                    } else if (downloadFile.retryCount == 1) {
+                        downloadFile.status.postValue(DownloadStatus.FAILED)
+                        --downloadFile.retryCount
+                    }
+                    Timber.w(all, "Failed to download '%s'.", downloadFile.track)
+                }
+            } finally {
+                inputStream.safeClose()
+                outputStream.safeClose()
+                CacheCleaner().cleanSpace()
+                checkDownloads()
+            }
+        }
+
+        override fun toString(): String {
+            return String.format(Locale.ROOT, "DownloadTask (%s)", downloadFile.track)
+        }
+
+        private fun cacheMetadata(artistId: String) {
+            // TODO: Right now it's caching the track artist.
+            // Once the albums are cached in db, we should retrieve the album,
+            // and then cache the album artist.
+            if (artistId.isEmpty()) return
+            var artist: Artist? =
+                activeServerProvider.getActiveMetaDatabase().artistsDao().get(artistId)
+
+            // If we are downloading a new album, and the user has not visited the Artists list
+            // recently, then the artist won't be in the database.
+            if (artist == null) {
+                val artists: List<Artist> = musicService.getArtists(true)
+                artist = artists.find {
+                    it.id == artistId
+                }
+            }
+
+            // If we have found an artist, catch it.
+            if (artist != null) {
+                activeServerProvider.offlineMetaDatabase.artistsDao().insert(artist)
+            }
+        }
+
+        private fun downloadAndSaveCoverArt() {
+            try {
+                if (!TextUtils.isEmpty(downloadFile.track.coverArt)) {
+                    // Download the largest size that we can display in the UI
+                    imageLoaderProvider.getImageLoader().cacheCoverArt(downloadFile.track)
+                }
+            } catch (all: Exception) {
+                Timber.e(all, "Failed to get cover art.")
+            }
+        }
+
+        @Throws(IOException::class)
+        fun InputStream.copyTo(out: OutputStream, onCopy: (totalBytesCopied: Long) -> Any): Long {
+            var bytesCopied: Long = 0
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            var bytes = read(buffer)
+            while (!isCancelled && bytes >= 0) {
+                out.write(buffer, 0, bytes)
+                bytesCopied += bytes
+                onCopy(bytesCopied)
+                bytes = read(buffer)
+            }
+            return bytesCopied
         }
     }
 }

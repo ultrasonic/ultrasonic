@@ -17,7 +17,7 @@ import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.Downloader
 
 class TrackViewBinder(
-    val onItemClick: (DownloadFile) -> Unit,
+    val onItemClick: (DownloadFile, Int) -> Unit,
     val onContextMenuClick: ((MenuItem, DownloadFile) -> Boolean)? = null,
     val checkable: Boolean,
     val draggable: Boolean,
@@ -29,7 +29,7 @@ class TrackViewBinder(
 
     // Set our layout files
     val layout = R.layout.list_item_track
-    val contextMenuLayout = R.menu.context_menu_track
+    private val contextMenuLayout = R.menu.context_menu_track
 
     private val downloader: Downloader by inject()
     private val imageHelper: Utils.ImageHelper = Utils.ImageHelper(context)
@@ -41,15 +41,14 @@ class TrackViewBinder(
     @SuppressLint("ClickableViewAccessibility")
     @Suppress("LongMethod")
     override fun onBindViewHolder(holder: TrackViewHolder, item: Identifiable) {
-        val downloadFile: DownloadFile?
         val diffAdapter = adapter as BaseAdapter<*>
 
-        when (item) {
+        val downloadFile: DownloadFile = when (item) {
             is Track -> {
-                downloadFile = downloader.getDownloadFileForSong(item)
+                downloader.getDownloadFileForSong(item)
             }
             is DownloadFile -> {
-                downloadFile = item
+                item
             }
             else -> {
                 return
@@ -90,7 +89,7 @@ class TrackViewBinder(
                 val nowChecked = !holder.check.isChecked
                 holder.isChecked = nowChecked
             } else {
-                onItemClick(downloadFile)
+                onItemClick(downloadFile, holder.bindingAdapterPosition)
             }
         }
 
@@ -103,41 +102,37 @@ class TrackViewBinder(
 
         // Notify the adapter of selection changes
         holder.observableChecked.observe(
-            lifecycleOwner,
-            { isCheckedNow ->
-                if (isCheckedNow) {
-                    diffAdapter.notifySelected(holder.entry!!.longId)
-                } else {
-                    diffAdapter.notifyUnselected(holder.entry!!.longId)
-                }
+            lifecycleOwner
+        ) { isCheckedNow ->
+            if (isCheckedNow) {
+                diffAdapter.notifySelected(holder.entry!!.longId)
+            } else {
+                diffAdapter.notifyUnselected(holder.entry!!.longId)
             }
-        )
+        }
 
         // Listen to changes in selection status and update ourselves
         diffAdapter.selectionRevision.observe(
-            lifecycleOwner,
-            {
-                val newStatus = diffAdapter.isSelected(item.longId)
+            lifecycleOwner
+        ) {
+            val newStatus = diffAdapter.isSelected(item.longId)
 
-                if (newStatus != holder.check.isChecked) holder.check.isChecked = newStatus
-            }
-        )
+            if (newStatus != holder.check.isChecked) holder.check.isChecked = newStatus
+        }
 
         // Observe download status
         downloadFile.status.observe(
-            lifecycleOwner,
-            {
-                holder.updateStatus(it)
-                diffAdapter.notifyChanged()
-            }
-        )
+            lifecycleOwner
+        ) {
+            holder.updateStatus(it)
+            diffAdapter.notifyChanged()
+        }
 
         downloadFile.progress.observe(
-            lifecycleOwner,
-            {
-                holder.updateProgress(it)
-            }
-        )
+            lifecycleOwner
+        ) {
+            holder.updateProgress(it)
+        }
     }
 
     override fun onViewRecycled(holder: TrackViewHolder) {

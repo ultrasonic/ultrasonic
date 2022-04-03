@@ -130,7 +130,7 @@ public class VisualizerView extends View
 			return;
 		}
 
-		if (mediaPlayerControllerLazy.getValue().getPlayerState() != PlayerState.STARTED)
+		if (mediaPlayerControllerLazy.getValue().getLegacyPlayerState() != PlayerState.STARTED)
 		{
 			return;
 		}

@@ -34,7 +34,7 @@ class ServerSelectorFragment : Fragment() {
 
     private var listView: ListView? = null
     private val serverSettingsModel: ServerSettingsModel by viewModel()
-    private val service: MediaPlayerController by inject()
+    private val controller: MediaPlayerController by inject()
     private val activeServerProvider: ActiveServerProvider by inject()
     private var serverRowAdapter: ServerRowAdapter? = null
 
@@ -117,14 +117,14 @@ class ServerSelectorFragment : Fragment() {
         // TODO this is still a blocking call - we shouldn't leave this activity before the active server is updated.
         // Maybe this can be refactored by using LiveData, or this can be made more user friendly with a ProgressDialog
         runBlocking {
+            controller.clearIncomplete()
             withContext(Dispatchers.IO) {
                 if (activeServerProvider.getActiveServer().index != index) {
-                    service.clearIncomplete()
                     activeServerProvider.setActiveServerByIndex(index)
-                    service.isJukeboxEnabled =
-                        activeServerProvider.getActiveServer().jukeboxByDefault
                 }
             }
+            controller.isJukeboxEnabled =
+                activeServerProvider.getActiveServer().jukeboxByDefault
         }
         Timber.i("Active server was set to: $index")
     }
