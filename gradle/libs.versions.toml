@@ -21,6 +21,7 @@ multidex               = "2.0.1"
 room                   = "2.4.0"
 kotlin                 = "1.6.10"
 kotlinxCoroutines      = "1.6.0-native-mt"
+kotlinxGuava           = "1.6.0"
 viewModelKtx           = "2.3.0"
 
 retrofit               = "2.9.0"
@@ -74,6 +75,7 @@ media3session           = { module = "androidx.media3:media3-session", version.r
 kotlinStdlib            = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinReflect           = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinxCoroutines       = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinxGuava            = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "kotlinxGuava"}
 retrofit                = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 gsonConverter           = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 jacksonConverter        = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit" }

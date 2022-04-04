@@ -65,20 +65,6 @@ class LegacyPlaylistManager : KoinComponent {
     }
 
     @Synchronized
-    fun clearIncomplete() {
-        val iterator = _playlist.iterator()
-        var changedPlaylist = false
-        while (iterator.hasNext()) {
-            val downloadFile = iterator.next()
-            if (!downloadFile.isCompleteFileAvailable) {
-                iterator.remove()
-                changedPlaylist = true
-            }
-        }
-        if (changedPlaylist) playlistUpdateRevision++
-    }
-
-    @Synchronized
     fun clearPlaylist() {
         _playlist.clear()
         playlistUpdateRevision++

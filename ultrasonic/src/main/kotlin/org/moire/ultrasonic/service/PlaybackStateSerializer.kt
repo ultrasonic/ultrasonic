@@ -53,7 +53,7 @@ class PlaybackStateSerializer : KoinComponent {
         }
     }
 
-    private fun serializeNow(
+    fun serializeNow(
         songs: Iterable<DownloadFile>,
         currentPlayingIndex: Int,
         currentPlayingPosition: Int

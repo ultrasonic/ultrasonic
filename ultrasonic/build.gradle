@@ -112,6 +112,7 @@ dependencies {
 
     implementation libs.kotlinStdlib
     implementation libs.kotlinxCoroutines
+    implementation libs.kotlinxGuava
     implementation libs.koinAndroid
     implementation libs.okhttpLogging
     implementation libs.fastScroll

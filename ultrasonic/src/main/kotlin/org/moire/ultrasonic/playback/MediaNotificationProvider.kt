@@ -50,7 +50,6 @@ internal class MediaNotificationProvider(context: Context) :
             context,
             NOTIFICATION_CHANNEL_ID
         )
-        // TODO(b/193193926): Filter actions depending on the player's available commands.
         // Skip to previous action.
         builder.addAction(
             actionFactory.createMediaAction(

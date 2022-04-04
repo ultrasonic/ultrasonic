@@ -18,8 +18,6 @@ package org.moire.ultrasonic.playback
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.C.CONTENT_TYPE_MUSIC
@@ -29,13 +27,8 @@ import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
-import androidx.media3.session.SessionResult
-import com.google.common.collect.ImmutableList
-import com.google.common.util.concurrent.Futures
-import com.google.common.util.concurrent.ListenableFuture
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.activity.NavigationActivity
@@ -48,94 +41,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     private lateinit var mediaLibrarySession: MediaLibrarySession
     private lateinit var dataSourceFactory: DataSource.Factory
 
-    private val librarySessionCallback = CustomMediaLibrarySessionCallback()
-
-    companion object {
-        private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
-        private const val SEARCH_QUERY_PREFIX = "androidx://media3-session/setMediaUri"
-    }
-
-    private inner class CustomMediaLibrarySessionCallback :
-        MediaLibrarySession.MediaLibrarySessionCallback {
-        override fun onGetLibraryRoot(
-            session: MediaLibrarySession,
-            browser: MediaSession.ControllerInfo,
-            params: LibraryParams?
-        ): ListenableFuture<LibraryResult<MediaItem>> {
-            return Futures.immediateFuture(
-                LibraryResult.ofItem(
-                    MediaItemTree.getRootItem(),
-                    params
-                )
-            )
-        }
-
-        override fun onGetItem(
-            session: MediaLibrarySession,
-            browser: MediaSession.ControllerInfo,
-            mediaId: String
-        ): ListenableFuture<LibraryResult<MediaItem>> {
-            val item =
-                MediaItemTree.getItem(mediaId)
-                    ?: return Futures.immediateFuture(
-                        LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
-                    )
-            return Futures.immediateFuture(LibraryResult.ofItem(item, /* params= */ null))
-        }
-
-        override fun onGetChildren(
-            session: MediaLibrarySession,
-            browser: MediaSession.ControllerInfo,
-            parentId: String,
-            page: Int,
-            pageSize: Int,
-            params: LibraryParams?
-        ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
-            val children =
-                MediaItemTree.getChildren(parentId)
-                    ?: return Futures.immediateFuture(
-                        LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
-                    )
-
-            return Futures.immediateFuture(LibraryResult.ofItemList(children, params))
-        }
-
-        private fun setMediaItemFromSearchQuery(query: String) {
-            // Only accept query with pattern "play [Title]" or "[Title]"
-            // Where [Title]: must be exactly matched
-            // If no media with exact name found, play a random media instead
-            val mediaTitle =
-                if (query.startsWith("play ", ignoreCase = true)) {
-                    query.drop(5)
-                } else {
-                    query
-                }
-
-            val item = MediaItemTree.getItemFromTitle(mediaTitle) ?: MediaItemTree.getRandomItem()
-            player.setMediaItem(item)
-        }
-
-        override fun onSetMediaUri(
-            session: MediaSession,
-            controller: MediaSession.ControllerInfo,
-            uri: Uri,
-            extras: Bundle
-        ): Int {
-
-            if (uri.toString().startsWith(SEARCH_QUERY_PREFIX) ||
-                uri.toString().startsWith(SEARCH_QUERY_PREFIX_COMPAT)
-            ) {
-                val searchQuery =
-                    uri.getQueryParameter("query")
-                        ?: return SessionResult.RESULT_ERROR_NOT_SUPPORTED
-                setMediaItemFromSearchQuery(searchQuery)
-
-                return SessionResult.RESULT_SUCCESS
-            } else {
-                return SessionResult.RESULT_ERROR_NOT_SUPPORTED
-            }
-        }
-    }
+    private lateinit var librarySessionCallback: MediaLibrarySession.MediaLibrarySessionCallback
 
     /*
      * For some reason the LocalConfiguration of MediaItem are stripped somewhere in ExoPlayer,
@@ -148,11 +54,9 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             mediaItem: MediaItem
         ): MediaItem {
             // Again, set the Uri, so that it will get a LocalConfiguration
-            val item = mediaItem.buildUpon()
+            return mediaItem.buildUpon()
                 .setUri(mediaItem.mediaMetadata.mediaUri)
                 .build()
-
-            return item
         }
     }
 
@@ -202,9 +106,10 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         // Enable audio offload
         player.experimentalSetOffloadSchedulingEnabled(true)
 
-        MediaItemTree.initialize(assets)
+        // Create browser interface
+        librarySessionCallback = AutoMediaBrowserCallback(player)
 
-        // THIS Will need to use the AutoCalls
+        // This will need to use the AutoCalls
         mediaLibrarySession = MediaLibrarySession.Builder(this, player, librarySessionCallback)
             .setMediaItemFiller(CustomMediaItemFiller())
             .setSessionActivity(getPendingIntentForContent())

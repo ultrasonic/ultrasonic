@@ -1,32 +1,47 @@
 /*
- * AutoMediaBrowserService.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * CustomMediaLibrarySessionCallback.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
 
-package org.moire.ultrasonic.service
+package org.moire.ultrasonic.playback
 
+import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaDescriptionCompat
-import androidx.media.MediaBrowserServiceCompat
-import androidx.media.utils.MediaConstants
-import io.reactivex.rxjava3.disposables.CompositeDisposable
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.MediaMetadata.FOLDER_TYPE_ALBUMS
+import androidx.media3.common.MediaMetadata.FOLDER_TYPE_ARTISTS
+import androidx.media3.common.MediaMetadata.FOLDER_TYPE_MIXED
+import androidx.media3.common.MediaMetadata.FOLDER_TYPE_NONE
+import androidx.media3.common.MediaMetadata.FOLDER_TYPE_PLAYLISTS
+import androidx.media3.common.MediaMetadata.FOLDER_TYPE_TITLES
+import androidx.media3.common.Player
+import androidx.media3.session.LibraryResult
+import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionResult
+import com.google.common.collect.ImmutableList
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.models.AlbumListType
+import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.MusicDirectory
 import org.moire.ultrasonic.domain.SearchCriteria
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Track
+import org.moire.ultrasonic.service.MediaPlayerController
+import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -66,13 +81,16 @@ private const val MEDIA_SEARCH_SONG_ITEM = "MEDIA_SEARCH_SONG_ITEM"
 private const val DISPLAY_LIMIT = 100
 private const val SEARCH_LIMIT = 10
 
+private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
+private const val SEARCH_QUERY_PREFIX = "androidx://media3-session/setMediaUri"
+
 /**
  * MediaBrowserService implementation for e.g. Android Auto
  */
 @Suppress("TooManyFunctions", "LargeClass")
-class AutoMediaBrowserService : MediaBrowserServiceCompat() {
+class AutoMediaBrowserCallback(var player: Player) :
+    MediaLibraryService.MediaLibrarySession.MediaLibrarySessionCallback, KoinComponent {
 
-    private val lifecycleSupport by inject<MediaPlayerLifecycleSupport>()
     private val mediaPlayerController by inject<MediaPlayerController>()
     private val activeServerProvider: ActiveServerProvider by inject()
     private val musicService = MusicServiceFactory.getMusicService()
@@ -89,39 +107,199 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
     private val useId3Tags get() = Settings.shouldUseId3Tags
     private val musicFolderId get() = activeServerProvider.getActiveServer().musicFolderId
 
-    private var rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
-    @Suppress("MagicNumber")
-    override fun onCreate() {
-        super.onCreate()
-
-        rxBusSubscription += RxBus.mediaSessionTokenObservable.subscribe {
-            if (sessionToken == null) sessionToken = it
-        }
-
-        rxBusSubscription += RxBus.playFromMediaIdCommandObservable.subscribe {
-            playFromMediaId(it.first)
-        }
-
-        rxBusSubscription += RxBus.playFromSearchCommandObservable.subscribe {
-            playFromSearchCommand(it.first)
-        }
-
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed(
-            {
-                // Ultrasonic may be started from Android Auto. This boots up the necessary components.
-                Timber.d(
-                    "AutoMediaBrowserService starting lifecycleSupport and MediaPlayerService..."
-                )
-                lifecycleSupport.onCreate()
-                DownloadService.getInstance()
-            },
-            100
+    /**
+     * Called when a {@link MediaBrowser} requests the root {@link MediaItem} by {@link
+     * MediaBrowser#getLibraryRoot(LibraryParams)}.
+     *
+     * <p>Return a {@link ListenableFuture} to send a {@link LibraryResult} back to the browser
+     * asynchronously. You can also return a {@link LibraryResult} directly by using Guava's
+     * {@link Futures#immediateFuture(Object)}.
+     *
+     * <p>The {@link LibraryResult#params} may differ from the given {@link LibraryParams params}
+     * if the session can't provide a root that matches with the {@code params}.
+     *
+     * <p>To allow browsing the media library, return a {@link LibraryResult} with {@link
+     * LibraryResult#RESULT_SUCCESS} and a root {@link MediaItem} with a valid {@link
+     * MediaItem#mediaId}. The media id is required for the browser to get the children under the
+     * root.
+     *
+     * <p>Interoperability: If this callback is called because a legacy {@link
+     * android.support.v4.media.MediaBrowserCompat} has requested a {@link
+     * androidx.media.MediaBrowserServiceCompat.BrowserRoot}, then the main thread may be blocked
+     * until the returned future is done. If your service may be queried by a legacy {@link
+     * android.support.v4.media.MediaBrowserCompat}, you should ensure that the future completes
+     * quickly to avoid blocking the main thread for a long period of time.
+     *
+     * @param session The session for this event.
+     * @param browser The browser information.
+     * @param params The optional parameters passed by the browser.
+     * @return A pending result that will be resolved with a root media item.
+     * @see SessionCommand#COMMAND_CODE_LIBRARY_GET_LIBRARY_ROOT
+     */
+    override fun onGetLibraryRoot(
+        session: MediaLibraryService.MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        params: MediaLibraryService.LibraryParams?
+    ): ListenableFuture<LibraryResult<MediaItem>> {
+        return Futures.immediateFuture(
+            LibraryResult.ofItem(
+                buildMediaItem(
+                    "Root Folder",
+                    MEDIA_ROOT_ID,
+                    isPlayable = false,
+                    folderType = FOLDER_TYPE_MIXED
+                ),
+                params
+            )
         )
-
-        Timber.i("AutoMediaBrowserService onCreate finished")
     }
+
+    override fun onGetItem(
+        session: MediaLibraryService.MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        mediaId: String
+    ): ListenableFuture<LibraryResult<MediaItem>> {
+        playFromMediaId(mediaId)
+
+        // TODO: Later
+        return Futures.immediateFuture(
+            LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+        )
+    }
+
+    override fun onGetChildren(
+        session: MediaLibraryService.MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        parentId: String,
+        page: Int,
+        pageSize: Int,
+        params: MediaLibraryService.LibraryParams?
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        // TODO: params???
+        return onLoadChildren(parentId)
+    }
+
+    private fun setMediaItemFromSearchQuery(query: String) {
+        // Only accept query with pattern "play [Title]" or "[Title]"
+        // Where [Title]: must be exactly matched
+        // If no media with exact name found, play a random media instead
+        val mediaTitle =
+            if (query.startsWith("play ", ignoreCase = true)) {
+                query.drop(5)
+            } else {
+                query
+            }
+
+        playFromMediaId(mediaTitle)
+    }
+
+    override fun onSetMediaUri(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        uri: Uri,
+        extras: Bundle
+    ): Int {
+
+        if (uri.toString().startsWith(SEARCH_QUERY_PREFIX) ||
+            uri.toString().startsWith(SEARCH_QUERY_PREFIX_COMPAT)
+        ) {
+            val searchQuery =
+                uri.getQueryParameter("query")
+                    ?: return SessionResult.RESULT_ERROR_NOT_SUPPORTED
+            setMediaItemFromSearchQuery(searchQuery)
+
+            return SessionResult.RESULT_SUCCESS
+        } else {
+            return SessionResult.RESULT_ERROR_NOT_SUPPORTED
+        }
+    }
+
+
+    @Suppress("ReturnCount", "ComplexMethod")
+    fun onLoadChildren(
+        parentId: String,
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        Timber.d("AutoMediaBrowserService onLoadChildren called. ParentId: %s", parentId)
+
+        val parentIdParts = parentId.split('|')
+
+        when (parentIdParts.first()) {
+            MEDIA_ROOT_ID -> return getRootItems()
+            MEDIA_LIBRARY_ID -> return getLibrary()
+            MEDIA_ARTIST_ID -> return getArtists()
+            MEDIA_ARTIST_SECTION -> return getArtists(parentIdParts[1])
+            MEDIA_ALBUM_ID -> return getAlbums(AlbumListType.SORTED_BY_NAME)
+            MEDIA_ALBUM_PAGE_ID -> return getAlbums(
+                AlbumListType.fromName(parentIdParts[1]), parentIdParts[2].toInt()
+            )
+            MEDIA_PLAYLIST_ID -> return getPlaylists()
+            MEDIA_ALBUM_FREQUENT_ID -> return getAlbums(AlbumListType.FREQUENT)
+            MEDIA_ALBUM_NEWEST_ID -> return getAlbums(AlbumListType.NEWEST)
+            MEDIA_ALBUM_RECENT_ID -> return getAlbums(AlbumListType.RECENT)
+            MEDIA_ALBUM_RANDOM_ID -> return getAlbums(AlbumListType.RANDOM)
+            MEDIA_ALBUM_STARRED_ID -> return getAlbums(AlbumListType.STARRED)
+            MEDIA_SONG_RANDOM_ID -> return getRandomSongs()
+            MEDIA_SONG_STARRED_ID -> return getStarredSongs()
+            MEDIA_SHARE_ID -> return getShares()
+            MEDIA_BOOKMARK_ID -> return getBookmarks()
+            MEDIA_PODCAST_ID -> return getPodcasts()
+            MEDIA_PLAYLIST_ITEM -> return getPlaylist(parentIdParts[1], parentIdParts[2])
+            MEDIA_ARTIST_ITEM -> return getAlbumsForArtist(
+                parentIdParts[1], parentIdParts[2]
+            )
+            MEDIA_ALBUM_ITEM -> return getSongsForAlbum(parentIdParts[1], parentIdParts[2])
+            MEDIA_SHARE_ITEM -> return getSongsForShare(parentIdParts[1])
+            MEDIA_PODCAST_ITEM -> return getPodcastEpisodes(parentIdParts[1])
+            else -> return Futures.immediateFuture(LibraryResult.ofItemList(listOf(), null))
+        }
+    }
+
+    fun onSearch(
+        query: String,
+        extras: Bundle?,
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        Timber.d("AutoMediaBrowserService onSearch query: %s", query)
+        val mediaItems: MutableList<MediaItem> = ArrayList()
+
+        return serviceScope.future {
+            val criteria = SearchCriteria(query, SEARCH_LIMIT, SEARCH_LIMIT, SEARCH_LIMIT)
+            val searchResult = callWithErrorHandling { musicService.search(criteria) }
+
+            // TODO Add More... button to categories
+            if (searchResult != null) {
+                searchResult.artists.map { artist ->
+                    mediaItems.add(
+                        artist.name ?: "",
+                        listOf(MEDIA_ARTIST_ITEM, artist.id, artist.name).joinToString("|"),
+                        FOLDER_TYPE_ARTISTS
+                    )
+                }
+
+                searchResult.albums.map { album ->
+                    mediaItems.add(
+                        album.title ?: "",
+                        listOf(MEDIA_ALBUM_ITEM, album.id, album.name)
+                            .joinToString("|"),
+                        FOLDER_TYPE_ALBUMS
+                    )
+                }
+
+                searchSongsCache = searchResult.songs
+                searchResult.songs.map { song ->
+                    mediaItems.add(
+                        buildMediaItemFromTrack(
+                            song,
+                            listOf(MEDIA_SEARCH_SONG_ITEM, song.id).joinToString("|"),
+                            isPlayable = true
+                        )
+                    )
+                }
+            }
+            return@future LibraryResult.ofItemList(mediaItems, null)
+        }
+    }
+
 
     @Suppress("MagicNumber", "ComplexMethod")
     private fun playFromMediaId(mediaId: String?) {
@@ -180,132 +358,6 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        rxBusSubscription.dispose()
-        serviceJob.cancel()
-
-        Timber.i("AutoMediaBrowserService onDestroy finished")
-    }
-
-    override fun onGetRoot(
-        clientPackageName: String,
-        clientUid: Int,
-        rootHints: Bundle?
-    ): BrowserRoot {
-        Timber.d(
-            "AutoMediaBrowserService onGetRoot called. clientPackageName: %s; clientUid: %d",
-            clientPackageName, clientUid
-        )
-
-        val extras = Bundle()
-        extras.putInt(
-            MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
-            MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
-        )
-        extras.putInt(
-            MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE,
-            MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
-        )
-        extras.putBoolean(
-            MediaConstants.BROWSER_SERVICE_EXTRAS_KEY_SEARCH_SUPPORTED, true
-        )
-
-        return BrowserRoot(MEDIA_ROOT_ID, extras)
-    }
-
-    @Suppress("ReturnCount", "ComplexMethod")
-    override fun onLoadChildren(
-        parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
-    ) {
-        Timber.d("AutoMediaBrowserService onLoadChildren called. ParentId: %s", parentId)
-
-        val parentIdParts = parentId.split('|')
-
-        when (parentIdParts.first()) {
-            MEDIA_ROOT_ID -> return getRootItems(result)
-            MEDIA_LIBRARY_ID -> return getLibrary(result)
-            MEDIA_ARTIST_ID -> return getArtists(result)
-            MEDIA_ARTIST_SECTION -> return getArtists(result, parentIdParts[1])
-            MEDIA_ALBUM_ID -> return getAlbums(result, AlbumListType.SORTED_BY_NAME)
-            MEDIA_ALBUM_PAGE_ID -> return getAlbums(
-                result, AlbumListType.fromName(parentIdParts[1]), parentIdParts[2].toInt()
-            )
-            MEDIA_PLAYLIST_ID -> return getPlaylists(result)
-            MEDIA_ALBUM_FREQUENT_ID -> return getAlbums(result, AlbumListType.FREQUENT)
-            MEDIA_ALBUM_NEWEST_ID -> return getAlbums(result, AlbumListType.NEWEST)
-            MEDIA_ALBUM_RECENT_ID -> return getAlbums(result, AlbumListType.RECENT)
-            MEDIA_ALBUM_RANDOM_ID -> return getAlbums(result, AlbumListType.RANDOM)
-            MEDIA_ALBUM_STARRED_ID -> return getAlbums(result, AlbumListType.STARRED)
-            MEDIA_SONG_RANDOM_ID -> return getRandomSongs(result)
-            MEDIA_SONG_STARRED_ID -> return getStarredSongs(result)
-            MEDIA_SHARE_ID -> return getShares(result)
-            MEDIA_BOOKMARK_ID -> return getBookmarks(result)
-            MEDIA_PODCAST_ID -> return getPodcasts(result)
-            MEDIA_PLAYLIST_ITEM -> return getPlaylist(parentIdParts[1], parentIdParts[2], result)
-            MEDIA_ARTIST_ITEM -> return getAlbumsForArtist(
-                result, parentIdParts[1], parentIdParts[2]
-            )
-            MEDIA_ALBUM_ITEM -> return getSongsForAlbum(result, parentIdParts[1], parentIdParts[2])
-            MEDIA_SHARE_ITEM -> return getSongsForShare(result, parentIdParts[1])
-            MEDIA_PODCAST_ITEM -> return getPodcastEpisodes(result, parentIdParts[1])
-            else -> result.sendResult(mutableListOf())
-        }
-    }
-
-    override fun onSearch(
-        query: String,
-        extras: Bundle?,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
-    ) {
-        Timber.d("AutoMediaBrowserService onSearch query: %s", query)
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
-
-        serviceScope.launch {
-            val criteria = SearchCriteria(query, SEARCH_LIMIT, SEARCH_LIMIT, SEARCH_LIMIT)
-            val searchResult = callWithErrorHandling { musicService.search(criteria) }
-
-            // TODO Add More... button to categories
-            if (searchResult != null) {
-                searchResult.artists.map { artist ->
-                    mediaItems.add(
-                        artist.name ?: "",
-                        listOf(MEDIA_ARTIST_ITEM, artist.id, artist.name).joinToString("|"),
-                        null,
-                        R.string.search_artists
-                    )
-                }
-
-                searchResult.albums.map { album ->
-                    mediaItems.add(
-                        album.title ?: "",
-                        listOf(MEDIA_ALBUM_ITEM, album.id, album.name)
-                            .joinToString("|"),
-                        null,
-                        R.string.search_albums
-                    )
-                }
-
-                searchSongsCache = searchResult.songs
-                searchResult.songs.map { song ->
-                    mediaItems.add(
-                        MediaBrowserCompat.MediaItem(
-                            Util.getMediaDescriptionForEntry(
-                                song,
-                                listOf(MEDIA_SEARCH_SONG_ITEM, song.id).joinToString("|"),
-                                R.string.search_songs
-                            ),
-                            MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-                        )
-                    )
-                }
-            }
-            result.sendResult(mediaItems)
-        }
-    }
-
     private fun playSearch(id: String) {
         serviceScope.launch {
             // If there is no cache, we can't play the selected song.
@@ -316,112 +368,108 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun getRootItems(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
+    private fun getRootItems(): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
         if (!isOffline)
             mediaItems.add(
                 R.string.music_library_label,
                 MEDIA_LIBRARY_ID,
-                R.drawable.ic_library,
                 null
             )
 
         mediaItems.add(
             R.string.main_artists_title,
             MEDIA_ARTIST_ID,
-            R.drawable.ic_artist,
-            null
+            null,
+            folderType = FOLDER_TYPE_ARTISTS
         )
 
         if (!isOffline)
             mediaItems.add(
                 R.string.main_albums_title,
                 MEDIA_ALBUM_ID,
-                R.drawable.ic_menu_browse_dark,
-                null
+                null,
+                folderType = FOLDER_TYPE_ALBUMS
             )
 
         mediaItems.add(
             R.string.playlist_label,
             MEDIA_PLAYLIST_ID,
-            R.drawable.ic_menu_playlists_dark,
-            null
+            null,
+            folderType = FOLDER_TYPE_PLAYLISTS
         )
 
-        result.sendResult(mediaItems)
+        return Futures.immediateFuture(LibraryResult.ofItemList(mediaItems, null))
     }
 
-    private fun getLibrary(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
+    private fun getLibrary(): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
         // Songs
         mediaItems.add(
             R.string.main_songs_random,
             MEDIA_SONG_RANDOM_ID,
-            null,
-            R.string.main_songs_title
+            R.string.main_songs_title,
+            folderType = FOLDER_TYPE_TITLES
         )
 
         mediaItems.add(
             R.string.main_songs_starred,
             MEDIA_SONG_STARRED_ID,
-            null,
-            R.string.main_songs_title
+            R.string.main_songs_title,
+            folderType = FOLDER_TYPE_TITLES
         )
 
         // Albums
         mediaItems.add(
             R.string.main_albums_newest,
             MEDIA_ALBUM_NEWEST_ID,
-            null,
             R.string.main_albums_title
         )
 
         mediaItems.add(
             R.string.main_albums_recent,
             MEDIA_ALBUM_RECENT_ID,
-            null,
-            R.string.main_albums_title
+            R.string.main_albums_title,
+            folderType = FOLDER_TYPE_ALBUMS
         )
 
         mediaItems.add(
             R.string.main_albums_frequent,
             MEDIA_ALBUM_FREQUENT_ID,
-            null,
-            R.string.main_albums_title
+            R.string.main_albums_title,
+            folderType = FOLDER_TYPE_ALBUMS
         )
 
         mediaItems.add(
             R.string.main_albums_random,
             MEDIA_ALBUM_RANDOM_ID,
-            null,
-            R.string.main_albums_title
+            R.string.main_albums_title,
+            folderType = FOLDER_TYPE_ALBUMS
         )
 
         mediaItems.add(
             R.string.main_albums_starred,
             MEDIA_ALBUM_STARRED_ID,
-            null,
-            R.string.main_albums_title
+            R.string.main_albums_title,
+            folderType = FOLDER_TYPE_ALBUMS
         )
 
         // Other
-        mediaItems.add(R.string.button_bar_shares, MEDIA_SHARE_ID, null, null)
-        mediaItems.add(R.string.button_bar_bookmarks, MEDIA_BOOKMARK_ID, null, null)
-        mediaItems.add(R.string.button_bar_podcasts, MEDIA_PODCAST_ID, null, null)
+        mediaItems.add(R.string.button_bar_shares, MEDIA_SHARE_ID, null)
+        mediaItems.add(R.string.button_bar_bookmarks, MEDIA_BOOKMARK_ID, null)
+        mediaItems.add(R.string.button_bar_podcasts, MEDIA_PODCAST_ID, null)
 
-        result.sendResult(mediaItems)
+        return Futures.immediateFuture(LibraryResult.ofItemList(mediaItems, null))
     }
 
     private fun getArtists(
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
         section: String? = null
-    ) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
-        serviceScope.launch {
+        return serviceScope.future {
             val childMediaId: String
             var artists = if (!isOffline && useId3Tags) {
                 childMediaId = MEDIA_ARTIST_ITEM
@@ -452,7 +500,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                             mediaItems.add(
                                 currentSection,
                                 listOf(MEDIA_ARTIST_SECTION, currentSection).joinToString("|"),
-                                null
+                                FOLDER_TYPE_ARTISTS
                             )
                         }
                     }
@@ -461,23 +509,22 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                         mediaItems.add(
                             artist.name ?: "",
                             listOf(childMediaId, artist.id, artist.name).joinToString("|"),
-                            null
+                            FOLDER_TYPE_ARTISTS
                         )
                     }
                 }
-                result.sendResult(mediaItems)
             }
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
     private fun getAlbumsForArtist(
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
         id: String,
         name: String
-    ) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
-        serviceScope.launch {
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
+
+        return serviceScope.future {
             val albums = if (!isOffline && useId3Tags) {
                 callWithErrorHandling { musicService.getArtist(id, name, false) }
             } else {
@@ -491,22 +538,20 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                     album.title ?: "",
                     listOf(MEDIA_ALBUM_ITEM, album.id, album.name)
                         .joinToString("|"),
-                    null
+                    FOLDER_TYPE_ALBUMS
                 )
             }
-            result.sendResult(mediaItems)
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
     private fun getSongsForAlbum(
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
         id: String,
         name: String
-    ) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
-        serviceScope.launch {
+        return serviceScope.future {
             val songs = listSongsInMusicService(id, name)
 
             if (songs != null) {
@@ -520,43 +565,36 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 items.map { item ->
                     if (item.isDirectory)
                         mediaItems.add(
-                            MediaBrowserCompat.MediaItem(
-                                Util.getMediaDescriptionForEntry(
-                                    item,
-                                    listOf(MEDIA_ALBUM_ITEM, item.id, item.name).joinToString("|")
-                                ),
-                                MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-                            )
+                            item.title ?: "",
+                            listOf(MEDIA_ALBUM_ITEM, item.id, item.name).joinToString("|"),
+                            FOLDER_TYPE_TITLES
                         )
                     else
                         mediaItems.add(
-                            MediaBrowserCompat.MediaItem(
-                                Util.getMediaDescriptionForEntry(
-                                    item,
-                                    listOf(
-                                        MEDIA_ALBUM_SONG_ITEM,
-                                        id,
-                                        name,
-                                        item.id
-                                    ).joinToString("|")
-                                ),
-                                MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                            buildMediaItemFromTrack(
+                                item,
+                                listOf(
+                                    MEDIA_ALBUM_SONG_ITEM,
+                                    id,
+                                    name,
+                                    item.id
+                                ).joinToString("|"),
+                                isPlayable = true
                             )
                         )
                 }
             }
-            result.sendResult(mediaItems)
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
     private fun getAlbums(
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
         type: AlbumListType,
         page: Int? = null
-    ) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
-        serviceScope.launch {
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
+
+        return serviceScope.future {
             val offset = (page ?: 0) * DISPLAY_LIMIT
             val albums = if (useId3Tags) {
                 callWithErrorHandling {
@@ -577,7 +615,7 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                     album.title ?: "",
                     listOf(MEDIA_ALBUM_ITEM, album.id, album.name)
                         .joinToString("|"),
-                    null
+                    FOLDER_TYPE_ALBUMS
                 )
             }
 
@@ -585,41 +623,37 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 mediaItems.add(
                     R.string.search_more,
                     listOf(MEDIA_ALBUM_PAGE_ID, type.typeName, (page ?: 0) + 1).joinToString("|"),
-                    R.drawable.ic_menu_forward_dark,
                     null
                 )
 
-            result.sendResult(mediaItems)
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
-    private fun getPlaylists(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
+    private fun getPlaylists(): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
-        serviceScope.launch {
+        return serviceScope.future {
             val playlists = callWithErrorHandling { musicService.getPlaylists(true) }
             playlists?.map { playlist ->
                 mediaItems.add(
                     playlist.name,
                     listOf(MEDIA_PLAYLIST_ITEM, playlist.id, playlist.name)
                         .joinToString("|"),
-                    null
+                    FOLDER_TYPE_PLAYLISTS
                 )
             }
-            result.sendResult(mediaItems)
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
     private fun getPlaylist(
         id: String,
         name: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
-    ) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
-        serviceScope.launch {
+        return serviceScope.future {
             val content = callWithErrorHandling { musicService.getPlaylist(id, name) }
 
             if (content != null) {
@@ -632,22 +666,20 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 playlistCache = content.getTracks()
                 playlistCache!!.take(DISPLAY_LIMIT).map { item ->
                     mediaItems.add(
-                        MediaBrowserCompat.MediaItem(
-                            Util.getMediaDescriptionForEntry(
-                                item,
-                                listOf(
-                                    MEDIA_PLAYLIST_SONG_ITEM,
-                                    id,
-                                    name,
-                                    item.id
-                                ).joinToString("|")
-                            ),
-                            MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                        buildMediaItemFromTrack(
+                            item,
+                            listOf(
+                                MEDIA_PLAYLIST_SONG_ITEM,
+                                id,
+                                name,
+                                item.id
+                            ).joinToString("|"),
+                            isPlayable = true
                         )
                     )
                 }
-                result.sendResult(mediaItems)
             }
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
@@ -689,30 +721,28 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun getPodcasts(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
-        serviceScope.launch {
+    private fun getPodcasts(): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
+
+        return serviceScope.future {
             val podcasts = callWithErrorHandling { musicService.getPodcastsChannels(false) }
 
             podcasts?.map { podcast ->
                 mediaItems.add(
                     podcast.title ?: "",
                     listOf(MEDIA_PODCAST_ITEM, podcast.id).joinToString("|"),
-                    null
+                    FOLDER_TYPE_MIXED
                 )
             }
-            result.sendResult(mediaItems)
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
     private fun getPodcastEpisodes(
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
         id: String
-    ) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
-        serviceScope.launch {
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
+        return serviceScope.future {
             val episodes = callWithErrorHandling { musicService.getPodcastEpisodes(id) }
 
             if (episodes != null) {
@@ -721,18 +751,16 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
 
                 episodes.getTracks().map { episode ->
                     mediaItems.add(
-                        MediaBrowserCompat.MediaItem(
-                            Util.getMediaDescriptionForEntry(
-                                episode,
-                                listOf(MEDIA_PODCAST_EPISODE_ITEM, id, episode.id)
-                                    .joinToString("|")
-                            ),
-                            MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                        buildMediaItemFromTrack(
+                            episode,
+                            listOf(MEDIA_PODCAST_EPISODE_ITEM, id, episode.id)
+                                .joinToString("|"),
+                            isPlayable = true
                         )
                     )
                 }
-                result.sendResult(mediaItems)
             }
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
@@ -757,27 +785,24 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun getBookmarks(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
-        serviceScope.launch {
+    private fun getBookmarks(): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
+        return serviceScope.future {
             val bookmarks = callWithErrorHandling { musicService.getBookmarks() }
             if (bookmarks != null) {
                 val songs = Util.getSongsFromBookmarks(bookmarks)
 
                 songs.getTracks().map { song ->
                     mediaItems.add(
-                        MediaBrowserCompat.MediaItem(
-                            Util.getMediaDescriptionForEntry(
-                                song,
-                                listOf(MEDIA_BOOKMARK_ITEM, song.id).joinToString("|")
-                            ),
-                            MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                        buildMediaItemFromTrack(
+                            song,
+                            listOf(MEDIA_BOOKMARK_ITEM, song.id).joinToString("|"),
+                            isPlayable = true
                         )
                     )
                 }
-                result.sendResult(mediaItems)
             }
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
@@ -792,11 +817,10 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun getShares(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
+    private fun getShares(): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
-        serviceScope.launch {
+        return serviceScope.future {
             val shares = callWithErrorHandling { musicService.getShares(false) }
 
             shares?.map { share ->
@@ -804,21 +828,19 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                     share.name ?: "",
                     listOf(MEDIA_SHARE_ITEM, share.id)
                         .joinToString("|"),
-                    null
+                    FOLDER_TYPE_MIXED
                 )
             }
-            result.sendResult(mediaItems)
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
     private fun getSongsForShare(
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>,
         id: String
-    ) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
-        serviceScope.launch {
+        return serviceScope.future {
             val shares = callWithErrorHandling { musicService.getShares(false) }
 
             val selectedShare = shares?.firstOrNull { share -> share.id == id }
@@ -829,17 +851,15 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
 
                 selectedShare.getEntries().map { song ->
                     mediaItems.add(
-                        MediaBrowserCompat.MediaItem(
-                            Util.getMediaDescriptionForEntry(
-                                song,
-                                listOf(MEDIA_SHARE_SONG_ITEM, id, song.id).joinToString("|")
-                            ),
-                            MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                        buildMediaItemFromTrack(
+                            song,
+                            listOf(MEDIA_SHARE_SONG_ITEM, id, song.id).joinToString("|"),
+                            isPlayable = true
                         )
                     )
                 }
             }
-            result.sendResult(mediaItems)
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
@@ -864,11 +884,10 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun getStarredSongs(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
+    private fun getStarredSongs(): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
-        serviceScope.launch {
+        return serviceScope.future {
             val songs = listStarredSongsInMusicService()
 
             if (songs != null) {
@@ -880,17 +899,15 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 starredSongsCache = items
                 items.map { song ->
                     mediaItems.add(
-                        MediaBrowserCompat.MediaItem(
-                            Util.getMediaDescriptionForEntry(
-                                song,
-                                listOf(MEDIA_SONG_STARRED_ITEM, song.id).joinToString("|")
-                            ),
-                            MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                        buildMediaItemFromTrack(
+                            song,
+                            listOf(MEDIA_SONG_STARRED_ITEM, song.id).joinToString("|"),
+                            isPlayable = true
                         )
                     )
                 }
             }
-            result.sendResult(mediaItems)
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
@@ -917,11 +934,10 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun getRandomSongs(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        val mediaItems: MutableList<MediaBrowserCompat.MediaItem> = ArrayList()
-        result.detach()
+    private fun getRandomSongs(): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        val mediaItems: MutableList<MediaItem> = ArrayList()
 
-        serviceScope.launch {
+        return serviceScope.future {
             val songs = callWithErrorHandling { musicService.getRandomSongs(DISPLAY_LIMIT) }
 
             if (songs != null) {
@@ -933,17 +949,15 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
                 randomSongsCache = items
                 items.map { song ->
                     mediaItems.add(
-                        MediaBrowserCompat.MediaItem(
-                            Util.getMediaDescriptionForEntry(
-                                song,
-                                listOf(MEDIA_SONG_RANDOM_ITEM, song.id).joinToString("|")
-                            ),
-                            MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                        buildMediaItemFromTrack(
+                            song,
+                            listOf(MEDIA_SONG_RANDOM_ITEM, song.id).joinToString("|"),
+                            isPlayable = true
                         )
                     )
                 }
             }
-            result.sendResult(mediaItems)
+            return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
 
@@ -985,77 +999,47 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun MutableList<MediaBrowserCompat.MediaItem>.add(
+    private fun MutableList<MediaItem>.add(
         title: String,
         mediaId: String,
-        icon: Int?,
-        groupNameId: Int? = null
+        folderType: Int
     ) {
-        val builder = MediaDescriptionCompat.Builder()
-        builder.setTitle(title)
-        builder.setMediaId(mediaId)
 
-        if (icon != null)
-            builder.setIconUri(Util.getUriToDrawable(applicationContext, icon))
-
-        if (groupNameId != null)
-            builder.setExtras(
-                Bundle().apply {
-                    putString(
-                        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
-                        getString(groupNameId)
-                    )
-                }
-            )
-
-        val mediaItem = MediaBrowserCompat.MediaItem(
-            builder.build(),
-            MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+        val mediaItem = buildMediaItem(
+            title,
+            mediaId,
+            isPlayable = false,
+            folderType = folderType
         )
 
         this.add(mediaItem)
     }
 
-    private fun MutableList<MediaBrowserCompat.MediaItem>.add(
+    private fun MutableList<MediaItem>.add(
         resId: Int,
         mediaId: String,
-        icon: Int?,
         groupNameId: Int?,
-        browsable: Boolean = true
+        browsable: Boolean = true,
+        folderType: Int = FOLDER_TYPE_MIXED
     ) {
-        val builder = MediaDescriptionCompat.Builder()
-        builder.setTitle(getString(resId))
-        builder.setMediaId(mediaId)
+        val applicationContext = UApp.applicationContext()
 
-        if (icon != null)
-            builder.setIconUri(Util.getUriToDrawable(applicationContext, icon))
-
-        if (groupNameId != null)
-            builder.setExtras(
-                Bundle().apply {
-                    putString(
-                        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
-                        getString(groupNameId)
-                    )
-                }
-            )
-
-        val mediaItem = MediaBrowserCompat.MediaItem(
-            builder.build(),
-            if (browsable) MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-            else MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+        val mediaItem = buildMediaItem(
+            applicationContext.getString(resId),
+            mediaId,
+            isPlayable = false,
+            folderType = folderType
         )
 
         this.add(mediaItem)
     }
 
-    private fun MutableList<MediaBrowserCompat.MediaItem>.addPlayAllItem(
+    private fun MutableList<MediaItem>.addPlayAllItem(
         mediaId: String,
     ) {
         this.add(
             R.string.select_album_play_all,
             mediaId,
-            R.drawable.ic_stat_play_dark,
             null,
             false
         )
@@ -1098,4 +1082,52 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             null
         }
     }
+
+
+    private fun buildMediaItemFromTrack(
+        track: Track,
+        mediaId: String,
+        isPlayable: Boolean
+    ): MediaItem {
+
+        return buildMediaItem(
+            title = track.title ?: "",
+            mediaId = mediaId,
+            isPlayable = isPlayable,
+            folderType = FOLDER_TYPE_NONE,
+            album = track.album,
+            artist = track.artist,
+            genre = track.genre,
+        )
+    }
+
+    @Suppress("LongParameterList")
+    private fun buildMediaItem(
+        title: String,
+        mediaId: String,
+        isPlayable: Boolean,
+        @MediaMetadata.FolderType folderType: Int,
+        album: String? = null,
+        artist: String? = null,
+        genre: String? = null,
+        sourceUri: Uri? = null,
+        imageUri: Uri? = null,
+    ): MediaItem {
+        val metadata =
+            MediaMetadata.Builder()
+                .setAlbumTitle(album)
+                .setTitle(title)
+                .setArtist(artist)
+                .setGenre(genre)
+                .setFolderType(folderType)
+                .setIsPlayable(isPlayable)
+                .setArtworkUri(imageUri)
+                .build()
+        return MediaItem.Builder()
+            .setMediaId(mediaId)
+            .setMediaMetadata(metadata)
+            .setUri(sourceUri)
+            .build()
+    }
+
 }

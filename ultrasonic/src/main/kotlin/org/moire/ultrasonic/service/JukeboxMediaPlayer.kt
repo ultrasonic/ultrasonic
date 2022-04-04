@@ -8,6 +8,7 @@ package org.moire.ultrasonic.service
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -145,7 +146,7 @@ class JukeboxMediaPlayer(private val downloader: Downloader) {
     private fun disableJukeboxOnError(x: Throwable, resourceId: Int) {
         Timber.w(x.toString())
         val context = applicationContext()
-        Handler().post { toast(context, resourceId, false) }
+        Handler(Looper.getMainLooper()).post { toast(context, resourceId, false) }
         mediaPlayerControllerLazy.value.isJukeboxEnabled = false
     }
 

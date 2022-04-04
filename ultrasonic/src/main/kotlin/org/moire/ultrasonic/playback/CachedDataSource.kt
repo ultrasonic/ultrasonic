@@ -30,7 +30,7 @@ class CachedDataSource(
 ) : BaseDataSource(false) {
 
     class Factory(
-        var upstreamDataSourceFactory: DataSource.Factory
+        private var upstreamDataSourceFactory: DataSource.Factory
     ) : DataSource.Factory {
 
         private var eventListener: EventListener? = null
@@ -112,16 +112,16 @@ class CachedDataSource(
     }
 
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
-        if (cachePath != null) {
+        return if (cachePath != null) {
             try {
-                return readInternal(buffer, offset, length)
+                readInternal(buffer, offset, length)
             } catch (e: IOException) {
                 throw HttpDataSource.HttpDataSourceException.createForIOException(
                     e, Util.castNonNull(dataSpec), HttpDataSource.HttpDataSourceException.TYPE_READ
                 )
             }
         } else {
-            return upstreamDataSource.read(buffer, offset, length)
+            upstreamDataSource.read(buffer, offset, length)
         }
     }
 

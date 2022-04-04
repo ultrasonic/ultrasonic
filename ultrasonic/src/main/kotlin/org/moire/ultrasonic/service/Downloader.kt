@@ -64,7 +64,7 @@ class Downloader(
 
     private val rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
-    var downloadChecker = object : Runnable {
+    private var downloadChecker = object : Runnable {
         override fun run() {
             try {
                 Timber.w("Checking Downloads")
@@ -399,11 +399,11 @@ class Downloader(
                 val fileLength = Storage.getFromPath(downloadFile.partialFile)?.length ?: 0
 
                 needsDownloading = (
-                    downloadFile.desiredBitRate == 0 ||
-                        duration == null ||
-                        duration == 0 ||
-                        fileLength == 0L
-                    )
+                        downloadFile.desiredBitRate == 0 ||
+                                duration == null ||
+                                duration == 0 ||
+                                fileLength == 0L
+                        )
 
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.
