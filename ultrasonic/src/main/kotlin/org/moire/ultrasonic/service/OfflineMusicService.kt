@@ -563,7 +563,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         } catch (ignored: Exception) {
         }
 
-        artist = meta.artist ?: file.parent!!.parent!!.name
+        artist = meta.artist ?: file.parent!!.parent?.name ?: ""
         album = meta.album ?: file.parent!!.name
         title = meta.title ?: title
         isVideo = meta.hasVideo != null
