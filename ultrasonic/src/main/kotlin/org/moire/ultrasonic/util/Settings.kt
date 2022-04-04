@@ -141,10 +141,6 @@ object Settings {
         by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true)
 
     @JvmStatic
-    var gaplessPlayback
-        by BooleanSetting(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, false)
-
-    @JvmStatic
     var shouldTransitionOnPlayback by BooleanSetting(
         Constants.PREFERENCES_KEY_DOWNLOAD_TRANSITION,
         true

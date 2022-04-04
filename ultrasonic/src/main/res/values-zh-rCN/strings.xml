@@ -212,8 +212,6 @@
     <string name="settings.disc_sort_summary">按光盘编号和曲目编号对歌曲列表进行排序</string>
     <string name="settings.display_bitrate">展示比特率和文件后缀</string>
     <string name="settings.display_bitrate_summary">在艺术家姓名后追加比特率和文件后缀</string>
-    <string name="settings.gapless_playback">无缝播放</string>
-    <string name="settings.gapless_playback_summary">启用无缝播放</string>
     <string name="settings.hide_media_summary">隐藏来自其他应用的音乐</string>
     <string name="settings.hide_media_title">隐藏其他来源</string>
     <string name="settings.hide_media_toast">在安卓系统下次扫描音乐时生效。</string>

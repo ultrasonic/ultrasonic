@@ -212,8 +212,6 @@
     <string name="settings.display_bitrate_summary">Ajouter le nom d\'artiste, bitrate et suffixe du fichier</string>
     <string name="settings.download_transition">Afficher le téléchargement lors de la lecture</string>
     <string name="settings.download_transition_summary">Aller vers les téléchargements lorsque qu\'un titre est écouté</string>
-    <string name="settings.gapless_playback">Lecture sans interruption</string>
-    <string name="settings.gapless_playback_summary">Activer la lecture sans interruption</string>
     <string name="settings.hide_media_summary">Masquer les fichiers musicaux et les couvertures d\'album aux autres applis (Galerie, Musique, etc.)</string>
     <string name="settings.hide_media_title">Masquer aux autres</string>
     <string name="settings.hide_media_toast">Prendra effet la prochaine fois qu\'Android recensera les médias disponibles sur l\'appareil.</string>

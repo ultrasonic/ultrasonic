@@ -217,8 +217,6 @@
     <string name="settings.display_bitrate_summary">Añadir el nombre del artista con la tasa de bits y la extensión del archivo</string>
     <string name="settings.download_transition">Mostrar descargas en reproducción</string>
     <string name="settings.download_transition_summary">Mostrar la actividad de descarga cuando comienza la reproducción</string>
-    <string name="settings.gapless_playback">Reproducción sin pausas</string>
-    <string name="settings.gapless_playback_summary">Activa la reproducción sin pausas</string>
     <string name="settings.hide_media_summary">Oculta los archivos de música desde otras aplicaciones.</string>
     <string name="settings.hide_media_title">Ocultar desde otras</string>
     <string name="settings.hide_media_toast">Tiene efecto la próxima vez que Android escanee la música de tu dispositivo.</string>

@@ -210,8 +210,6 @@
     <string name="settings.display_bitrate">Bitrate und Dateiendung anzeigen</string>
     <string name="settings.display_bitrate_summary">Bitrate und Dateityp hinter der Künstler*in anzeigen</string>
     <string name="settings.download_transition_summary">Herunterladen zusammen mit der Wiedergabe starten.</string>
-    <string name="settings.gapless_playback">Lückenlose Wiedergabe</string>
-    <string name="settings.gapless_playback_summary">Lückenlose Wiedergabe aktivieren</string>
     <string name="settings.hide_media_summary">Musikdateien vor anderen Apps verbergen</string>
     <string name="settings.hide_media_title">Vor anderen verbergen</string>
     <string name="settings.hide_media_toast">Wird beim nächsten Durchsuchen nach Musik durch Android wirksam.</string>

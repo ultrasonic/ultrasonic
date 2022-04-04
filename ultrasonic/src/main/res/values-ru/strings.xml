@@ -206,8 +206,6 @@
     <string name="settings.disc_sort_summary">Сортировать список песен по номеру диска и треку</string>
     <string name="settings.display_bitrate_summary">Добавить имя исполнителя с битрейтом и суффиксом файла</string>
     <string name="settings.download_transition_summary">Переход к загрузке активности при запуске воспроизведения</string>
-    <string name="settings.gapless_playback">Воспроизведение без промежутка</string>
-    <string name="settings.gapless_playback_summary">Включить воспроизведение без паузы</string>
     <string name="settings.hide_media_summary">Включить воспроизведение без паузы</string>
     <string name="settings.hide_media_title">Скрыть от других</string>
     <string name="settings.hide_media_toast">Вступает в силу в следующий раз, Android сканирует ваш телефон на предмет музыки</string>

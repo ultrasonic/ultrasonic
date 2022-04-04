@@ -85,7 +85,6 @@ object Constants {
     const val PREFERENCES_KEY_DEFAULT_SONGS = "defaultSongs"
     const val PREFERENCES_KEY_DEFAULT_ARTISTS = "defaultArtists"
     const val PREFERENCES_KEY_SHOW_NOW_PLAYING = "showNowPlaying"
-    const val PREFERENCES_KEY_GAPLESS_PLAYBACK = "gaplessPlayback"
     const val PREFERENCES_KEY_PLAYBACK_CONTROL_SETTINGS = "playbackControlSettings"
     const val PREFERENCES_KEY_CLEAR_SEARCH_HISTORY = "clearSearchHistory"
     const val PREFERENCES_KEY_DOWNLOAD_TRANSITION = "transitionToDownloadOnPlay"

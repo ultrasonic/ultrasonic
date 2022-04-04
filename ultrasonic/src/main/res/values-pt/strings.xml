@@ -195,8 +195,6 @@
     <string name="settings.disc_sort_summary">Classificar músicas pelo número do álbum e faixas.</string>
     <string name="settings.display_bitrate_summary">Adiciona o nome do artista com a taxa de bits e sufixo do ficheiro</string>
     <string name="settings.download_transition_summary">Transição para atividade de download quando iniciar reprodução</string>
-    <string name="settings.gapless_playback">Reprodução sem Interrupção</string>
-    <string name="settings.gapless_playback_summary">Habilita reprodução sem interrupção</string>
     <string name="settings.hide_media_summary">Esconder músicas de outros aplicativos.</string>
     <string name="settings.hide_media_title">Esconder de Outros</string>
     <string name="settings.hide_media_toast">Será realizado na próxima vez que o Android procurar por músicas em seu telemóvel.</string>

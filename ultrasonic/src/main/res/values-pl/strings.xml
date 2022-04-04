@@ -195,8 +195,6 @@
     <string name="settings.disc_sort_summary">Sortuje listę utworów wg numeru dysku i numeru utworu</string>
     <string name="settings.display_bitrate_summary">Dołącza bitrate i typ pliku do nazwy artysty</string>
     <string name="settings.download_transition_summary">Wyświetla postęp pobierania podczas odtwarzania</string>
-    <string name="settings.gapless_playback">Odtwarzanie bez przerw</string>
-    <string name="settings.gapless_playback_summary">Włącz odtwarzanie bez przerw między utworami</string>
     <string name="settings.hide_media_summary">Ukrywa pliki muzyczne przed innymi aplikacjami.</string>
     <string name="settings.hide_media_title">Ukryj pliki</string>
     <string name="settings.hide_media_toast">Efekt widoczny będzie po następnym skanowaniu muzyki przez system Android</string>

@@ -217,8 +217,6 @@
     <string name="settings.display_bitrate_summary">Bitsnelheid en bestandsextensie toevoegen aan artiestennaam</string>
     <string name="settings.download_transition">Downloads tonen bij afspelen</string>
     <string name="settings.download_transition_summary">Overschakelen naar downloadactiviteit na starten van afspelen</string>
-    <string name="settings.gapless_playback">Naadloze overgang</string>
-    <string name="settings.gapless_playback_summary">Naadloze overgang tussen nummers inschakelen</string>
     <string name="settings.hide_media_summary">Muziekbestanden verbergen voor andere apps.</string>
     <string name="settings.hide_media_title">Verbergen voor andere apps</string>
     <string name="settings.hide_media_toast">Dit wordt toegepast bij de volgende keer dat Android je muziek doorzoekt.</string>

@@ -195,8 +195,6 @@
     <string name="settings.disc_sort_summary">Řadit seznam skladeb dle čísla CD a čísla skladby</string>
     <string name="settings.display_bitrate_summary">Připojovat jméno umělce, bitrate a příponu souboru</string>
     <string name="settings.download_transition_summary">Při spuštění přehrávání přepnout na aktivitu stahování</string>
-    <string name="settings.gapless_playback">Přehrávání bez pauz</string>
-    <string name="settings.gapless_playback_summary">Zapnout přehrávání bez pauz</string>
     <string name="settings.hide_media_summary">Skrýt hudební soubory před ostatními aplikacemi.</string>
     <string name="settings.hide_media_title">Skrýt před ostatními</string>
     <string name="settings.hide_media_toast">Nabyde účinnosti při příštím skenování hudby systému Android.</string>

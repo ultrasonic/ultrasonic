@@ -204,8 +204,6 @@
     <string name="settings.disc_sort_summary">Dalok rendezése albumsorszám és dalsorszám szerint.</string>
     <string name="settings.display_bitrate_summary">Bitráta és fájlkiterjesztés megjelenítése az előadónév mellett.</string>
     <string name="settings.download_transition_summary">Letöltési aktivitás megjelenítése a lejátszás indításakor.</string>
-    <string name="settings.gapless_playback">Egybefüggő lejátszás</string>
-    <string name="settings.gapless_playback_summary">Kihagyás (dalszünet) nélküli egybefüggő lejátszás (Gapless).</string>
     <string name="settings.hide_media_summary">Zenefájlok elrejtése egyéb alkalmazások elől.</string>
     <string name="settings.hide_media_title">Elrejtés</string>
     <string name="settings.hide_media_toast">A következő alkalomtól lép életbe, amikor az Android zenefájlokat keres a telefonon.</string>
