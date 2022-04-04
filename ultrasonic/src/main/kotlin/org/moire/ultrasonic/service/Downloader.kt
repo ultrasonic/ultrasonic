@@ -131,6 +131,7 @@ class Downloader(
         }
     }
 
+    @Suppress("ComplexMethod", "ComplexCondition")
     @Synchronized
     fun checkDownloadsInternal() {
         if (!Util.isExternalStoragePresent() || !storageMonitor.isExternalStorageAvailable) {
@@ -355,6 +356,7 @@ class Downloader(
     private inner class DownloadTask(private val downloadFile: DownloadFile) : CancellableTask() {
         val musicService = MusicServiceFactory.getMusicService()
 
+        @Suppress("LongMethod", "ComplexMethod", "NestedBlockDepth")
         override fun execute() {
 
             downloadFile.downloadPrepared = false

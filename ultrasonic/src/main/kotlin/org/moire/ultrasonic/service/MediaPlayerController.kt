@@ -100,6 +100,7 @@ class MediaPlayerController(
                 }
 
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                    onTrackCompleted(mediaItem)
                     legacyPlaylistManager.updateCurrentPlaying(mediaItem)
                     publishPlaybackState()
                 }
@@ -164,6 +165,27 @@ class MediaPlayerController(
         }
 
         Timber.d("Processed player state change")
+    }
+
+    private fun onTrackCompleted(mediaItem: MediaItem?) {
+        // This method is called before we update the currentPlaying,
+        // so in fact currentPlaying will refer to the track that has just finished.
+        if (legacyPlaylistManager.currentPlaying != null) {
+            val song = legacyPlaylistManager.currentPlaying!!.track
+            if (song.bookmarkPosition > 0 && Settings.shouldClearBookmark) {
+                val musicService = getMusicService()
+                try {
+                    musicService.deleteBookmark(song.id)
+                } catch (ignored: Exception) {
+                }
+            }
+        }
+
+        // Playback has ended...
+        if (mediaItem == null && Settings.shouldClearPlaylist) {
+            clear(true)
+            jukeboxMediaPlayer.updatePlaylist()
+        }
     }
 
     private fun publishPlaybackState() {
@@ -465,7 +487,7 @@ class MediaPlayerController(
 
         playbackStateSerializer.serialize(
             legacyPlaylistManager.playlist,
-            legacyPlaylistManager.currentPlayingIndex,
+            currentMediaItemIndex,
             playerPosition
         )
 

@@ -1017,6 +1017,7 @@ class PlayerFragment :
         }
     }
 
+    @Suppress("LongMethod")
     @Synchronized
     private fun onSliderProgressChanged() {
 

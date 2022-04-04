@@ -22,7 +22,6 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MediaMetadata.FOLDER_TYPE_MIXED
 import androidx.media3.common.MediaMetadata.FOLDER_TYPE_NONE
 import androidx.media3.common.MediaMetadata.FOLDER_TYPE_PLAYLISTS
-import androidx.media3.common.util.Util
 import com.google.common.collect.ImmutableList
 import org.json.JSONObject
 
@@ -87,12 +86,6 @@ object MediaItemTree {
             .setMediaMetadata(metadata)
             .setUri(sourceUri)
             .build()
-    }
-
-    @androidx.media3.common.util.UnstableApi
-    private fun loadJSONFromAsset(assets: AssetManager): String {
-        val buffer = assets.open("catalog.json").use { Util.toByteArray(it) }
-        return String(buffer, Charsets.UTF_8)
     }
 
     fun initialize(assets: AssetManager) {

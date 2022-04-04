@@ -101,7 +101,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         }
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "ComplexMethod")
     private fun handleKeyEvent(event: KeyEvent) {
 
         if (event.action != KeyEvent.ACTION_DOWN || event.repeatCount > 0) return
@@ -140,6 +140,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
     /**
      * This function processes the intent that could come from other applications.
      */
+    @Suppress("ComplexMethod")
     private fun handleUltrasonicIntent(action: String) {
 
         val isRunning = created

@@ -84,36 +84,6 @@ class DownloadService : Service() {
         stopSelf()
     }
 
-    private fun setupOnSongCompletedHandler() {
-//        localMediaPlayer.onSongCompleted = { currentPlaying: DownloadFile? ->
-//            val index = downloader.currentPlayingIndex
-//
-//            if (currentPlaying != null) {
-//                val song = currentPlaying.track
-//                if (song.bookmarkPosition > 0 && Settings.shouldClearBookmark) {
-//                    val musicService = getMusicService()
-//                    try {
-//                        musicService.deleteBookmark(song.id)
-//                    } catch (ignored: Exception) {
-//                    }
-//                }
-//            }
-//            if (index != -1) {
-//
-//                if (index + 1 < 0 || index + 1 >= downloader.getPlaylist().size) {
-//                    if (Settings.shouldClearPlaylist) {
-//                        clear(true)
-//                        jukeboxMediaPlayer.updatePlaylist()
-//                    }
-//                    resetPlayback()
-//                } else {
-//                    play(index + 1)
-//                }
-//            }
-//            null
-//        }
-    }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 

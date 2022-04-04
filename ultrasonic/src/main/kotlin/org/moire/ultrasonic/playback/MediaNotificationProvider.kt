@@ -12,6 +12,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -38,6 +39,7 @@ internal class MediaNotificationProvider(context: Context) :
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     )
 
+    @Suppress("LongMethod")
     override fun createNotification(
         mediaController: MediaController,
         actionFactory: ActionFactory,
@@ -133,7 +135,7 @@ internal class MediaNotificationProvider(context: Context) :
     }
 
     private fun ensureNotificationChannel() {
-        if (Util.SDK_INT < 26 ||
+        if (Util.SDK_INT < Build.VERSION_CODES.O ||
             notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) != null
         ) {
             return

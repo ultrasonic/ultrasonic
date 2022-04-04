@@ -93,11 +93,6 @@ class LegacyPlaylistManager : KoinComponent {
     val playlist: List<DownloadFile>
         get() = _playlist
 
-    // FIXME: Returns wrong count if item is twice in queue
-    @get:Synchronized
-    val currentPlayingIndex: Int
-        get() = _playlist.indexOf(currentPlaying)
-
     @get:Synchronized
     val playlistDuration: Long
         get() {

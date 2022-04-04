@@ -43,6 +43,7 @@ import timber.log.Timber
  * priority) the `dataSpec`, [.setRequestProperty] and the default parameters used to
  * construct the instance.
  */
+@Suppress("MagicNumber")
 @UnstableApi
 open class APIDataSource private constructor(
     subsonicAPIClient: SubsonicAPIClient
@@ -124,6 +125,7 @@ open class APIDataSource private constructor(
         requestProperties.clear()
     }
 
+    @Suppress("LongMethod", "NestedBlockDepth")
     @Throws(HttpDataSourceException::class)
     override fun open(dataSpec: DataSpec): Long {
         this.dataSpec = dataSpec
@@ -171,7 +173,7 @@ open class APIDataSource private constructor(
             }
             val errorResponseBody: ByteArray = try {
                 Util.toByteArray(Assertions.checkNotNull(responseByteStream))
-            } catch (e: IOException) {
+            } catch (ignore: IOException) {
                 Util.EMPTY_BYTE_ARRAY
             }
             val headers = response.headers().toMultimap()
@@ -241,6 +243,7 @@ open class APIDataSource private constructor(
      * occurs while reading from the source, or if the data ended before skipping the specified
      * number of bytes.
      */
+    @Suppress("ThrowsCount")
     @Throws(HttpDataSourceException::class)
     private fun skipFully(bytesToSkip: Long, dataSpec: DataSpec) {
         var bytesToSkip = bytesToSkip
