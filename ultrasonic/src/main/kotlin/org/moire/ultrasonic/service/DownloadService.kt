@@ -52,7 +52,6 @@ class DownloadService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-
         // Create Notification Channel
         createNotificationChannel()
         updateNotification()

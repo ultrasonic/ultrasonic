@@ -110,10 +110,10 @@ class MediaPlayerLifecycleSupport : KoinComponent {
 
         val autoStart =
             keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ||
-                    keyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
-                    keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
-                    keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS ||
-                    keyCode == KeyEvent.KEYCODE_MEDIA_NEXT
+                keyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
+                keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
+                keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS ||
+                keyCode == KeyEvent.KEYCODE_MEDIA_NEXT
 
         // We can receive intents (e.g. MediaButton) when everything is stopped, so we need to start
         onCreate(autoStart) {
@@ -140,23 +140,23 @@ class MediaPlayerLifecycleSupport : KoinComponent {
     /**
      * This function processes the intent that could come from other applications.
      */
-    private fun handleUltrasonicIntent(intentAction: String) {
+    private fun handleUltrasonicIntent(action: String) {
 
         val isRunning = created
 
         // If Ultrasonic is not running, do nothing to stop or pause
-        if (!isRunning && (intentAction == Constants.CMD_PAUSE || intentAction == Constants.CMD_STOP))
+        if (!isRunning && (action == Constants.CMD_PAUSE || action == Constants.CMD_STOP))
             return
 
-        val autoStart = intentAction == Constants.CMD_PLAY ||
-                intentAction == Constants.CMD_RESUME_OR_PLAY ||
-                intentAction == Constants.CMD_TOGGLEPAUSE ||
-                intentAction == Constants.CMD_PREVIOUS ||
-                intentAction == Constants.CMD_NEXT
+        val autoStart = action == Constants.CMD_PLAY ||
+            action == Constants.CMD_RESUME_OR_PLAY ||
+            action == Constants.CMD_TOGGLEPAUSE ||
+            action == Constants.CMD_PREVIOUS ||
+            action == Constants.CMD_NEXT
 
         // We can receive intents when everything is stopped, so we need to start
         onCreate(autoStart) {
-            when (intentAction) {
+            when (action) {
                 Constants.CMD_PLAY -> mediaPlayerController.play()
                 Constants.CMD_RESUME_OR_PLAY ->
                     // If Ultrasonic wasn't running, the autoStart is enough to resume,

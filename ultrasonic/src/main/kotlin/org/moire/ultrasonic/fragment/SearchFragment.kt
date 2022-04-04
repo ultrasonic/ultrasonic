@@ -151,7 +151,7 @@ class SearchFragment : MultiListFragment<Identifiable>(), KoinComponent {
 
         val arguments = arguments
         val autoPlay = arguments != null &&
-                arguments.getBoolean(Constants.INTENT_AUTOPLAY, false)
+            arguments.getBoolean(Constants.INTENT_AUTOPLAY, false)
         val query = arguments?.getString(Constants.INTENT_QUERY)
 
         // If started with a query, enter it to the searchView

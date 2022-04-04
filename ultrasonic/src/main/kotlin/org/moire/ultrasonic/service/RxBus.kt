@@ -2,7 +2,6 @@ package org.moire.ultrasonic.service
 
 import android.os.Bundle
 import android.support.v4.media.session.MediaSessionCompat
-import android.view.KeyEvent
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable

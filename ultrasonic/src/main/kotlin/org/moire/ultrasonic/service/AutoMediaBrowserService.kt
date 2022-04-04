@@ -107,7 +107,6 @@ class AutoMediaBrowserService : MediaBrowserServiceCompat() {
             playFromSearchCommand(it.first)
         }
 
-
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(
             {

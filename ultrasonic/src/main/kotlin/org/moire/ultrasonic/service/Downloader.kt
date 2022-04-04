@@ -6,6 +6,11 @@ import android.os.Looper
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.util.Locale
+import java.util.PriorityQueue
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
@@ -22,11 +27,6 @@ import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.util.Locale
-import java.util.PriorityQueue
 
 /**
  * This class is responsible for maintaining the playlist and downloading
@@ -232,7 +232,6 @@ class Downloader(
         return (oldSize != activelyDownloading.size)
     }
 
-
     @get:Synchronized
     val all: List<DownloadFile>
         get() {
@@ -296,7 +295,6 @@ class Downloader(
         updateLiveData()
     }
 
-
     @Synchronized
     fun downloadBackground(songs: List<Track>, save: Boolean) {
 
@@ -338,7 +336,6 @@ class Downloader(
         }
         return downloadFile
     }
-
 
     companion object {
         const val PARALLEL_DOWNLOADS = 3
@@ -400,8 +397,11 @@ class Downloader(
                 val fileLength = Storage.getFromPath(downloadFile.partialFile)?.length ?: 0
 
                 needsDownloading = (
-                        downloadFile.desiredBitRate == 0 || duration == null || duration == 0 || fileLength == 0L
-                        )
+                    downloadFile.desiredBitRate == 0 ||
+                        duration == null ||
+                        duration == 0 ||
+                        fileLength == 0L
+                    )
 
                 if (needsDownloading) {
                     // Attempt partial HTTP GET, appending to the file if it exists.

@@ -80,9 +80,9 @@ class DownloadFile(
 
     init {
         partialFile = FileUtil.getParentPath(pinnedFile) + "/" +
-                FileUtil.getPartialFile(FileUtil.getNameFromPath(pinnedFile))
+            FileUtil.getPartialFile(FileUtil.getNameFromPath(pinnedFile))
         completeFile = FileUtil.getParentPath(pinnedFile) + "/" +
-                FileUtil.getCompleteFile(FileUtil.getNameFromPath(pinnedFile))
+            FileUtil.getCompleteFile(FileUtil.getNameFromPath(pinnedFile))
     }
 
     /**
@@ -98,7 +98,6 @@ class DownloadFile(
         // so it won't get cleaned up accidentally
         downloadPrepared = true
     }
-
 
     @Synchronized
     fun cancelDownload() {
@@ -122,7 +121,7 @@ class DownloadFile(
     @get:Synchronized
     val isWorkDone: Boolean
         get() = Storage.isPathExists(completeFile) && !shouldSave ||
-                Storage.isPathExists(pinnedFile) || saveWhenDone || completeWhenDone
+            Storage.isPathExists(pinnedFile) || saveWhenDone || completeWhenDone
 
     @get:Synchronized
     val isDownloading: Boolean

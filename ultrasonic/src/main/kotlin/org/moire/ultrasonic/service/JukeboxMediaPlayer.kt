@@ -13,6 +13,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
+import java.util.concurrent.Executors
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
+import kotlin.math.roundToInt
 import org.koin.java.KoinJavaComponent.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.api.subsonic.ApiNotSupportedException
@@ -24,13 +31,6 @@ import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.Util.sleepQuietly
 import org.moire.ultrasonic.util.Util.toast
 import timber.log.Timber
-import java.util.concurrent.Executors
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicLong
-import kotlin.math.roundToInt
 
 /**
  * Provides an asynchronous interface to the remote jukebox on the Subsonic server.
@@ -204,7 +204,10 @@ class JukeboxMediaPlayer(private val downloader: Downloader) {
 
     val positionSeconds: Int
         get() {
-            if (jukeboxStatus == null || jukeboxStatus!!.positionSeconds == null || timeOfLastUpdate.get() == 0L) {
+            if (jukeboxStatus == null ||
+                jukeboxStatus!!.positionSeconds == null ||
+                timeOfLastUpdate.get() == 0L
+            ) {
                 return 0
             }
             if (jukeboxStatus!!.isPlaying) {

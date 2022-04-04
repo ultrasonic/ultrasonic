@@ -10,9 +10,8 @@ UI:
 [] If wanted also hand them to Downloader.kt
 [x] Service plays MediaItem through OkHttp
 [x] UI needs to receive info from service
-[] Create a Cache Layer
+[x] Create a Cache Layer
 [] Translate AutoMediaBrowserService
 [] Add new shuffle icon....
 
-DownloadNotificationHelper
 convertToPlaybackStateCompatState()

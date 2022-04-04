@@ -45,6 +45,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.math.abs
+import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -76,16 +86,6 @@ import org.moire.ultrasonic.util.Util
 import org.moire.ultrasonic.view.AutoRepeatButton
 import org.moire.ultrasonic.view.VisualizerView
 import timber.log.Timber
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
-import kotlin.coroutines.cancellation.CancellationException
-import kotlin.math.abs
-import kotlin.math.max
 
 /**
  * Contains the Music Player screen of Ultrasonic with playback controls and the playlist
@@ -215,7 +215,6 @@ class PlayerFragment :
         swipeDistance = (width + height) * PERCENTAGE_OF_SCREEN_FOR_SWIPE / 100
         swipeVelocity = swipeDistance
         gestureScanner = GestureDetector(context, this)
-
 
         findViews(view)
         val previousButton: AutoRepeatButton = view.findViewById(R.id.button_previous)
@@ -829,7 +828,6 @@ class PlayerFragment :
         scrollToCurrent()
     }
 
-
     private fun initPlaylistDisplay() {
         // Create a View Manager
         viewManager = LinearLayoutManager(this.context)
@@ -869,63 +867,63 @@ class PlayerFragment :
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         ) {
 
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
 
-                val from = viewHolder.bindingAdapterPosition
-                val to = target.bindingAdapterPosition
+                    val from = viewHolder.bindingAdapterPosition
+                    val to = target.bindingAdapterPosition
 
-                // Move it in the data set
-                mediaPlayerController.moveItemInPlaylist(from, to)
-                viewAdapter.submitList(mediaPlayerController.playList)
+                    // Move it in the data set
+                    mediaPlayerController.moveItemInPlaylist(from, to)
+                    viewAdapter.submitList(mediaPlayerController.playList)
 
-                return true
-            }
+                    return true
+                }
 
-            // Swipe to delete from playlist
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val pos = viewHolder.bindingAdapterPosition
-                val file = mediaPlayerController.playList[pos]
-                mediaPlayerController.removeFromPlaylist(file)
+                // Swipe to delete from playlist
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val pos = viewHolder.bindingAdapterPosition
+                    val file = mediaPlayerController.playList[pos]
+                    mediaPlayerController.removeFromPlaylist(file)
 
-                val songRemoved = String.format(
-                    resources.getString(R.string.download_song_removed),
-                    file.track.title
-                )
-                Util.toast(context, songRemoved)
+                    val songRemoved = String.format(
+                        resources.getString(R.string.download_song_removed),
+                        file.track.title
+                    )
+                    Util.toast(context, songRemoved)
 
-                viewAdapter.submitList(mediaPlayerController.playList)
-                viewAdapter.notifyDataSetChanged()
-            }
+                    viewAdapter.submitList(mediaPlayerController.playList)
+                    viewAdapter.notifyDataSetChanged()
+                }
 
-            override fun onSelectedChanged(
-                viewHolder: RecyclerView.ViewHolder?,
-                actionState: Int
-            ) {
-                super.onSelectedChanged(viewHolder, actionState)
+                override fun onSelectedChanged(
+                    viewHolder: RecyclerView.ViewHolder?,
+                    actionState: Int
+                ) {
+                    super.onSelectedChanged(viewHolder, actionState)
 
-                if (actionState == ACTION_STATE_DRAG) {
-                    viewHolder?.itemView?.alpha = 0.6f
+                    if (actionState == ACTION_STATE_DRAG) {
+                        viewHolder?.itemView?.alpha = 0.6f
+                    }
+                }
+
+                override fun clearView(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder
+                ) {
+                    super.clearView(recyclerView, viewHolder)
+
+                    viewHolder.itemView.alpha = 1.0f
+                }
+
+                override fun isLongPressDragEnabled(): Boolean {
+                    return false
                 }
             }
-
-            override fun clearView(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ) {
-                super.clearView(recyclerView, viewHolder)
-
-                viewHolder.itemView.alpha = 1.0f
-            }
-
-            override fun isLongPressDragEnabled(): Boolean {
-                return false
-            }
-        }
         )
 
         dragTouchHelper.attachToRecyclerView(playlistView)

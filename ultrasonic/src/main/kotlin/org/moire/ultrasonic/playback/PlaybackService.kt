@@ -43,7 +43,6 @@ import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.util.Constants
 
-
 class PlaybackService : MediaLibraryService(), KoinComponent {
     private lateinit var player: ExoPlayer
     private lateinit var mediaLibrarySession: MediaLibrarySession
@@ -154,7 +153,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
                 .build()
 
             return item
-
         }
     }
 
@@ -180,26 +178,19 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         *  * Could be refined to use WAKE_MODE_LOCAL when offline....
         */
 
-
         setMediaNotificationProvider(MediaNotificationProvider(UApp.applicationContext()))
-
 
         val subsonicAPIClient: SubsonicAPIClient by inject()
 
         // Create a MediaSource which passes calls through our OkHttp Stack
-        dataSourceFactory = OkHttpDataSource.Factory(subsonicAPIClient)
-
+        dataSourceFactory = APIDataSource.Factory(subsonicAPIClient)
 
         // A download cache should not evict media, so should use a NoopCacheEvictor.
         // A download cache should not evict media, so should use a NoopCacheEvictor.
         // TODO: Add cache: https://stackoverflow.com/questions/28700391/using-cache-in-exoplayer
 //        var cache = UltrasonicCache()
 //
-//        val cacheDataSourceFactory: DataSource.Factory = CacheDataSource.Factory()
-//            .setCache(cache)
-//            .setUpstreamDataSourceFactory(dataSourceFactory)
-//            .setCacheWriteDataSinkFactory(null) // Disable writing.
-
+        val cacheDataSourceFactory: DataSource.Factory = CachedDataSource.Factory(dataSourceFactory)
 
         // Create a renderer with HW rendering support
         val renderer = DefaultRenderersFactory(this)
@@ -210,12 +201,12 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             .setAudioAttributes(getAudioAttributes(), true)
             .setWakeMode(C.WAKE_MODE_NETWORK)
             .setHandleAudioBecomingNoisy(true)
-            .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
-            //.setRenderersFactory(renderer)
+            .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
+            // .setRenderersFactory(renderer)
             .build()
 
         // Enable audio offload
-        //player.experimentalSetOffloadSchedulingEnabled(true)
+        // player.experimentalSetOffloadSchedulingEnabled(true)
 
         MediaItemTree.initialize(assets)
 

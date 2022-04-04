@@ -10,7 +10,6 @@ package org.moire.ultrasonic.playback
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.media3.common.C
-import androidx.media3.common.MediaLibraryInfo
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.Assertions
 import androidx.media3.common.util.UnstableApi
@@ -25,20 +24,16 @@ import androidx.media3.datasource.HttpDataSource.RequestProperties
 import androidx.media3.datasource.HttpUtil
 import androidx.media3.datasource.TransferListener
 import com.google.common.net.HttpHeaders
-import okhttp3.CacheControl
+import java.io.IOException
+import java.io.InputStream
+import java.io.InterruptedIOException
 import okhttp3.Call
 import okhttp3.ResponseBody
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.api.subsonic.response.StreamResponse
 import org.moire.ultrasonic.api.subsonic.throwOnFailure
 import org.moire.ultrasonic.api.subsonic.toStreamResponse
-import org.moire.ultrasonic.util.AbstractFile
-import org.moire.ultrasonic.util.FileUtil
-import org.moire.ultrasonic.util.Storage
 import timber.log.Timber
-import java.io.IOException
-import java.io.InputStream
-import java.io.InterruptedIOException
 
 /**
  * An [HttpDataSource] that delegates to Square's [Call.Factory].
@@ -49,38 +44,25 @@ import java.io.InterruptedIOException
  * construct the instance.
  */
 @UnstableApi
-open class OkHttpDataSource private constructor(
-    subsonicAPIClient: SubsonicAPIClient,
-    userAgent: String?,
-    cacheControl: CacheControl?,
-    defaultRequestProperties: RequestProperties?
+open class APIDataSource private constructor(
+    subsonicAPIClient: SubsonicAPIClient
 ) : BaseDataSource(true),
     HttpDataSource {
-    companion object {
-        init {
-            MediaLibraryInfo.registerModule("media3.datasource.okhttp")
-        }
-    }
 
-    /** [DataSource.Factory] for [OkHttpDataSource] instances.  */
+    /** [DataSource.Factory] for [APIDataSource] instances.  */
     class Factory(private val subsonicAPIClient: SubsonicAPIClient) : HttpDataSource.Factory {
         private val defaultRequestProperties: RequestProperties = RequestProperties()
-        private var userAgent: String? = null
         private var transferListener: TransferListener? = null
-        private var cacheControl: CacheControl? = null
 
-        override fun setDefaultRequestProperties(defaultRequestProperties: Map<String, String>): Factory {
+        override fun setDefaultRequestProperties(
+            defaultRequestProperties: Map<String, String>
+        ): Factory {
             this.defaultRequestProperties.clearAndSet(defaultRequestProperties)
             return this
         }
 
-
         /**
          * Sets the [TransferListener] that will be used.
-         *
-         *
-         * The default is `null`.
-         *
          *
          * See [DataSource.addTransferListener].
          *
@@ -92,41 +74,29 @@ open class OkHttpDataSource private constructor(
             return this
         }
 
-        override fun createDataSource(): OkHttpDataSource {
-            val dataSource = OkHttpDataSource(
-                subsonicAPIClient,
-                userAgent,
-                cacheControl,
-                defaultRequestProperties
+        override fun createDataSource(): APIDataSource {
+            val dataSource = APIDataSource(
+                subsonicAPIClient
             )
             if (transferListener != null) {
                 dataSource.addTransferListener(transferListener!!)
             }
             return dataSource
         }
-
     }
 
-
     private val subsonicAPIClient: SubsonicAPIClient = Assertions.checkNotNull(subsonicAPIClient)
-    private val requestProperties: RequestProperties
-    private val userAgent: String?
-    private val cacheControl: CacheControl?
-    private val defaultRequestProperties: RequestProperties?
+    private val requestProperties: RequestProperties = RequestProperties()
     private var dataSpec: DataSpec? = null
     private var response: retrofit2.Response<ResponseBody>? = null
     private var responseByteStream: InputStream? = null
     private var openedNetwork = false
-    private var openedFile = false
-    private var cachePath: String? = null
-    private var cacheFile: AbstractFile? = null
     private var bytesToRead: Long = 0
     private var bytesRead: Long = 0
 
     override fun getUri(): Uri? {
-        return when {
-            cachePath != null -> cachePath!!.toUri()
-            response == null -> null
+        return when (response) {
+            null -> null
             else -> response!!.raw().request.url.toString().toUri()
         }
     }
@@ -164,15 +134,6 @@ open class OkHttpDataSource private constructor(
         val components = dataSpec.uri.toString().split('|')
         val id = components[0]
         val bitrate = components[1].toInt()
-        val path = components[2]
-
-        val cacheLength = checkCache(path)
-
-        // We have found an item in the cache, return early
-        if (cacheLength > 0) {
-            bytesToRead = cacheLength
-            return bytesToRead
-        }
 
         Timber.i("DATASOURCE: %s", "Start")
         val request = subsonicAPIClient.api.stream(id, bitrate, offset = 0)
@@ -216,7 +177,9 @@ open class OkHttpDataSource private constructor(
             val headers = response.headers().toMultimap()
             closeConnectionQuietly()
             val cause: IOException? =
-                if (responseCode == 416) DataSourceException(PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE) else null
+                if (responseCode == 416) DataSourceException(
+                    PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE
+                ) else null
             throw InvalidResponseCodeException(
                 responseCode, response.message(), cause, headers, dataSpec, errorResponseBody
             )
@@ -266,33 +229,7 @@ open class OkHttpDataSource private constructor(
             openedNetwork = false
             transferEnded()
             closeConnectionQuietly()
-        } else if (openedFile) {
-            openedFile = false
-            responseByteStream?.close()
-            responseByteStream = null
         }
-    }
-
-    /**
-     * Checks our cache for a matching media file
-     */
-    private fun checkCache(path: String): Long {
-        var filePath: String = path
-        var found = Storage.isPathExists(path)
-
-        if (!found) {
-            filePath = FileUtil.getCompleteFile(path)
-            found = Storage.isPathExists(filePath)
-        }
-
-        if (!found) return -1
-
-        cachePath = filePath
-
-        cacheFile = Storage.getFromPath(filePath)!!
-        responseByteStream = cacheFile!!.getFileInputStream()
-
-        return cacheFile!!.getDocumentFileDescriptor("r")!!.length
     }
 
     /**
@@ -387,12 +324,5 @@ open class OkHttpDataSource private constructor(
             response = null
         }
         responseByteStream = null
-    }
-
-    init {
-        this.userAgent = userAgent
-        this.cacheControl = cacheControl
-        this.defaultRequestProperties = defaultRequestProperties
-        requestProperties = RequestProperties()
     }
 }

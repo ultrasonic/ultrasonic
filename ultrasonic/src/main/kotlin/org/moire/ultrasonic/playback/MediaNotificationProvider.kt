@@ -60,8 +60,8 @@ internal class MediaNotificationProvider(context: Context) :
                 ActionFactory.COMMAND_SKIP_TO_PREVIOUS
             )
         )
-        if (mediaController.playbackState == Player.STATE_ENDED
-            || !mediaController.playWhenReady
+        if (mediaController.playbackState == Player.STATE_ENDED ||
+            !mediaController.playWhenReady
         ) {
             // Play action.
             builder.addAction(
@@ -133,8 +133,8 @@ internal class MediaNotificationProvider(context: Context) :
     }
 
     private fun ensureNotificationChannel() {
-        if (Util.SDK_INT < 26
-            || notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) != null
+        if (Util.SDK_INT < 26 ||
+            notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) != null
         ) {
             return
         }
@@ -154,5 +154,4 @@ internal class MediaNotificationProvider(context: Context) :
             return R.drawable.ic_stat_ultrasonic
         }
     }
-
 }

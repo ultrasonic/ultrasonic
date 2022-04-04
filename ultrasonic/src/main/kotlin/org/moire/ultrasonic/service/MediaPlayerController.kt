@@ -105,7 +105,7 @@ class MediaPlayerController(
                 }
             })
 
-            //controller?.play()
+            // controller?.play()
         }, MoreExecutors.directExecutor())
 
         created = true
@@ -158,7 +158,7 @@ class MediaPlayerController(
             }
         }
 
-        //Update widget
+        // Update widget
         if (currentPlaying != null) {
             updateWidget(playerState, currentPlaying.track)
         }
@@ -230,7 +230,6 @@ class MediaPlayerController(
             }
 
             autoPlayStart = false
-
         }
     }
 
@@ -274,7 +273,6 @@ class MediaPlayerController(
         }
     }
 
-
     @Synchronized
     fun seekTo(position: Int) {
         controller?.seekTo(position.toLong())
@@ -302,7 +300,6 @@ class MediaPlayerController(
             controller?.stop()
         }
     }
-
 
     @Synchronized
     @Deprecated("Use InsertionMode Syntax")
@@ -591,7 +588,7 @@ class MediaPlayerController(
 
         // Trigger an update
         // TODO Update Metadata of MediaItem...
-        //localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
+        // localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
         song.starred = !song.starred
     }
 
@@ -609,7 +606,7 @@ class MediaPlayerController(
             }
         }.start()
         // TODO this would be better handled with a Rx command
-        //updateNotification()
+        // updateNotification()
     }
 
     val currentMediaItem: MediaItem?
@@ -649,7 +646,6 @@ class MediaPlayerController(
         CLEAR, APPEND, AFTER_CURRENT
     }
 }
-
 
 fun Track.toMediaItem(): MediaItem {
 
