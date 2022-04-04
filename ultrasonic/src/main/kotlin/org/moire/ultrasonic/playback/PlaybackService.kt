@@ -184,12 +184,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         // Create a MediaSource which passes calls through our OkHttp Stack
         dataSourceFactory = APIDataSource.Factory(subsonicAPIClient)
-
-        // A download cache should not evict media, so should use a NoopCacheEvictor.
-        // A download cache should not evict media, so should use a NoopCacheEvictor.
-        // TODO: Add cache: https://stackoverflow.com/questions/28700391/using-cache-in-exoplayer
-//        var cache = UltrasonicCache()
-//
         val cacheDataSourceFactory: DataSource.Factory = CachedDataSource.Factory(dataSourceFactory)
 
         // Create a renderer with HW rendering support
@@ -202,11 +196,11 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             .setWakeMode(C.WAKE_MODE_NETWORK)
             .setHandleAudioBecomingNoisy(true)
             .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
-            // .setRenderersFactory(renderer)
+            .setRenderersFactory(renderer)
             .build()
 
         // Enable audio offload
-        // player.experimentalSetOffloadSchedulingEnabled(true)
+        player.experimentalSetOffloadSchedulingEnabled(true)
 
         MediaItemTree.initialize(assets)
 
