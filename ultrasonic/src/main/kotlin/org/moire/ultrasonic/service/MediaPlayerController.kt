@@ -366,7 +366,7 @@ class MediaPlayerController(
         when (insertionMode) {
             InsertionMode.CLEAR -> clear()
             InsertionMode.APPEND -> insertAt = mediaItemCount
-            InsertionMode.AFTER_CURRENT -> insertAt = currentMediaItemIndex
+            InsertionMode.AFTER_CURRENT -> insertAt = currentMediaItemIndex + 1
         }
 
         val mediaItems: List<MediaItem> = songs.map {

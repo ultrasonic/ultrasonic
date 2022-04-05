@@ -147,8 +147,12 @@ class CachedDataSource(
         return read
     }
 
+    /*
+     * This method is called by StatsDataSource to verify that the loading succeeded,
+     * so its important that we return the correct value here..
+     */
     override fun getUri(): Uri? {
-        return cachePath?.toUri()
+        return cachePath?.toUri() ?: upstreamDataSource.uri
     }
 
     override fun close() {
@@ -174,6 +178,7 @@ class CachedDataSource(
         if (!found) return -1
 
         cachePath = filePath
+        openedFile = true
 
         cacheFile = Storage.getFromPath(filePath)!!
         responseByteStream = cacheFile!!.getFileInputStream()

@@ -107,7 +107,6 @@ class AutoMediaBrowserCallback(var player: Player) :
     private val useId3Tags get() = Settings.shouldUseId3Tags
     private val musicFolderId get() = activeServerProvider.getActiveServer().musicFolderId
 
-
     /**
      * Called when a {@link MediaBrowser} requests the root {@link MediaItem} by {@link
      * MediaBrowser#getLibraryRoot(LibraryParams)}.
@@ -162,7 +161,9 @@ class AutoMediaBrowserCallback(var player: Player) :
     ): ListenableFuture<LibraryResult<MediaItem>> {
         playFromMediaId(mediaId)
 
-        // TODO: Later
+        // FIXME:
+        // Create LRU Cache of MediaItems, fill it in the other calls
+        // and retrieve it here.
         return Futures.immediateFuture(
             LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
         )
@@ -214,7 +215,6 @@ class AutoMediaBrowserCallback(var player: Player) :
             return SessionResult.RESULT_ERROR_NOT_SUPPORTED
         }
     }
-
 
     @Suppress("ReturnCount", "ComplexMethod")
     fun onLoadChildren(
@@ -299,7 +299,6 @@ class AutoMediaBrowserCallback(var player: Player) :
             return@future LibraryResult.ofItemList(mediaItems, null)
         }
     }
-
 
     @Suppress("MagicNumber", "ComplexMethod")
     private fun playFromMediaId(mediaId: String?) {
@@ -1083,7 +1082,6 @@ class AutoMediaBrowserCallback(var player: Player) :
         }
     }
 
-
     private fun buildMediaItemFromTrack(
         track: Track,
         mediaId: String,
@@ -1129,5 +1127,4 @@ class AutoMediaBrowserCallback(var player: Player) :
             .setUri(sourceUri)
             .build()
     }
-
 }

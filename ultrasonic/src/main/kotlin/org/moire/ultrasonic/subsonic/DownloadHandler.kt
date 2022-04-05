@@ -39,8 +39,8 @@ class DownloadHandler(
         val onValid = Runnable {
             // TODO: The logic here is different than in the controller...
             val insertionMode = when {
-                append -> MediaPlayerController.InsertionMode.APPEND
                 playNext -> MediaPlayerController.InsertionMode.AFTER_CURRENT
+                append -> MediaPlayerController.InsertionMode.APPEND
                 else -> MediaPlayerController.InsertionMode.CLEAR
             }
 

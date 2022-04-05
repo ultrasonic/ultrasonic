@@ -33,13 +33,6 @@ import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.AnyRes
-import org.moire.ultrasonic.R
-import org.moire.ultrasonic.app.UApp.Companion.applicationContext
-import org.moire.ultrasonic.domain.Bookmark
-import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.domain.SearchResult
-import org.moire.ultrasonic.domain.Track
-import timber.log.Timber
 import java.io.Closeable
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
@@ -49,6 +42,13 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import org.moire.ultrasonic.R
+import org.moire.ultrasonic.app.UApp.Companion.applicationContext
+import org.moire.ultrasonic.domain.Bookmark
+import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.SearchResult
+import org.moire.ultrasonic.domain.Track
+import timber.log.Timber
 
 private const val LINE_LENGTH = 60
 private const val DEGRADE_PRECISION_AFTER = 10
@@ -509,7 +509,7 @@ object Util {
         val hours = TimeUnit.MILLISECONDS.toHours(millis)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(hours)
         val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) -
-                TimeUnit.MINUTES.toSeconds(hours * MINUTES_IN_HOUR + minutes)
+            TimeUnit.MINUTES.toSeconds(hours * MINUTES_IN_HOUR + minutes)
 
         return when {
             hours >= DEGRADE_PRECISION_AFTER -> {
@@ -603,9 +603,9 @@ object Util {
     fun getUriToDrawable(context: Context, @AnyRes drawableId: Int): Uri {
         return Uri.parse(
             ContentResolver.SCHEME_ANDROID_RESOURCE +
-                    "://" + context.resources.getResourcePackageName(drawableId) +
-                    '/' + context.resources.getResourceTypeName(drawableId) +
-                    '/' + context.resources.getResourceEntryName(drawableId)
+                "://" + context.resources.getResourcePackageName(drawableId) +
+                '/' + context.resources.getResourceTypeName(drawableId) +
+                '/' + context.resources.getResourceEntryName(drawableId)
         )
     }
 
@@ -643,8 +643,8 @@ object Util {
 
         if (artistName != null) {
             if (Settings.shouldDisplayBitrateWithArtist && (
-                        !bitRate.isNullOrBlank() || !fileFormat.isNullOrBlank()
-                        )
+                !bitRate.isNullOrBlank() || !fileFormat.isNullOrBlank()
+                )
             ) {
                 artist.append(artistName).append(" (").append(
                     String.format(

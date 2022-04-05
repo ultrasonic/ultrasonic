@@ -138,6 +138,8 @@ open class APIDataSource private constructor(
         val bitrate = components[1].toInt()
 
         Timber.i("DATASOURCE: %s", "Start")
+        // FIXME
+        // WRONG API CLIENT
         val request = subsonicAPIClient.api.stream(id, bitrate, offset = 0)
         val response: retrofit2.Response<ResponseBody>?
         val streamResponse: StreamResponse

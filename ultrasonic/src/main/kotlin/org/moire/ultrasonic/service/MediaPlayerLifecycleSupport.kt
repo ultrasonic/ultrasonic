@@ -109,10 +109,10 @@ class MediaPlayerLifecycleSupport : KoinComponent {
 
         val autoStart =
             keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ||
-                    keyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
-                    keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
-                    keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS ||
-                    keyCode == KeyEvent.KEYCODE_MEDIA_NEXT
+                keyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
+                keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
+                keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS ||
+                keyCode == KeyEvent.KEYCODE_MEDIA_NEXT
 
         // We can receive intents (e.g. MediaButton) when everything is stopped, so we need to start
         onCreate(autoStart) {
@@ -149,10 +149,10 @@ class MediaPlayerLifecycleSupport : KoinComponent {
             return
 
         val autoStart = action == Constants.CMD_PLAY ||
-                action == Constants.CMD_RESUME_OR_PLAY ||
-                action == Constants.CMD_TOGGLEPAUSE ||
-                action == Constants.CMD_PREVIOUS ||
-                action == Constants.CMD_NEXT
+            action == Constants.CMD_RESUME_OR_PLAY ||
+            action == Constants.CMD_TOGGLEPAUSE ||
+            action == Constants.CMD_PREVIOUS ||
+            action == Constants.CMD_NEXT
 
         // We can receive intents when everything is stopped, so we need to start
         onCreate(autoStart) {
