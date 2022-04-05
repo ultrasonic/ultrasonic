@@ -17,6 +17,7 @@ import android.content.Intent
 import android.os.Environment
 import android.view.KeyEvent
 import android.widget.RemoteViews
+import java.lang.Exception
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.NavigationActivity
 import org.moire.ultrasonic.domain.Track
@@ -24,11 +25,11 @@ import org.moire.ultrasonic.imageloader.BitmapUtils
 import org.moire.ultrasonic.receiver.MediaButtonIntentReceiver
 import org.moire.ultrasonic.util.Constants
 import timber.log.Timber
-import java.lang.Exception
 
 /**
  * Widget Provider for the Ultrasonic Widgets
  */
+@Suppress("MagicNumber")
 open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
     @JvmField
     protected var layoutId = 0
@@ -149,8 +150,8 @@ open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
             } else {
                 views.setImageViewBitmap(R.id.appwidget_coverart, bitmap)
             }
-        } catch (x: Exception) {
-            Timber.e(x, "Failed to load cover art")
+        } catch (all: Exception) {
+            Timber.e(all, "Failed to load cover art")
             views.setImageViewResource(R.id.appwidget_coverart, R.drawable.unknown_album)
         }
 

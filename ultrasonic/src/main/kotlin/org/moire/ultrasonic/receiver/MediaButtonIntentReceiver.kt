@@ -11,13 +11,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import java.lang.Exception
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
-import java.lang.Exception
 
 /**
  * This class is used to receive commands from the widget
@@ -45,7 +45,7 @@ class MediaButtonIntentReceiver : BroadcastReceiver(), KoinComponent {
             if (isOrderedBroadcast) {
                 abortBroadcast()
             }
-        } catch (x: Exception) {
+        } catch (ignored: Exception) {
             // Ignored.
         }
     }
