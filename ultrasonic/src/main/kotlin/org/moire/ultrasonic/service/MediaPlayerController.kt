@@ -146,10 +146,9 @@ class MediaPlayerController(
 
         when {
             playerState === PlayerState.PAUSED -> {
-                // TODO: Save playlist
-//                playbackStateSerializer.serialize(
-//                    downloader.getPlaylist(), downloader.currentPlayingIndex, playerPosition
-//                )
+                playbackStateSerializer.serialize(
+                    playList, currentMediaItemIndex, playerPosition
+                )
             }
             playerState === PlayerState.STARTED -> {
                 scrobbler.scrobble(currentPlaying, false)

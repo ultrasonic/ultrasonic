@@ -127,7 +127,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_info_4x4"/>
         </receiver>
-
+        <receiver android:name=".receiver.MediaButtonIntentReceiver">
+            <intent-filter android:priority="2147483647">
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
         <provider
             android:name=".provider.SearchSuggestionProvider"
             android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
