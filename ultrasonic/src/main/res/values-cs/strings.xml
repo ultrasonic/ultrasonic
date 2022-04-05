@@ -61,9 +61,7 @@
     <string name="download.menu_screen_on">Obrazovka zapnuta</string>
     <string name="download.menu_show_album">Zobrazit album</string>
     <string name="download.menu_shuffle">Náhodně</string>
-    <string name="download.menu_shuffle_notification">Playlist byl náhodně zamíchán</string>
     <string name="download.menu_visualizer">Vizualizér</string>
-    <string name="download.playerstate_buffering">Načítám</string>
     <string name="download.playerstate_downloading">Stahuji - %s</string>
     <string name="download.playerstate_playing_shuffle">Přehrávám mix</string>
     <string name="download.playlist_done">Playlist úspěšně uložen.</string>
@@ -95,7 +93,6 @@
     <string name="main.genres_title">Žánry</string>
     <string name="main.music">Hudba</string>
     <string name="main.offline">Bez připojení</string>
-    <string name="main.shuffle">Náhodné přehrávání</string>
     <string name="main.songs_random">Náhodné</string>
     <string name="main.songs_starred">Označené hvězdičkou</string>
     <string name="main.songs_title">Skladby</string>
@@ -106,26 +103,19 @@
     <string name="menu.deleted_playlist">Smazaný playlist %s</string>
     <string name="menu.deleted_playlist_error">Chyba smazání playlistu %s</string>
     <string name="menu.exit">Ukončit</string>
-    <string name="menu.navigation">Navigace</string>
     <string name="menu.settings">Nastavení</string>
     <string name="menu.refresh">Obnovit</string>
     <string name="music_library.label">Knihovna médií</string>
     <string name="music_library.label_offline">Offline média</string>
-    <string name="music_service.retry">Došlo k chybě sítě. Pokus %1$d z %2$d.</string>
-    <string name="parser.artist_count">Dostupných %d umělců.</string>
-    <string name="parser.reading">Načítání dat serveru.</string>
-    <string name="parser.reading_done">Načítání ze serveru. Hotovo!</string>
     <string name="playlist.label">Playlisty</string>
     <string name="playlist.update_info">Aktualizovat informace</string>
     <string name="playlist.updated_info">Aktualizované informace playlistu pro %s</string>
     <string name="playlist.updated_info_error">Chyba aktualizace informací playlistu %s</string>
-    <string name="progress.wait">Chvilku strpení&#8230;</string>
     <string name="search.albums">Alba</string>
     <string name="search.artists">Umělci</string>
     <string name="search.label">Vyhledávání</string>
     <string name="search.more">Zobrazit více</string>
     <string name="search.no_match">Nenalezeno, zkuste znovu</string>
-    <string name="search.search">Kliknout pro vyhledání</string>
     <string name="search.songs">Skladby</string>
     <string name="search.title">Hledat</string>
     <string name="select_album.empty">Média nenalezena</string>
@@ -136,7 +126,6 @@
     <string name="select_artist.folder">Vybrat adresář</string>
     <string name="select_genre.empty">Žánry nenalezeny</string>
     <string name="select_playlist.empty">Žádné uložené playlisty na serveru</string>
-    <string name="service.connecting">Kontaktuji server, chvilku strpení.</string>
     <string name="settings.appearance_title">Vzhled</string>
     <string name="settings.buffer_length">Délka bufferu</string>
     <string name="settings.buffer_length_0">Vypnuto</string>
@@ -176,8 +165,6 @@
     <string name="settings.chat_refresh">Interval obnovení chatu</string>
     <string name="settings.clear_bookmark">Zahodit záložku</string>
     <string name="settings.clear_bookmark_summary">Zahodit záložku po dokončení přehrávání skladby</string>
-    <string name="settings.clear_playlist">Zahození playlistu</string>
-    <string name="settings.clear_playlist_summary">Zahodit playlist po dokončení přehrávání všech skladeb</string>
     <string name="settings.clear_search_history">Vyčistit historii vyhledávání</string>
     <string name="settings.connection_failure">Chyba připojení.</string>
     <string name="settings.default_albums">Výchozí alba</string>
@@ -200,7 +187,6 @@
     <string name="settings.hide_media_toast">Nabyde účinnosti při příštím skenování hudby systému Android.</string>
     <string name="settings.increment_time">Interval přeskočení</string>
     <string name="settings.invalid_url">Zadejte funkční adresu URL.</string>
-    <string name="settings.invalid_username">Zadejte správné uživatelské jméno (bez mezer za jménem).</string>
     <string name="settings.max_albums">Maximum alb</string>
     <string name="settings.max_artists">Maximum umělců</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
@@ -239,8 +225,6 @@
     <string name="settings.preload_3">3 skladby</string>
     <string name="settings.preload_5">5 skladeb</string>
     <string name="settings.preload_unlimited">Neomezeně</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.title">Pokračovat po připojení sluchátek</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.summary">Aplikace spustí pozastavené přehrávání po připojení kabelu sluchátek do přístroje.</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -265,10 +249,8 @@
     <string name="settings.server_address">Adresa serveru</string>
     <string name="settings.server_name">Název</string>
     <string name="settings.server_password">Heslo</string>
-    <string name="settings.server_remove_server">Vzdálený server</string>
     <string name="settings.server_scaling_summary">Stahovat škálované obrázky ze serveru místo plné velikosti (šetří přenos dat)</string>
     <string name="settings.server_scaling_title">Škálování obrázků alb na serveru</string>
-    <string name="settings.server_unused">Nepoužitý</string>
     <string name="settings.server_username">Uživatelské jméno</string>
     <string name="settings.show_lockscreen_controls">Zobrazit ovládání na zamknuté obrazovce</string>
     <string name="settings.show_lockscreen_controls_summary">Zobrazí ovládání přehrávače na zamknuté obrazovce</string>
@@ -343,12 +325,6 @@
     <string name="download.menu_show_artist">Zobrazit umělce</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Vícenásobné roky</string>
-    <string name="settings.playback.resume_on_bluetooth_device">Pokračovat v přehrávání po připojení bluetooth přístroje</string>
-    <string name="settings.playback.pause_on_bluetooth_device">Pozastavení přehrávání při odpojení bluetooth přístroje</string>
-    <string name="settings.playback.bluetooth_all">Všechny bluetooth přístroje</string>
-    <string name="settings.playback.bluetooth_a2dp">Pouze audio (A2DP) přístroje</string>
-    <string name="settings.playback.bluetooth_disabled">Vypnuto</string>
-    <string name="settings.playback.single_button_bluetooth_device_summary">Povolení tohoto nastavení může pomoci zlepšit funkci spuštění/pozastavení přehrávání na starších bluetooth přístrojích</string>
     <string name="settings.debug.title">Možnosti ladění aplikace</string>
     <string name="settings.debug.log_to_file">Zapisovat logy ladění do souboru</string>
     <string name="settings.debug.log_path">Soubory logů jsou dostupné v %1$s/%2$s</string>
@@ -373,12 +349,6 @@
         <item quantity="few">%d skladby</item>
         <item quantity="many">%d skladeb</item>
         <item quantity="other">%d skladeb</item>
-    </plurals>
-    <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Zbývá %d den zkušební doby</item>
-        <item quantity="few">Zbývají %d dny zkušební doby</item>
-        <item quantity="many">Zbývá %d dní zkušební doby</item>
-        <item quantity="other">Zbývá %d dní zkušební doby</item>
     </plurals>
 
     <!-- Subsonic api errors -->

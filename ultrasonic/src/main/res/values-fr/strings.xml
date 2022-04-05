@@ -73,9 +73,7 @@
     <string name="download.menu_screen_on">Sur l\'écran</string>
     <string name="download.menu_show_album">Afficher l\'album</string>
     <string name="download.menu_shuffle">Aléatoire</string>
-    <string name="download.menu_shuffle_notification">Playlist aléatoire</string>
     <string name="download.menu_visualizer">Visualiseur</string>
-    <string name="download.playerstate_buffering">Mise en mémoire</string>
     <string name="download.playerstate_downloading">Téléchargement - %s</string>
     <string name="download.playerstate_playing_shuffle">En lecture aléatoire</string>
     <string name="download.playlist_done">Playlist enregistrée avec succès !</string>
@@ -107,7 +105,6 @@
     <string name="main.genres_title">Genres</string>
     <string name="main.music">Musique</string>
     <string name="main.offline">Hors-ligne</string>
-    <string name="main.shuffle">Lecture aléatoire</string>
     <string name="main.songs_random">Aléatoire</string>
     <string name="main.songs_starred">Favoris</string>
     <string name="main.songs_title">Titres</string>
@@ -121,26 +118,19 @@
     <string name="menu.deleted_playlist_error">Échec de suppression de la playlist %s</string>
     <string name="menu.downloads">Téléchargements</string>
     <string name="menu.exit">Quitter</string>
-    <string name="menu.navigation">Navigation</string>
     <string name="menu.settings">Paramètres</string>
     <string name="menu.refresh">Rafraichir</string>
     <string name="music_library.label">Bibliothèque musicale</string>
     <string name="music_library.label_offline">Musique hors-ligne</string>
-    <string name="music_service.retry">Une erreur de réseau s\'est produite. Tentative %1$d sur %2$d.</string>
-    <string name="parser.artist_count">%d artistes récupérés.</string>
-    <string name="parser.reading">Lecture du serveur.</string>
-    <string name="parser.reading_done">Lecture du serveur. Terminé !</string>
     <string name="playlist.label">Playlists</string>
     <string name="playlist.update_info">Mise à jour des informations</string>
     <string name="playlist.updated_info">Informations de la playlist %s mises à jour</string>
     <string name="playlist.updated_info_error">Échec de mise à jour des informations de la playlist %s</string>
-    <string name="progress.wait">Veuillez patienter&#8230;</string>
     <string name="search.albums">Albums</string>
     <string name="search.artists">Artistes</string>
     <string name="search.label">Recherche</string>
     <string name="search.more">Afficher plus</string>
     <string name="search.no_match">Aucun résultat, veuillez essayer à nouveau</string>
-    <string name="search.search">Cliquer pour rechercher</string>
     <string name="search.songs">Titres</string>
     <string name="search.title">Recherche</string>
     <string name="select_album.empty">Aucun titre trouvé</string>
@@ -151,7 +141,6 @@
     <string name="select_artist.folder">Sélectionner le dossier</string>
     <string name="select_genre.empty">Aucun genre trouvé</string>
     <string name="select_playlist.empty">Aucune playlist sur le serveur</string>
-    <string name="service.connecting">Contact du serveur, veuillez patienter.</string>
     <string name="settings.appearance_title">Apparence</string>
     <string name="settings.buffer_length">Longueur de la mémoire tampon</string>
     <string name="settings.buffer_length_0">Désactivé</string>
@@ -191,8 +180,6 @@
     <string name="settings.chat_refresh">Délai de rafraichissement du salon de discussion</string>
     <string name="settings.clear_bookmark">Effacer le signet</string>
     <string name="settings.clear_bookmark_summary">Effacer le signet à la fin de la lecture d\'un titre</string>
-    <string name="settings.clear_playlist">Effacer la playlist</string>
-    <string name="settings.clear_playlist_summary">Effacer la playlist à la fin de la lecture de tous les titres</string>
     <string name="settings.clear_search_history">Effacer l\'historique des recherches</string>
     <string name="settings.connection_failure">Connection échouée</string>
     <string name="settings.default_albums">Albums par défaut</string>
@@ -217,7 +204,6 @@
     <string name="settings.hide_media_toast">Prendra effet la prochaine fois qu\'Android recensera les médias disponibles sur l\'appareil.</string>
     <string name="settings.increment_time">Intervalle de saut</string>
     <string name="settings.invalid_url">Veuillez spécifier une URL valide.</string>
-    <string name="settings.invalid_username">Veuillez spécifier un nom d\'utilisateur valide (sans espace à la fin).</string>
     <string name="settings.max_albums">Albums maximum</string>
     <string name="settings.max_artists">Artistes maximum</string>
     <string name="settings.max_bitrate_112">112 Kb/s</string>
@@ -256,8 +242,6 @@
     <string name="settings.preload_3">3 morceaux</string>
     <string name="settings.preload_5">5 morceaux</string>
     <string name="settings.preload_unlimited">Illimité</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.title">Reprise à l\'insertion des écouteurs</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.summary">L\'application reprendra la lecture lors de l\'insertion du casque dans l\'appareil.</string>
     <string name="settings.scrobble_summary">Pensez à configurer votre nom d’utilisateur et votre mot de passe dans le(s) service(s) Scrobble sur le serveur.</string>
     <string name="settings.scrobble_title">Scrobbler mes lectures</string>
     <string name="settings.search_1">1</string>
@@ -286,10 +270,8 @@
     <string name="settings.server_address">Adresse du serveur</string>
     <string name="settings.server_name">Nom</string>
     <string name="settings.server_password">Mot de passe</string>
-    <string name="settings.server_remove_server">Supprimer le serveur</string>
     <string name="settings.server_scaling_summary">Télécharger sur le serveur des images réduites au lieu des images grand format (bande passante réduite)</string>
     <string name="settings.server_scaling_title">Mise à l\'échelle des pochettes d\'album sur le serveur</string>
-    <string name="settings.server_unused">Inutilisé</string>
     <string name="settings.server_username">Nom d\'utilisateur</string>
     <string name="settings.server_color">Couleur du serveur</string>
     <string name="settings.show_lockscreen_controls">Boutons de contrôle sur l\'écran de verrouillage</string>
@@ -369,13 +351,6 @@
     <string name="download.menu_show_artist">Afficher l\'artiste</string>
     <string name="albumArt">Pochette d\'album</string>
     <string name="common_multiple_years">Années multiples</string>
-    <string name="settings.playback.resume_on_bluetooth_device">Reprendre lorsqu’un appareil Bluetooth se connecte</string>
-    <string name="settings.playback.pause_on_bluetooth_device">Mettre en pause lorsqu’un appareil Bluetooth se déconnecte</string>
-    <string name="settings.playback.bluetooth_all">Tous les appareils Bluetooth</string>
-    <string name="settings.playback.bluetooth_a2dp">Seulement les appareils audio (A2DP)</string>
-    <string name="settings.playback.bluetooth_disabled">Désactivé</string>
-    <string name="settings.playback.single_button_bluetooth_device">Appareil Bluetooth avec un seul bouton Lecture/Pause</string>
-    <string name="settings.playback.single_button_bluetooth_device_summary">Activer cela peut aider sur les anciens appareils Bluetooth lorsque Lecture/Pause ne fonctionne pas correctement</string>
     <string name="settings.debug.title">Paramètres de debug</string>
     <string name="settings.debug.log_to_file">Enregistrer les logs de debug dans des fichiers</string>
     <string name="settings.debug.log_path">Les fichiers de log sont disponibles dans %1$s/%2$s</string>
@@ -403,10 +378,6 @@
     <plurals name="select_album_n_songs">
         <item quantity="one">%d titre</item>
         <item quantity="other">%d titres</item>
-    </plurals>
-    <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">%d jour restant à la période d\'essai</item>
-        <item quantity="other">%d jours restant à la période d\'essai</item>
     </plurals>
 
     <!-- Subsonic api errors -->

@@ -70,9 +70,7 @@
     <string name="download.menu_screen_on">Включение дисплея</string>
     <string name="download.menu_show_album">Показать альбом</string>
     <string name="download.menu_shuffle">Случайное воспроизведение</string>
-    <string name="download.menu_shuffle_notification">Плейлист в случайном порядке</string>
     <string name="download.menu_visualizer">Визуализатор</string>
-    <string name="download.playerstate_buffering">Буферизация</string>
     <string name="download.playerstate_downloading">Загрузка - %s</string>
     <string name="download.playerstate_playing_shuffle">Игра в случайном порядке</string>
     <string name="download.playlist_done">Плейлист был успешно сохранен.</string>
@@ -104,7 +102,6 @@
     <string name="main.genres_title">Жанры</string>
     <string name="main.music">Музыка</string>
     <string name="main.offline">Не в сети</string>
-    <string name="main.shuffle">Играть в случайном порядке</string>
     <string name="main.songs_random">Случайный</string>
     <string name="main.songs_starred">Отмеченные</string>
     <string name="main.songs_title">Песни</string>
@@ -117,26 +114,19 @@
     <string name="menu.deleted_playlist">Удалить плейлист %s</string>
     <string name="menu.deleted_playlist_error">Не удалось удалить плейлист %s</string>
     <string name="menu.exit">Выход</string>
-    <string name="menu.navigation">Навигация</string>
     <string name="menu.settings">Настройки</string>
     <string name="menu.refresh">Обновить</string>
     <string name="music_library.label">Медиа библиотека</string>
     <string name="music_library.label_offline">Медиа Оффлайн</string>
-    <string name="music_service.retry">Произошла ошибка сети. Повторная %1$d из %2$d.</string>
-    <string name="parser.artist_count">Получил %d исполнители.</string>
-    <string name="parser.reading">Чтение с сервера</string>
-    <string name="parser.reading_done">Чтение с сервера. Готово!</string>
     <string name="playlist.label">Плейлисты</string>
     <string name="playlist.update_info">Обновление информации</string>
     <string name="playlist.updated_info">Обновлена информация о плейлисте для %s</string>
     <string name="playlist.updated_info_error">Не удалось обновить информацию о плейлисте для %s</string>
-    <string name="progress.wait">Пожалуйста, подождите#8230;</string>
     <string name="search.albums">Альбомы</string>
     <string name="search.artists">Исполнители</string>
     <string name="search.label">Поиск</string>
     <string name="search.more">Показать еще</string>
     <string name="search.no_match">Нет совпадений, пожалуйста попробуйте еще раз</string>
-    <string name="search.search">Нажми для поиска</string>
     <string name="search.songs">Песни</string>
     <string name="search.title">Поиск</string>
     <string name="select_album.empty">Медиа не найдена</string>
@@ -147,7 +137,6 @@
     <string name="select_artist.folder">Выбрать папку</string>
     <string name="select_genre.empty">Жанры не найдены</string>
     <string name="select_playlist.empty">Нет сохраненных плейлистов на сервере</string>
-    <string name="service.connecting">Свяжитесь с сервером, пожалуйста, подождите.</string>
     <string name="settings.appearance_title">Появление</string>
     <string name="settings.buffer_length">Размер буфера</string>
     <string name="settings.buffer_length_0">Отключить</string>
@@ -187,8 +176,6 @@
     <string name="settings.chat_refresh">Интервал обновления чата</string>
     <string name="settings.clear_bookmark">Очистить закладку</string>
     <string name="settings.clear_bookmark_summary">Очистить закладку после завершения воспроизведения песни</string>
-    <string name="settings.clear_playlist">Очистить плейлист</string>
-    <string name="settings.clear_playlist_summary">Очистите плейлист после завершения воспроизведения всех песен</string>
     <string name="settings.clear_search_history">Очистить историю поиска</string>
     <string name="settings.connection_failure">Ошибка подключения.</string>
     <string name="settings.default_albums">Альбомы по умолчанию</string>
@@ -211,7 +198,6 @@
     <string name="settings.hide_media_toast">Вступает в силу в следующий раз, Android сканирует ваш телефон на предмет музыки</string>
     <string name="settings.increment_time">Пропустить интервал</string>
     <string name="settings.invalid_url">Пожалуйста, укажите действительный URL.</string>
-    <string name="settings.invalid_username">Пожалуйста, укажите правильное имя пользователя (без пробелов).</string>
     <string name="settings.max_albums">Максимум альбомов</string>
     <string name="settings.max_artists">Максимум исполнителей</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
@@ -250,8 +236,6 @@
     <string name="settings.preload_3">3 песни</string>
     <string name="settings.preload_5">5 песен</string>
     <string name="settings.preload_unlimited">Неограниченный</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.title">Возобновить подключение наушников</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.summary">Приложение возобновит приостановленное воспроизведение после того, как в устройство будут вставлены проводные наушники.</string>
     <string name="settings.scrobble_summary">Не забудьте установить своего пользователя и пароль в Скроббл сервисах на сервере.</string>
     <string name="settings.scrobble_title">Скробблить мои воспроизведения</string>
     <string name="settings.search_1">1</string>
@@ -278,10 +262,8 @@
     <string name="settings.server_address">Адрес сервера</string>
     <string name="settings.server_name">Имя</string>
     <string name="settings.server_password">Пароль</string>
-    <string name="settings.server_remove_server">Удалить сервер</string>
     <string name="settings.server_scaling_summary">Загрузка масштабированных изображений с сервера вместо полноразмерного (экономит трафик)</string>
     <string name="settings.server_scaling_title">Серверное масштабирование обложек альбомов</string>
-    <string name="settings.server_unused">Неиспользуемый</string>
     <string name="settings.server_username">Имя пользователя</string>
     <string name="settings.show_lockscreen_controls">Показать блокировку экрана</string>
     <string name="settings.show_lockscreen_controls_summary">Показать элементы управления воспроизведением на экране блокировки</string>
@@ -356,12 +338,6 @@
     <string name="download.menu_show_artist">Показать исполнителей</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Несколько лет</string>
-    <string name="settings.playback.resume_on_bluetooth_device">Возобновить при подключении устройства Bluetooth</string>
-    <string name="settings.playback.pause_on_bluetooth_device">Пауза при отключении устройства Bluetooth</string>
-    <string name="settings.playback.bluetooth_all">Все устройства Bluetooth</string>
-    <string name="settings.playback.bluetooth_a2dp">Только аудио (A2DP) устройства</string>
-    <string name="settings.playback.bluetooth_disabled">Отключено</string>
-    <string name="settings.playback.single_button_bluetooth_device_summary">Включение этого может помочь со старыми устройствами Bluetooth, когда Воспроизведение/Пауза работает некорректно.</string>
     <string name="settings.debug.title">Настройки отладки</string>
     <string name="settings.debug.log_to_file">Записать журнал отладки в файл</string>
     <string name="settings.debug.log_path">Файлы журнала доступны по адресу %1$s/%2$s</string>
@@ -389,12 +365,6 @@
         <item quantity="few">%d песни</item>
         <item quantity="many">%d песен</item>
         <item quantity="other">%d песен</item>
-    </plurals>
-    <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Остался %d день пробного периода</item>
-        <item quantity="few">Осталось %d дня пробного периода</item>
-        <item quantity="many">Осталось %d дней пробного периода</item>
-        <item quantity="other">Осталось %d дней пробного периода</item>
     </plurals>
 
     <!-- Subsonic api errors -->

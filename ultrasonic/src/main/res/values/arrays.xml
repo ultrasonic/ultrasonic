@@ -231,11 +231,6 @@
         <item>@string/settings.share_hours</item>
         <item>@string/settings.share_days</item>
     </string-array>
-    <string-array name="bluetoothDeviceSettingNames" translatable="false">
-        <item>@string/settings.playback.bluetooth_all</item>
-        <item>@string/settings.playback.bluetooth_a2dp</item>
-        <item>@string/settings.playback.bluetooth_disabled</item>
-    </string-array>
     <string-array name="languageNames" translatable="false">
         <item>@string/language.default</item>
         <item>@string/language.zh_CN</item>

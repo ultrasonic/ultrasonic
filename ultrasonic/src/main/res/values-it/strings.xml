@@ -58,9 +58,7 @@
     <string name="download.menu_screen_on">Schermo acceso</string>
     <string name="download.menu_show_album">Visualizza Album</string>
     <string name="download.menu_shuffle">Casuale</string>
-    <string name="download.menu_shuffle_notification">Playlist casuale</string>
     <string name="download.menu_visualizer">Visualizzatore</string>
-    <string name="download.playerstate_buffering">Buffering</string>
     <string name="download.playerstate_downloading">In scaricamento - %s</string>
     <string name="download.playerstate_playing_shuffle">Riproduzione casuale</string>
     <string name="download.playlist_done">Playlist salvata con successo </string>
@@ -92,7 +90,6 @@
     <string name="main.genres_title">Generi</string>
     <string name="main.music">Musica</string>
     <string name="main.offline">Disconnesso</string>
-    <string name="main.shuffle">Riproduzione casuale</string>
     <string name="main.songs_random">Casuale</string>
     <string name="main.songs_starred">Preferiti</string>
     <string name="main.songs_title">Canzoni</string>
@@ -103,25 +100,18 @@
     <string name="menu.deleted_playlist">Playlist %s eliminata</string>
     <string name="menu.deleted_playlist_error">Impossibile eliminare la playlist %s</string>
     <string name="menu.exit">Esci</string>
-    <string name="menu.navigation">Navigazione</string>
     <string name="menu.settings">Impostazioni</string>
     <string name="music_library.label">Libreria</string>
     <string name="music_library.label_offline">Media Offline</string>
-    <string name="music_service.retry">Problema di rete. Tentativo %1$d di %2$d.</string>
-    <string name="parser.artist_count">Ottenuti%d Artisti.</string>
-    <string name="parser.reading">Lettura dal server.</string>
-    <string name="parser.reading_done">Lettura dal server. Completato!</string>
     <string name="playlist.label">Playlist</string>
     <string name="playlist.update_info">Aggiorna Informazioni</string>
     <string name="playlist.updated_info">Aggiorna informazioni playlist per %s</string>
     <string name="playlist.updated_info_error">Impossibile aggiornare informazioni playlist per %s</string>
-    <string name="progress.wait">Attendere, per favore&#8230;</string>
     <string name="search.albums">Album</string>
     <string name="search.artists">Artisti</string>
     <string name="search.label">Cerca</string>
     <string name="search.more">Mostra di più</string>
     <string name="search.no_match">Nessun risultato, riprova per favore</string>
-    <string name="search.search">Selezione per cercare</string>
     <string name="search.songs">Canzoni</string>
     <string name="search.title">Cerca</string>
     <string name="select_album.empty">Nessun media trovato</string>
@@ -132,7 +122,6 @@
     <string name="select_artist.folder">Seleziona cartella</string>
     <string name="select_genre.empty">Nessun genere trovato</string>
     <string name="select_playlist.empty">Nessuna playlist salvata sul server</string>
-    <string name="service.connecting">Server contattato, attendere.</string>
     <string name="settings.appearance_title">Aspetto</string>
     <string name="settings.buffer_length">Lunghezza buffer</string>
     <string name="settings.buffer_length_0">Disabilitato</string>
@@ -172,8 +161,6 @@
     <string name="settings.chat_refresh">Intervallo Aggiornamento Chat</string>
     <string name="settings.clear_bookmark">Pulisci Segnalibro</string>
     <string name="settings.clear_bookmark_summary">Pulisci segnalibro al completamento della riproduzione di una canzone</string>
-    <string name="settings.clear_playlist">Pulisci Playlist</string>
-    <string name="settings.clear_playlist_summary">Pulisci playlist al completamento della riproduzione di tutte le canzoni</string>
     <string name="settings.clear_search_history">Pulisci Storico Ricerca</string>
     <string name="settings.connection_failure">Errore connessione.</string>
     <string name="settings.default_albums">Album predefiniti</string>
@@ -195,7 +182,6 @@
     <string name="settings.hide_media_title">Nascondi Da Altro</string>
     <string name="settings.hide_media_toast">Effettivo alla prossima scansione Android per file musicali sul telefono.</string>
     <string name="settings.invalid_url">Specifica un URL valido per favore.</string>
-    <string name="settings.invalid_username">Per favore specifica un nome utente valido (senza spazi)</string>
     <string name="settings.max_albums">N° Max Album</string>
     <string name="settings.max_artists">N° Max Artisti</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
@@ -234,7 +220,6 @@
     <string name="settings.preload_3">3 canzoni</string>
     <string name="settings.preload_5">5 canzoni</string>
     <string name="settings.preload_unlimited">Illimitato</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.title">Riprendi all\'inserimento delle cuffie</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -258,10 +243,8 @@
     <string name="settings.server_address">Indirizzo Server</string>
     <string name="settings.server_name">Nome</string>
     <string name="settings.server_password">Password</string>
-    <string name="settings.server_remove_server">Elimina Server</string>
     <string name="settings.server_scaling_summary">Scarica dal server le immagini ridimensionate (risparmia larghezza di banda)</string>
     <string name="settings.server_scaling_title">Ridimensionamento copertine Album lato server</string>
-    <string name="settings.server_unused">Inutilizzato</string>
     <string name="settings.server_username">Username</string>
     <string name="settings.show_lockscreen_controls">Mostra i controlli del blocco schermo</string>
     <string name="settings.show_lockscreen_controls_summary">Mostra i controlli di riproduzione sulla schermata di blocco</string>
@@ -308,7 +291,6 @@
     <string name="share_comment">Commenta</string>
     <string name="download_song_removed">\"%s\" è stato rimosso dalla playlist</string>
     <string name="share_via">Condividi canzoni via</string>
-    <string name="settings.playback.bluetooth_disabled">Disabilitato</string>
     <string name="server_menu.delete">Elimina</string>
     <string name="api.subsonic.trial_period_is_over">Il periodo di prova è terminato.</string>
     </resources>

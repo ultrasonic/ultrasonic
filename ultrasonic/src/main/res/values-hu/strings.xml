@@ -70,9 +70,7 @@
     <string name="download.menu_screen_on">Kijelző be</string>
     <string name="download.menu_show_album">Ugrás az albumhoz</string>
     <string name="download.menu_shuffle">Véletlen sorrendű</string>
-    <string name="download.menu_shuffle_notification">Véletlen sorrendű lejátszás</string>
     <string name="download.menu_visualizer">Visualizer</string>
-    <string name="download.playerstate_buffering">Pufferelés</string>
     <string name="download.playerstate_downloading">Letöltés - %s</string>
     <string name="download.playerstate_playing_shuffle">Véletlen sorrendű</string>
     <string name="download.playlist_done">Lejátszási lista mentése sikeres.</string>
@@ -104,7 +102,6 @@
     <string name="main.genres_title">Műfajok</string>
     <string name="main.music">Zenék</string>
     <string name="main.offline">Kapcsolat nélküli</string>
-    <string name="main.shuffle">Véletlen sorrendű</string>
     <string name="main.songs_random">Véletlenszerű</string>
     <string name="main.songs_starred">Csillaggal megjelölt</string>
     <string name="main.songs_title">Dalok</string>
@@ -115,26 +112,19 @@
     <string name="menu.deleted_playlist">Törölt lejátszási lista %s</string>
     <string name="menu.deleted_playlist_error">Lejátszási lista törlése sikertelen %s</string>
     <string name="menu.exit">Kilépés</string>
-    <string name="menu.navigation">Navigáció</string>
     <string name="menu.settings">Beállítások</string>
     <string name="menu.refresh">Frissítés</string>
     <string name="music_library.label">Mediakönyvtár</string>
     <string name="music_library.label_offline">Kapcsolat nélküli médiák</string>
-    <string name="music_service.retry">Hálózati hiba történt! Újrapróbálkozás %1$d - %2$d.</string>
-    <string name="parser.artist_count">%d előadó található a médiakönyvtárban.</string>
-    <string name="parser.reading">Olvasás a kiszolgálóról&#8230;</string>
-    <string name="parser.reading_done">Olvasás a kiszolgálóról&#8230; Kész!</string>
     <string name="playlist.label">Lejátszási listák</string>
     <string name="playlist.update_info">Módosítás</string>
     <string name="playlist.updated_info">Módosított lejátszási lista %s</string>
     <string name="playlist.updated_info_error">Lejátszási lista módosítása sikertelen %s</string>
-    <string name="progress.wait">Kérem várjon!&#8230;</string>
     <string name="search.albums">Albumok</string>
     <string name="search.artists">Előadók</string>
     <string name="search.label">Keresés</string>
     <string name="search.more">Továbbiak</string>
     <string name="search.no_match">Nincs találat, próbálja újra!</string>
-    <string name="search.search">Érintse meg a kereséshez</string>
     <string name="search.songs">Dalok</string>
     <string name="search.title">Keresés</string>
     <string name="select_album.empty">Nem található média!</string>
@@ -145,7 +135,6 @@
     <string name="select_artist.folder">Mappa kiválasztása</string>
     <string name="select_genre.empty">Műfajok nem találhatók!</string>
     <string name="select_playlist.empty">Nincs mentett lejátszási lista a kiszolgálón.</string>
-    <string name="service.connecting">Csatlakozás a kiszolgálóhoz, kérem várjon!</string>
     <string name="settings.appearance_title">Megjelenés</string>
     <string name="settings.buffer_length">Pufferméret</string>
     <string name="settings.buffer_length_0">Letiltva</string>
@@ -185,8 +174,6 @@
     <string name="settings.chat_refresh">Csevegés frissítési gyakorisága</string>
     <string name="settings.clear_bookmark">Könyvjelző törlése</string>
     <string name="settings.clear_bookmark_summary">Könyvjelző törlése a dal lejátszása után.</string>
-    <string name="settings.clear_playlist">Várólista törlése</string>
-    <string name="settings.clear_playlist_summary">Várólista törlése az összes dal lejátszása után.</string>
     <string name="settings.clear_search_history">Keresési előzmények törlése</string>
     <string name="settings.connection_failure">Csatlakozási hiba!</string>
     <string name="settings.default_albums">Albumok találati száma</string>
@@ -209,7 +196,6 @@
     <string name="settings.hide_media_toast">A következő alkalomtól lép életbe, amikor az Android zenefájlokat keres a telefonon.</string>
     <string name="settings.increment_time">Ugrás időintervalluma</string>
     <string name="settings.invalid_url">Adjon meg egy érvényes URL-t!</string>
-    <string name="settings.invalid_username">Adjon meg egy érvényes felhasználónevet (szóközt nem tartalmazhat)!</string>
     <string name="settings.max_albums">Albumok max. találati száma</string>
     <string name="settings.max_artists">Előadók max. találati száma</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
@@ -248,8 +234,6 @@
     <string name="settings.preload_3">3 dal</string>
     <string name="settings.preload_5">5 dal</string>
     <string name="settings.preload_unlimited">Korlátlan</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.title">Folytatás a fejhallgató behelyezésekor</string>
-    <string name="settings.playback.resume_play_on_headphones_plug.summary">Az alkalmazás folytatja a szüneteltetett lejátszást a fejhallgató behelyezésekor a készülékbe.</string>
     <string name="settings.scrobble_summary">Ne felejtsd el beállítani a Scrobble szolgáltatónál használt felhasználóneved és jelszavad a szervereden</string>
     <string name="settings.scrobble_title">Scrobble engedélyezése</string>
     <string name="settings.search_1">1</string>
@@ -276,10 +260,8 @@
     <string name="settings.server_address">Kiszolgáló címe</string>
     <string name="settings.server_name">Név</string>
     <string name="settings.server_password">Jelszó</string>
-    <string name="settings.server_remove_server">Kiszolgáló eltávolítása</string>
     <string name="settings.server_scaling_summary">Teljes méretű helyett átméretezett képek letöltése a kiszolgálóról (sávszélesség-takarékos).</string>
     <string name="settings.server_scaling_title">Albumborító átméretezés (Kiszolgáló-oldali)</string>
-    <string name="settings.server_unused">Kiszolgáló</string>
     <string name="settings.server_username">Felhasználónév</string>
     <string name="settings.show_lockscreen_controls">Képernyőzár kezelése</string>
     <string name="settings.show_lockscreen_controls_summary">Lejátszó-kezelőpanel megjelenítése a képernyőzáron.</string>
@@ -354,12 +336,6 @@
     <string name="download.menu_show_artist">Ugrás az előadóhoz</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Több év</string>
-    <string name="settings.playback.resume_on_bluetooth_device">Folytatás Bluetooth eszköz csatlakozásakor</string>
-    <string name="settings.playback.pause_on_bluetooth_device">Szünet Bluetooth eszköz kikapcsolásakor</string>
-    <string name="settings.playback.bluetooth_all">Minden Bluetooth eszköz</string>
-    <string name="settings.playback.bluetooth_a2dp">Csak audio (A2DP) eszközök</string>
-    <string name="settings.playback.bluetooth_disabled">Kikapcsolva</string>
-    <string name="settings.playback.single_button_bluetooth_device_summary">Régebbi Bluetooth eszközök esetén segíthet, ha a Lejátszás/Szünet nem működik megfelelően</string>
     <string name="settings.debug.title">Hibakeresési lehetőségek</string>
     <string name="settings.debug.log_to_file">Hibakeresési napló írása fájlba</string>
     <string name="settings.debug.log_path">A naplófájlok elérhetőek a következő helyen: %1$s/%2$s</string>
@@ -382,10 +358,6 @@
     <plurals name="select_album_n_songs">
         <item quantity="one">%d dal</item>
         <item quantity="other">%d dal</item>
-    </plurals>
-    <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">%d nap van hátra a próba időszakból.</item>
-        <item quantity="other">%d nap van hátra a próba időszakból.</item>
     </plurals>
 
     <!-- Subsonic api errors -->
