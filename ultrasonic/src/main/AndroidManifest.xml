@@ -71,11 +71,6 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".receiver.MediaButtonIntentReceiver">
-            <intent-filter android:priority="2147483647">
-                <action android:name="android.intent.action.MEDIA_BUTTON"/>
-            </intent-filter>
-        </receiver>
         <receiver android:name=".receiver.UltrasonicIntentReceiver">
             <intent-filter>
                 <action android:name="org.moire.ultrasonic.CMD_TOGGLEPAUSE"/>
@@ -86,14 +81,6 @@
                 <action android:name="org.moire.ultrasonic.CMD_PREVIOUS"/>
                 <action android:name="org.moire.ultrasonic.CMD_STOP"/>
                 <action android:name="org.moire.ultrasonic.CMD_PROCESS_KEYCODE"/>
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".receiver.BluetoothIntentReceiver">
-            <intent-filter>
-                <action android:name="android.bluetooth.device.action.ACL_CONNECTED"/>
-                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED"/>
-                <action android:name="android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED"/>
-                <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED"/>
             </intent-filter>
         </receiver>
         <receiver

@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.provider.SearchRecentSuggestions
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.preference.CheckBoxPreference
 import androidx.preference.EditTextPreference
@@ -83,8 +82,6 @@ class SettingsFragment :
     private var sharingDefaultDescription: EditTextPreference? = null
     private var sharingDefaultGreeting: EditTextPreference? = null
     private var sharingDefaultExpiration: TimeSpanPreference? = null
-    private var resumeOnBluetoothDevice: Preference? = null
-    private var pauseOnBluetoothDevice: Preference? = null
     private var debugLogToFile: CheckBoxPreference? = null
     private var customCacheLocation: CheckBoxPreference? = null
 
@@ -124,9 +121,6 @@ class SettingsFragment :
         sharingDefaultGreeting = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING)
         sharingDefaultExpiration =
             findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION)
-        resumeOnBluetoothDevice =
-            findPreference(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE)
-        pauseOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE)
         debugLogToFile = findPreference(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE)
         showArtistPicture = findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE)
         customCacheLocation = findPreference(Constants.PREFERENCES_KEY_CUSTOM_CACHE_LOCATION)
@@ -134,7 +128,6 @@ class SettingsFragment :
         sharingDefaultGreeting!!.text = shareGreeting
         setupClearSearchPreference()
         setupCacheLocationPreference()
-        setupBluetoothDevicePreferences()
 
         // After API26 foreground services must be used for music playback, and they must have a notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -284,72 +277,6 @@ class SettingsFragment :
         intent.addFlags(PERSISTABLE_FLAG)
 
         startActivityForResult(intent, SELECT_CACHE_ACTIVITY)
-    }
-
-    private fun setupBluetoothDevicePreferences() {
-        val resumeSetting = Settings.resumeOnBluetoothDevice
-        val pauseSetting = Settings.pauseOnBluetoothDevice
-        resumeOnBluetoothDevice!!.summary = bluetoothDevicePreferenceToString(resumeSetting)
-        pauseOnBluetoothDevice!!.summary = bluetoothDevicePreferenceToString(pauseSetting)
-        resumeOnBluetoothDevice!!.onPreferenceClickListener =
-            Preference.OnPreferenceClickListener {
-                showBluetoothDevicePreferenceDialog(
-                    R.string.settings_playback_resume_on_bluetooth_device,
-                    Settings.resumeOnBluetoothDevice
-                ) { choice: Int ->
-                    val editor = resumeOnBluetoothDevice!!.sharedPreferences.edit()
-                    editor.putInt(Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE, choice)
-                    editor.apply()
-                    resumeOnBluetoothDevice!!.summary = bluetoothDevicePreferenceToString(choice)
-                }
-                true
-            }
-        pauseOnBluetoothDevice!!.onPreferenceClickListener =
-            Preference.OnPreferenceClickListener {
-                showBluetoothDevicePreferenceDialog(
-                    R.string.settings_playback_pause_on_bluetooth_device,
-                    Settings.pauseOnBluetoothDevice
-                ) { choice: Int ->
-                    Settings.pauseOnBluetoothDevice = choice
-                    pauseOnBluetoothDevice!!.summary = bluetoothDevicePreferenceToString(choice)
-                }
-                true
-            }
-    }
-
-    private fun showBluetoothDevicePreferenceDialog(
-        @StringRes title: Int,
-        defaultChoice: Int,
-        onChosen: (Int) -> Unit
-    ) {
-        val choice = intArrayOf(defaultChoice)
-        AlertDialog.Builder(activity).setTitle(title)
-            .setSingleChoiceItems(
-                R.array.bluetoothDeviceSettingNames, defaultChoice
-            ) { _: DialogInterface?, i: Int -> choice[0] = i }
-            .setNegativeButton(R.string.common_cancel) { dialogInterface: DialogInterface, _: Int ->
-                dialogInterface.cancel()
-            }
-            .setPositiveButton(R.string.common_ok) { dialogInterface: DialogInterface, _: Int ->
-                onChosen(choice[0])
-                dialogInterface.dismiss()
-            }
-            .create().show()
-    }
-
-    private fun bluetoothDevicePreferenceToString(preferenceValue: Int): String {
-        return when (preferenceValue) {
-            Constants.PREFERENCE_VALUE_ALL -> {
-                getString(R.string.settings_playback_bluetooth_all)
-            }
-            Constants.PREFERENCE_VALUE_A2DP -> {
-                getString(R.string.settings_playback_bluetooth_a2dp)
-            }
-            Constants.PREFERENCE_VALUE_DISABLED -> {
-                getString(R.string.settings_playback_bluetooth_disabled)
-            }
-            else -> ""
-        }
     }
 
     private fun setupClearSearchPreference() {

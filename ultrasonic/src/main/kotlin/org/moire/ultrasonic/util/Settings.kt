@@ -125,10 +125,6 @@ object Settings {
         by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3")
 
     @JvmStatic
-    var bufferLength
-        by StringIntSetting(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5")
-
-    @JvmStatic
     var incrementTime
         by StringIntSetting(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5")
 
@@ -153,9 +149,6 @@ object Settings {
     @JvmStatic
     var shouldUseId3Tags
         by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
-
-    @JvmStatic
-    var tempLoss by StringIntSetting(Constants.PREFERENCES_KEY_TEMP_LOSS, "1")
 
     var activeServer by IntSetting(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1)
 
@@ -184,36 +177,17 @@ object Settings {
         "300"
     )
 
-    var shouldClearPlaylist
-        by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false)
-
     var shouldSortByDisc
         by BooleanSetting(Constants.PREFERENCES_KEY_DISC_SORT, false)
 
     var shouldClearBookmark
         by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false)
 
-    var singleButtonPlayPause
-        by BooleanSetting(
-            Constants.PREFERENCES_KEY_SINGLE_BUTTON_PLAY_PAUSE,
-            false
-        )
-
     // Inverted for readability
     var shouldSendBluetoothNotifications by BooleanSetting(
         Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS,
         true
     )
-
-    var shouldSendBluetoothAlbumArt
-        by BooleanSetting(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true)
-
-    var shouldDisableNowPlayingListSending
-        by BooleanSetting(Constants.PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST, false)
-
-    @JvmStatic
-    var viewRefreshInterval
-        by StringIntSetting(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000")
 
     var shouldAskForShareDetails
         by BooleanSetting(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true)
@@ -256,18 +230,6 @@ object Settings {
             }
             return 0
         }
-
-    @JvmStatic
-    var resumeOnBluetoothDevice by IntSetting(
-        Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE,
-        Constants.PREFERENCE_VALUE_DISABLED
-    )
-
-    @JvmStatic
-    var pauseOnBluetoothDevice by IntSetting(
-        Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE,
-        Constants.PREFERENCE_VALUE_A2DP
-    )
 
     @JvmStatic
     var debugLogToFile by BooleanSetting(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false)

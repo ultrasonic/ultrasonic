@@ -180,12 +180,6 @@ class MediaPlayerController(
                 }
             }
         }
-
-        // Playback has ended...
-        if (mediaItem == null && Settings.shouldClearPlaylist) {
-            clear(true)
-            jukeboxMediaPlayer.updatePlaylist()
-        }
     }
 
     private fun publishPlaybackState() {
