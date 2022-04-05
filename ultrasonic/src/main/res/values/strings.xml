@@ -75,6 +75,8 @@
     <string name="download.menu_screen_on">Screen On</string>
     <string name="download.menu_show_album">Show Album</string>
     <string name="download.menu_shuffle">Shuffle</string>
+    <string name="download.menu_shuffle_on">Shuffle mode enabled</string>
+    <string name="download.menu_shuffle_off">Shuffle mode disabled</string>
     <string name="download.menu_shuffle_notification">Playlist was shuffled</string>
     <string name="download.menu_visualizer">Visualizer</string>
     <string name="download.playerstate_buffering">Buffering</string>

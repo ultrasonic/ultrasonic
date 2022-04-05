@@ -149,6 +149,7 @@ class PlayerFragment :
     private lateinit var pauseButton: View
     private lateinit var stopButton: View
     private lateinit var playButton: View
+    private lateinit var shuffleButton: View
     private lateinit var repeatButton: ImageView
     private lateinit var hollowStar: Drawable
     private lateinit var fullStar: Drawable
@@ -219,7 +220,10 @@ class PlayerFragment :
         findViews(view)
         val previousButton: AutoRepeatButton = view.findViewById(R.id.button_previous)
         val nextButton: AutoRepeatButton = view.findViewById(R.id.button_next)
-        val shuffleButton = view.findViewById<View>(R.id.button_shuffle)
+        shuffleButton = view.findViewById(R.id.button_shuffle)
+        updateShuffleButtonState(mediaPlayerController.isShufflePlayEnabled)
+        updateRepeatButtonState(mediaPlayerController.repeatMode)
+
         val ratingLinearLayout = view.findViewById<LinearLayout>(R.id.song_rating)
         if (!useFiveStarRating) ratingLinearLayout.isVisible = false
         hollowStar = Util.getDrawableFromAttribute(view.context, R.attr.star_hollow)
@@ -293,8 +297,7 @@ class PlayerFragment :
         }
 
         shuffleButton.setOnClickListener {
-            mediaPlayerController.toggleShuffle()
-            Util.toast(activity, R.string.download_menu_shuffle_notification)
+            toggleShuffle()
         }
 
         repeatButton.setOnClickListener {
@@ -415,6 +418,57 @@ class PlayerFragment :
         }
 
         view.setOnTouchListener { _, event -> gestureScanner.onTouchEvent(event) }
+    }
+
+    private fun updateShuffleButtonState(isEnabled: Boolean) {
+        if (isEnabled) {
+            shuffleButton.alpha = 1f
+        } else {
+            shuffleButton.alpha = 0.6f
+        }
+    }
+
+    private fun updateRepeatButtonState(repeatMode: Int) {
+        when (repeatMode) {
+            0 -> {
+                repeatButton.setImageDrawable(
+                    Util.getDrawableFromAttribute(
+                        requireContext(), R.attr.media_repeat_off
+                    )
+                )
+                shuffleButton.alpha = 0.6f
+            }
+            1 -> {
+                repeatButton.setImageDrawable(
+                    Util.getDrawableFromAttribute(
+                        requireContext(), R.attr.media_repeat_single
+                    )
+                )
+                shuffleButton.alpha = 1f
+            }
+            2 -> {
+                repeatButton.setImageDrawable(
+                    Util.getDrawableFromAttribute(
+                        requireContext(), R.attr.media_repeat_all
+                    )
+                )
+                shuffleButton.alpha = 1f
+            }
+            else -> {
+            }
+        }
+    }
+
+    private fun toggleShuffle() {
+        val isEnabled = mediaPlayerController.toggleShuffle()
+
+        if (isEnabled) {
+            Util.toast(activity, R.string.download_menu_shuffle_on)
+        } else {
+            Util.toast(activity, R.string.download_menu_shuffle_off)
+        }
+
+        updateShuffleButtonState(isEnabled)
     }
 
     override fun onResume() {
@@ -621,7 +675,6 @@ class PlayerFragment :
                 return true
             }
             R.id.menu_remove -> {
-                mediaPlayerController.removeFromPlaylist(song!!)
                 onPlaylistChanged()
                 return true
             }
@@ -637,8 +690,7 @@ class PlayerFragment :
                 return true
             }
             R.id.menu_shuffle -> {
-                mediaPlayerController.toggleShuffle()
-                Util.toast(context, R.string.download_menu_shuffle_notification)
+                toggleShuffle()
                 return true
             }
             R.id.menu_item_equalizer -> {
@@ -867,63 +919,59 @@ class PlayerFragment :
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         ) {
 
-                override fun onMove(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
-                ): Boolean {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
 
-                    val from = viewHolder.bindingAdapterPosition
-                    val to = target.bindingAdapterPosition
+                val from = viewHolder.bindingAdapterPosition
+                val to = target.bindingAdapterPosition
 
-                    // Move it in the data set
-                    mediaPlayerController.moveItemInPlaylist(from, to)
-                    viewAdapter.submitList(mediaPlayerController.playList)
+                // Move it in the data set
+                mediaPlayerController.moveItemInPlaylist(from, to)
+                return true
+            }
 
-                    return true
-                }
+            // Swipe to delete from playlist
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val pos = viewHolder.bindingAdapterPosition
+                val item = mediaPlayerController.controller?.getMediaItemAt(pos)
+                mediaPlayerController.removeFromPlaylist(pos)
 
-                // Swipe to delete from playlist
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val pos = viewHolder.bindingAdapterPosition
-                    val file = mediaPlayerController.playList[pos]
-                    mediaPlayerController.removeFromPlaylist(file)
+                val songRemoved = String.format(
+                    resources.getString(R.string.download_song_removed),
+                    item?.mediaMetadata?.title
+                )
 
-                    val songRemoved = String.format(
-                        resources.getString(R.string.download_song_removed),
-                        file.track.title
-                    )
-                    Util.toast(context, songRemoved)
+                Util.toast(context, songRemoved)
+            }
 
-                    viewAdapter.submitList(mediaPlayerController.playList)
-                    viewAdapter.notifyDataSetChanged()
-                }
+            override fun onSelectedChanged(
+                viewHolder: RecyclerView.ViewHolder?,
+                actionState: Int
+            ) {
+                super.onSelectedChanged(viewHolder, actionState)
 
-                override fun onSelectedChanged(
-                    viewHolder: RecyclerView.ViewHolder?,
-                    actionState: Int
-                ) {
-                    super.onSelectedChanged(viewHolder, actionState)
-
-                    if (actionState == ACTION_STATE_DRAG) {
-                        viewHolder?.itemView?.alpha = 0.6f
-                    }
-                }
-
-                override fun clearView(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder
-                ) {
-                    super.clearView(recyclerView, viewHolder)
-
-                    viewHolder.itemView.alpha = 1.0f
-                }
-
-                override fun isLongPressDragEnabled(): Boolean {
-                    return false
+                if (actionState == ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.6f
                 }
             }
+
+            override fun clearView(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ) {
+                super.clearView(recyclerView, viewHolder)
+
+                viewHolder.itemView.alpha = 1.0f
+            }
+
+            override fun isLongPressDragEnabled(): Boolean {
+                return false
+            }
+        }
         )
 
         dragTouchHelper.attachToRecyclerView(playlistView)
@@ -938,25 +986,7 @@ class PlayerFragment :
 
         emptyTextView.isVisible = list.isEmpty()
 
-        when (mediaPlayerController.repeatMode) {
-            0 -> repeatButton.setImageDrawable(
-                Util.getDrawableFromAttribute(
-                    requireContext(), R.attr.media_repeat_off
-                )
-            )
-            1 -> repeatButton.setImageDrawable(
-                Util.getDrawableFromAttribute(
-                    requireContext(), R.attr.media_repeat_single
-                )
-            )
-            2 -> repeatButton.setImageDrawable(
-                Util.getDrawableFromAttribute(
-                    requireContext(), R.attr.media_repeat_all
-                )
-            )
-            else -> {
-            }
-        }
+        updateRepeatButtonState(mediaPlayerController.repeatMode)
     }
 
     private fun onCurrentChanged() {

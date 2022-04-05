@@ -419,8 +419,9 @@ class MediaPlayerController(
         }
 
     @Synchronized
-    fun toggleShuffle() {
+    fun toggleShuffle(): Boolean {
         isShufflePlayEnabled = !isShufflePlayEnabled
+        return isShufflePlayEnabled
     }
 
     val bufferedPercentage: Int
@@ -475,9 +476,9 @@ class MediaPlayerController(
     }
 
     @Synchronized
-    // FIXME
-    // With the new API we can only remove by index!!
-    fun removeFromPlaylist(downloadFile: DownloadFile) {
+    fun removeFromPlaylist(position: Int) {
+
+        controller?.removeMediaItem(position)
 
         playbackStateSerializer.serialize(
             legacyPlaylistManager.playlist,
