@@ -100,7 +100,7 @@ class MediaPlayerController(
                 }
 
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                    onTrackCompleted(mediaItem)
+                    onTrackCompleted()
                     legacyPlaylistManager.updateCurrentPlaying(mediaItem)
                     publishPlaybackState()
                 }
@@ -167,7 +167,7 @@ class MediaPlayerController(
         Timber.d("Processed player state change")
     }
 
-    private fun onTrackCompleted(mediaItem: MediaItem?) {
+    private fun onTrackCompleted() {
         // This method is called before we update the currentPlaying,
         // so in fact currentPlaying will refer to the track that has just finished.
         if (legacyPlaylistManager.currentPlaying != null) {
@@ -196,10 +196,10 @@ class MediaPlayerController(
         val started = playerState === PlayerState.STARTED
         val context = UApp.applicationContext()
 
-        UltrasonicAppWidgetProvider4X1.getInstance().notifyChange(context, song, started, false)
-        UltrasonicAppWidgetProvider4X2.getInstance().notifyChange(context, song, started, true)
-        UltrasonicAppWidgetProvider4X3.getInstance().notifyChange(context, song, started, false)
-        UltrasonicAppWidgetProvider4X4.getInstance().notifyChange(context, song, started, false)
+        UltrasonicAppWidgetProvider4X1.instance?.notifyChange(context, song, started, false)
+        UltrasonicAppWidgetProvider4X2.instance?.notifyChange(context, song, started, true)
+        UltrasonicAppWidgetProvider4X3.instance?.notifyChange(context, song, started, false)
+        UltrasonicAppWidgetProvider4X4.instance?.notifyChange(context, song, started, false)
     }
 
     fun onDestroy() {

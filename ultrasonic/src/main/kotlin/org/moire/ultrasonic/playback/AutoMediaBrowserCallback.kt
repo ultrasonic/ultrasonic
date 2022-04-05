@@ -87,7 +87,7 @@ private const val SEARCH_QUERY_PREFIX = "androidx://media3-session/setMediaUri"
 /**
  * MediaBrowserService implementation for e.g. Android Auto
  */
-@Suppress("TooManyFunctions", "LargeClass")
+@Suppress("TooManyFunctions", "LargeClass", "UnusedPrivateMember")
 class AutoMediaBrowserCallback(var player: Player) :
     MediaLibraryService.MediaLibrarySession.MediaLibrarySessionCallback, KoinComponent {
 
@@ -161,7 +161,7 @@ class AutoMediaBrowserCallback(var player: Player) :
     ): ListenableFuture<LibraryResult<MediaItem>> {
         playFromMediaId(mediaId)
 
-        // FIXME:
+        // TODO:
         // Create LRU Cache of MediaItems, fill it in the other calls
         // and retrieve it here.
         return Futures.immediateFuture(

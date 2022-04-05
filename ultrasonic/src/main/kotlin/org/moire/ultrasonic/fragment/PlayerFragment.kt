@@ -914,11 +914,10 @@ class PlayerFragment :
             }
         )
 
-        dragTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+        val callback = object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or ItemTouchHelper.DOWN,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         ) {
-
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -972,7 +971,8 @@ class PlayerFragment :
                 return false
             }
         }
-        )
+
+        dragTouchHelper = ItemTouchHelper(callback)
 
         dragTouchHelper.attachToRecyclerView(playlistView)
     }
