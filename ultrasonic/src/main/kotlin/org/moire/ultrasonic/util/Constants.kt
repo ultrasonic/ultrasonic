@@ -71,7 +71,6 @@ object Constants {
     const val PREFERENCES_KEY_MEDIA_BUTTONS = "mediaButtons"
     const val PREFERENCES_KEY_SCROBBLE = "scrobble"
     const val PREFERENCES_KEY_SERVER_SCALING = "serverScaling"
-    const val PREFERENCES_KEY_REPEAT_MODE = "repeatMode"
     const val PREFERENCES_KEY_WIFI_REQUIRED_FOR_DOWNLOAD = "wifiRequiredForDownload"
     const val PREFERENCES_KEY_BUFFER_LENGTH = "bufferLength"
     const val PREFERENCES_KEY_NETWORK_TIMEOUT = "networkTimeout"
@@ -105,13 +104,11 @@ object Constants {
     const val PREFERENCES_KEY_SHARE_ON_SERVER = "sharingCreateOnServer"
     const val PREFERENCES_KEY_DEFAULT_SHARE_EXPIRATION = "sharingDefaultExpiration"
     const val PREFERENCES_KEY_USE_FIVE_STAR_RATING = "use_five_star_rating"
+    const val PREFERENCES_KEY_HARDWARE_OFFLOAD = "use_hw_offload"
     const val PREFERENCES_KEY_CATEGORY_NOTIFICATIONS = "notificationsCategory"
     const val PREFERENCES_KEY_FIRST_RUN_EXECUTED = "firstRunExecuted"
     const val PREFERENCES_KEY_DEBUG_LOG_TO_FILE = "debugLogToFile"
     const val PREFERENCES_KEY_OVERRIDE_LANGUAGE = "overrideLanguage"
-    const val PREFERENCE_VALUE_ALL = 0
-    const val PREFERENCE_VALUE_A2DP = 1
-    const val PREFERENCE_VALUE_DISABLED = 2
     const val FILENAME_PLAYLIST_SER = "downloadstate.ser"
     const val ALBUM_ART_FILE = "folder.jpeg"
     const val STARRED = "starred"

@@ -484,4 +484,8 @@
     <string name="settings.five_star_rating_title">Use five star rating for songs</string>
     <string name="settings.five_star_rating_description">Use five star rating system for songs instead of simply starring/unstarring items.</string>
 
+    <string name="settings.use_hw_offload_title">Use hardware playback (experimental)</string>
+    <string name="settings.use_hw_offload_description">Try to play the media using the media decoder chip on your phone. This can improve battery usage.</string>
+
+
 </resources>

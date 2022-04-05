@@ -243,6 +243,8 @@ object Settings {
 
     var useFiveStarRating by BooleanSetting(Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING, false)
 
+    var useHwOffload by BooleanSetting(Constants.PREFERENCES_KEY_HARDWARE_OFFLOAD, false)
+
     // TODO: Remove in December 2022
     fun migrateFeatureStorage() {
         val sp = appContext.getSharedPreferences("feature_flags", Context.MODE_PRIVATE)

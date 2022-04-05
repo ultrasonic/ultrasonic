@@ -35,6 +35,7 @@ import org.moire.ultrasonic.activity.NavigationActivity
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.Settings
 
 class PlaybackService : MediaLibraryService(), KoinComponent {
     private lateinit var player: ExoPlayer
@@ -92,7 +93,8 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         // Create a renderer with HW rendering support
         val renderer = DefaultRenderersFactory(this)
-        renderer.setEnableAudioOffload(true)
+
+        if (Settings.useHwOffload) renderer.setEnableAudioOffload(true)
 
         // Create the player
         player = ExoPlayer.Builder(this)
@@ -104,7 +106,8 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             .build()
 
         // Enable audio offload
-        player.experimentalSetOffloadSchedulingEnabled(true)
+        if (Settings.useHwOffload)
+            player.experimentalSetOffloadSchedulingEnabled(true)
 
         // Create browser interface
         librarySessionCallback = AutoMediaBrowserCallback(player)
