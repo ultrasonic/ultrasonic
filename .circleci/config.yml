@@ -1,11 +1,13 @@
-version: 3
+version: 2
 jobs:
   build:
     docker:
       - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
     environment:
-      JVM_OPTS: -Xmx3200m
+      JVM_OPTS: -Xmx6400m -XX:MaxPermSize=1024m -XX:MaxMetaspaceSize=1g -verbose:gc
+      JAVA_TOOL_OPTIONS: -Xmx6400m -XX:MaxPermSize=1024m -XX:MaxMetaspaceSize=1g -verbose:gc
+    resource_class: large
     steps:
       - checkout
       - restore_cache:
@@ -77,6 +79,7 @@ jobs:
     docker:
       - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
+    resource_class: large
     steps:
       - checkout
       - restore_cache:
