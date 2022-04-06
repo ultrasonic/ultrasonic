@@ -5,8 +5,8 @@ jobs:
       - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
     environment:
-      JVM_OPTS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
-      JAVA_TOOL_OPTIONS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps
+      JVM_OPTS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -XX:+PrintGCDetails
+      JAVA_TOOL_OPTIONS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -XX:+PrintGCDetails
     resource_class: large
     steps:
       - checkout
@@ -20,6 +20,7 @@ jobs:
           command: |
             sed -i '/^org.gradle.jvmargs/d' gradle.properties
             sed -i 's/^org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
+            echo "
       - run:
           name: checkstyle
           command: ./gradlew -Pqc ktlintCheck
