@@ -1,12 +1,16 @@
-version: 2
+version: 2.1
+parameters:
+  memory-config:
+    type: string
+    default: "-Xmx6g -Xms256m -XX:MaxMetaspaceSize=1g -verbose:gc -Xlog:gc*"
 jobs:
   build:
     docker:
       - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
     environment:
-      JVM_OPTS: -Xmx6400m -Xms256m -XX:MaxMetaspaceSize=1g -verbose:gc -Xlog:gc*
-      JAVA_TOOL_OPTIONS: -Xmx6400m -Xms256m -XX:MaxMetaspaceSize=1g -verbose:gc -Xlog:gc*
+      JVM_OPTS: << pipeline.parameters.memory-config >>
+      JAVA_TOOL_OPTIONS: << pipeline.parameters.memory-config >>
     resource_class: large
     steps:
       - checkout
@@ -20,7 +24,7 @@ jobs:
           command: |
             sed -i '/^org.gradle.jvmargs/d' gradle.properties
             sed -i 's/^org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
-            echo "org.gradle.jvmargs=-Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -Xlog:gc*" >> gradle.properties
+            echo << pipeline.parameters.memory-config >> >> gradle.properties
             cat gradle.properties
       - run:
           name: checkstyle
