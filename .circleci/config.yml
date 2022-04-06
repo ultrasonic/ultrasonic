@@ -20,7 +20,7 @@ jobs:
           command: |
             sed -i '/^org.gradle.jvmargs/d' gradle.properties
             sed -i 's/^org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
-            echo "
+            echo "org.gradle.jvmargs=-Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -Xlog:gc*" >> gradle.properties
       - run:
           name: checkstyle
           command: ./gradlew -Pqc ktlintCheck
