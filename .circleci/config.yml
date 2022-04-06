@@ -5,8 +5,8 @@ jobs:
       - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
     environment:
-      JVM_OPTS: -Xmx6400m -XX:MaxPermSize=1024m -XX:MaxMetaspaceSize=1g -verbose:gc
-      JAVA_TOOL_OPTIONS: -Xmx6400m -XX:MaxPermSize=1024m -XX:MaxMetaspaceSize=1g -verbose:gc
+      JVM_OPTS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc
+      JAVA_TOOL_OPTIONS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc
     resource_class: large
     steps:
       - checkout
@@ -37,12 +37,6 @@ jobs:
       - run:
           name: lint
           command: ./gradlew :ultrasonic:lintRelease
-      - run:
-          name: build
-          command: ./gradlew buildRelease
-      - run:
-          name: assemble release
-          command: ./gradlew assembleRelease
       - save_cache:
           paths:
             - ~/.gradle
