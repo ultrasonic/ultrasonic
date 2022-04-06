@@ -37,16 +37,16 @@ jobs:
       - run:
           name: lint
           command: ./gradlew :ultrasonic:lintRelease
-       - run:
+      - run:
           name: build
           command: ./gradlew buildRelease
-       - run:
+      - run:
           name: assemble release
           command: ./gradlew assembleRelease
       - save_cache:
           paths:
             - ~/.gradle
-          key:  v2-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
+          key: v2-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
       - store_artifacts:
           path: ultrasonic/build/reports
           destination: reports
