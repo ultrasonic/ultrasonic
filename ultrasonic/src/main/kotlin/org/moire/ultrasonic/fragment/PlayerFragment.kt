@@ -436,7 +436,7 @@ class PlayerFragment :
                         requireContext(), R.attr.media_repeat_off
                     )
                 )
-                shuffleButton.alpha = 0.6f
+                repeatButton.alpha = 0.6f
             }
             1 -> {
                 repeatButton.setImageDrawable(
@@ -444,7 +444,7 @@ class PlayerFragment :
                         requireContext(), R.attr.media_repeat_single
                     )
                 )
-                shuffleButton.alpha = 1f
+                repeatButton.alpha = 1f
             }
             2 -> {
                 repeatButton.setImageDrawable(
@@ -452,7 +452,7 @@ class PlayerFragment :
                         requireContext(), R.attr.media_repeat_all
                     )
                 )
-                shuffleButton.alpha = 1f
+                repeatButton.alpha = 1f
             }
             else -> {
             }
