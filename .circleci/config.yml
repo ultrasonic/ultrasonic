@@ -11,6 +11,7 @@ jobs:
     environment:
       JVM_OPTS: << pipeline.parameters.memory-config >>
       JAVA_TOOL_OPTIONS: << pipeline.parameters.memory-config >>
+      GRADLE_OPTS: << pipeline.parameters.memory-config >>
     resource_class: large
     steps:
       - checkout
@@ -24,7 +25,7 @@ jobs:
           command: |
             sed -i '/^org.gradle.jvmargs/d' gradle.properties
             sed -i 's/^org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
-            echo << pipeline.parameters.memory-config >> >> gradle.properties
+            echo org.gradle.jvmargs=<< pipeline.parameters.memory-config >> >> gradle.properties
             cat gradle.properties
       - run:
           name: checkstyle

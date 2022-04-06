@@ -34,7 +34,7 @@ android {
             minifyEnabled false
             multiDexEnabled true
             testCoverageEnabled true
-            applicationIdSuffix ".debug"
+            applicationIdSuffix ".debug2"
         }
     }
     sourceSets {

@@ -134,7 +134,7 @@
         </receiver>
         <provider
             android:name=".provider.SearchSuggestionProvider"
-            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
+            android:authorities="org.moire.ultrasonic.debug2.provider.SearchSuggestionProvider"/>
 
     </application>
 
