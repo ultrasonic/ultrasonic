@@ -5,8 +5,8 @@ jobs:
       - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
     environment:
-      JVM_OPTS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -XX:+PrintGCDetails
-      JAVA_TOOL_OPTIONS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -XX:+PrintGCDetails
+      JVM_OPTS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -Xlog:gc*
+      JAVA_TOOL_OPTIONS: -Xmx6400m -XX:MaxMetaspaceSize=1g -verbose:gc -Xlog:gc*
     resource_class: large
     steps:
       - checkout
