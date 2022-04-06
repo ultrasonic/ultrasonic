@@ -37,6 +37,12 @@ jobs:
       - run:
           name: lint
           command: ./gradlew :ultrasonic:lintRelease
+       - run:
+          name: build
+          command: ./gradlew buildRelease
+       - run:
+          name: assemble release
+          command: ./gradlew assembleRelease
       - save_cache:
           paths:
             - ~/.gradle
