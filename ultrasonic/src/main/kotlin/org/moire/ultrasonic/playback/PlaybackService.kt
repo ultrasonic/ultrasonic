@@ -94,7 +94,8 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         // Create a renderer with HW rendering support
         val renderer = DefaultRenderersFactory(this)
 
-        if (Settings.useHwOffload) renderer.setEnableAudioOffload(true)
+        if (Settings.useHwOffload)
+            renderer.setEnableAudioOffload(true)
 
         // Create the player
         player = ExoPlayer.Builder(this)
