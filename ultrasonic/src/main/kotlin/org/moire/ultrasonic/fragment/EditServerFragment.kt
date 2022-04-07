@@ -19,7 +19,6 @@ import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.Locale
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.BuildConfig
@@ -409,7 +408,7 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                     currentServerSetting!!.ldapSupport,
                     BuildConfig.DEBUG
                 )
-                val subsonicApiClient = SubsonicAPIClient(configuration, get())
+                val subsonicApiClient = SubsonicAPIClient(configuration)
 
                 // Execute a ping to retrieve the API version.
                 // This is accepted to fail if the authentication is incorrect yet.

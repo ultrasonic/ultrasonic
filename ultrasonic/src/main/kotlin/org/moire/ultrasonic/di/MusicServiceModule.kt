@@ -1,5 +1,4 @@
 @file:JvmName("MusicServiceModule")
-
 package org.moire.ultrasonic.di
 
 import kotlin.math.abs
@@ -23,7 +22,6 @@ import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.subsonic.NetworkAndStorageChecker
 import org.moire.ultrasonic.subsonic.ShareHandler
 import org.moire.ultrasonic.util.Constants
-import org.moire.ultrasonic.util.Settings
 
 /**
  * This Koin module contains the registration of classes related to the Music Services
@@ -62,16 +60,7 @@ val musicServiceModule = module {
         )
     }
 
-    single<HttpLoggingInterceptor> {
-        val level = if (Settings.debugFullBody) {
-            HttpLoggingInterceptor.Level.BODY
-        } else {
-            HttpLoggingInterceptor.Level.HEADERS
-        }
-        HttpLoggingInterceptor(TimberOkHttpLogger())
-            .setLevel(level)
-    }
-
+    single<HttpLoggingInterceptor.Logger> { TimberOkHttpLogger() }
     single { SubsonicAPIClient(get(), get()) }
 
     single<MusicService>(named(ONLINE_MUSIC_SERVICE)) {

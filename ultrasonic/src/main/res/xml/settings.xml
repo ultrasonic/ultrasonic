@@ -341,12 +341,6 @@
             a:title="@string/settings.debug.log_to_file"
             a:summary=""
             app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="debugLogBody"
-            a:title="@string/settings.debug.log_body"
-            a:summary="@string/settings.debug.log_body_summary"
-            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
