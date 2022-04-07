@@ -3,6 +3,9 @@ parameters:
   memory-config:
     type: string
     default: "-Xmx6g -Xms256m -XX:MaxMetaspaceSize=1g -verbose:gc -Xlog:gc*"
+  memory-config-debug:
+      type: string
+      default: "-Xmx6g -Xms256m -XX:MaxMetaspaceSize=1g"
 jobs:
   build:
     docker:
