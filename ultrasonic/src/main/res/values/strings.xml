@@ -381,6 +381,8 @@
     <string name="common_multiple_years">Multiple Years</string>
     <string name="settings.debug.title">Debug options</string>
     <string name="settings.debug.log_to_file">Write debug log to file</string>
+    <string name="settings.debug.log_body">Debug the body of HTTP calls</string>
+    <string name="settings.debug.log_body_summary">This will slow down streaming requests</string>
     <string name="settings.debug.log_path">The log files are available at %1$s/%2$s</string>
     <string name="settings.debug.log_summary">There are %1$s log files taking up ~%2$s MB space in the %3$s directory. Do you want to keep these?</string>
     <string name="settings.debug.log_keep">Keep files</string>

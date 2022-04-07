@@ -108,6 +108,7 @@ object Constants {
     const val PREFERENCES_KEY_CATEGORY_NOTIFICATIONS = "notificationsCategory"
     const val PREFERENCES_KEY_FIRST_RUN_EXECUTED = "firstRunExecuted"
     const val PREFERENCES_KEY_DEBUG_LOG_TO_FILE = "debugLogToFile"
+    const val PREFERENCES_KEY_DEBUG_LOG_BODY = "debugLogBody"
     const val PREFERENCES_KEY_OVERRIDE_LANGUAGE = "overrideLanguage"
     const val FILENAME_PLAYLIST_SER = "downloadstate.ser"
     const val ALBUM_ART_FILE = "folder.jpeg"

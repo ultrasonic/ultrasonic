@@ -235,6 +235,9 @@ object Settings {
     var debugLogToFile by BooleanSetting(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false)
 
     @JvmStatic
+    var debugFullBody by BooleanSetting(Constants.PREFERENCES_KEY_DEBUG_LOG_BODY, false)
+
+    @JvmStatic
     val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(Util.appContext())
 
