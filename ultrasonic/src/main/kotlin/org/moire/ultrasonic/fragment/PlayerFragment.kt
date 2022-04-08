@@ -422,9 +422,9 @@ class PlayerFragment :
 
     private fun updateShuffleButtonState(isEnabled: Boolean) {
         if (isEnabled) {
-            shuffleButton.alpha = 1f
+            shuffleButton.alpha = ALPHA_ACTIVATED
         } else {
-            shuffleButton.alpha = 0.6f
+            shuffleButton.alpha = ALPHA_DEACTIVATED
         }
     }
 
@@ -436,7 +436,7 @@ class PlayerFragment :
                         requireContext(), R.attr.media_repeat_off
                     )
                 )
-                repeatButton.alpha = 0.6f
+                repeatButton.alpha = ALPHA_DEACTIVATED
             }
             1 -> {
                 repeatButton.setImageDrawable(
@@ -444,7 +444,7 @@ class PlayerFragment :
                         requireContext(), R.attr.media_repeat_single
                     )
                 )
-                repeatButton.alpha = 1f
+                repeatButton.alpha = ALPHA_ACTIVATED
             }
             2 -> {
                 repeatButton.setImageDrawable(
@@ -452,7 +452,7 @@ class PlayerFragment :
                         requireContext(), R.attr.media_repeat_all
                     )
                 )
-                repeatButton.alpha = 1f
+                repeatButton.alpha = ALPHA_ACTIVATED
             }
             else -> {
             }
@@ -954,7 +954,7 @@ class PlayerFragment :
                 super.onSelectedChanged(viewHolder, actionState)
 
                 if (actionState == ACTION_STATE_DRAG) {
-                    viewHolder?.itemView?.alpha = 0.6f
+                    viewHolder?.itemView?.alpha = ALPHA_DEACTIVATED
                 }
             }
 
@@ -1256,5 +1256,7 @@ class PlayerFragment :
 
     companion object {
         private const val PERCENTAGE_OF_SCREEN_FOR_SWIPE = 5
+        private const val ALPHA_ACTIVATED = 1f
+        private const val ALPHA_DEACTIVATED = 0.4f
     }
 }
