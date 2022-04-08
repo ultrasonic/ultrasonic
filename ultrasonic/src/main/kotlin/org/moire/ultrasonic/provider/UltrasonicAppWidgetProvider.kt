@@ -13,6 +13,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Environment
 import android.view.KeyEvent
 import android.widget.RemoteViews
@@ -172,7 +173,7 @@ open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
             intent.action = "android.intent.action.MAIN"
             intent.addCategory("android.intent.category.LAUNCHER")
             var flags = PendingIntent.FLAG_UPDATE_CURRENT
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // needed starting Android 12 (S = 31)
                 flags = flags or PendingIntent.FLAG_IMMUTABLE
             }
@@ -189,7 +190,7 @@ open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
                 KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE)
             )
             flags = 0
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // needed starting Android 12 (S = 31)
                 flags = flags or PendingIntent.FLAG_IMMUTABLE
             }

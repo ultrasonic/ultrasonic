@@ -17,6 +17,7 @@ package org.moire.ultrasonic.playback
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.os.Build
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.C.CONTENT_TYPE_MUSIC
@@ -138,7 +139,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         val intent = Intent(this, NavigationActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         var flags = PendingIntent.FLAG_UPDATE_CURRENT
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // needed starting Android 12 (S = 31)
             flags = flags or PendingIntent.FLAG_IMMUTABLE
         }

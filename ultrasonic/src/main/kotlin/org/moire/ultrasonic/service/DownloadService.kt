@@ -7,7 +7,6 @@
 
 package org.moire.ultrasonic.service
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -158,7 +157,7 @@ class DownloadService : Service() {
         val intent = Intent(this, NavigationActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         var flags = PendingIntent.FLAG_UPDATE_CURRENT
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // needed starting Android 12 (S = 31)
             flags = flags or PendingIntent.FLAG_IMMUTABLE
         }
