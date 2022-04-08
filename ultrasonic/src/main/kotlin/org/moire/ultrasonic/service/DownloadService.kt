@@ -154,11 +154,14 @@ class DownloadService : Service() {
         return notificationBuilder.build()
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     private fun getPendingIntentForContent(): PendingIntent {
         val intent = Intent(this, NavigationActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        val flags = PendingIntent.FLAG_UPDATE_CURRENT
+        var flags = PendingIntent.FLAG_UPDATE_CURRENT
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            // needed starting Android 12 (S = 31)
+            flags = flags or PendingIntent.FLAG_IMMUTABLE
+        }
         intent.putExtra(Constants.INTENT_SHOW_PLAYER, true)
         return PendingIntent.getActivity(this, 0, intent, flags)
     }
