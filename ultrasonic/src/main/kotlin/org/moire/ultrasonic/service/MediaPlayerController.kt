@@ -289,7 +289,7 @@ class MediaPlayerController(
     @Synchronized
     fun togglePlayPause() {
         if (playbackState == Player.STATE_IDLE) autoPlayStart = true
-        if (controller?.isPlaying == false) {
+        if (controller?.isPlaying == true) {
             controller?.pause()
         } else {
             controller?.play()
