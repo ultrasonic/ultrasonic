@@ -18,6 +18,7 @@ import androidx.media3.common.Timeline
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
@@ -60,6 +61,8 @@ class MediaPlayerController(
 
     private val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
     private val activeServerProvider: ActiveServerProvider by inject()
+
+    private val rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
     private var sessionToken =
         SessionToken(context, ComponentName(context, PlaybackService::class.java))
@@ -108,6 +111,11 @@ class MediaPlayerController(
 
             // controller?.play()
         }, MoreExecutors.directExecutor())
+
+        rxBusSubscription += RxBus.activeServerChangeObservable.subscribe {
+            // Update the Jukebox state when the active server has changed
+            isJukeboxEnabled = activeServerProvider.getActiveServer().jukeboxByDefault
+        }
 
         created = true
         Timber.i("MediaPlayerController created")

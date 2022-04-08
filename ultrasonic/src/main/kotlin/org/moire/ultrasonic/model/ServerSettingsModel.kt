@@ -12,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.data.ActiveServerProvider.Companion.OFFLINE_DB_ID
 import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.data.ServerSettingDao
 import timber.log.Timber
@@ -30,6 +31,8 @@ class ServerSettingsModel(
     /**
      * Retrieves the list of the configured servers from the database.
      * This function is asynchronous, uses LiveData to provide the Setting.
+     *
+     * It does not include the Offline "server".
      */
     fun getServerList(): LiveData<List<ServerSetting>> {
         // This check should run before returning any result
@@ -92,14 +95,14 @@ class ServerSettingsModel(
     /**
      * Removes a Setting from the database
      */
-    fun deleteItem(index: Int) {
-        if (index == 0) return
+    fun deleteItemById(id: Int) {
+        if (id == OFFLINE_DB_ID) return
 
         viewModelScope.launch {
-            val itemToBeDeleted = repository.findByIndex(index)
+            val itemToBeDeleted = repository.findById(id)
             if (itemToBeDeleted != null) {
                 repository.delete(itemToBeDeleted)
-                Timber.d("deleteItem deleted index: $index")
+                Timber.d("deleteItem deleted id: $id")
                 reindexSettings()
                 activeServerProvider.invalidateCache()
             }

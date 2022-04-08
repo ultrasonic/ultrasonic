@@ -29,20 +29,26 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.activity.NavigationActivity
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.app.UApp
+import org.moire.ultrasonic.service.RxBus
+import org.moire.ultrasonic.service.plusAssign
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 
 class PlaybackService : MediaLibraryService(), KoinComponent {
     private lateinit var player: ExoPlayer
     private lateinit var mediaLibrarySession: MediaLibrarySession
+    private lateinit var apiDataSource: APIDataSource.Factory
     private lateinit var dataSourceFactory: DataSource.Factory
 
     private lateinit var librarySessionCallback: MediaLibrarySession.MediaLibrarySessionCallback
+
+    private var rxBusSubscription = CompositeDisposable()
 
     /*
      * For some reason the LocalConfiguration of MediaItem are stripped somewhere in ExoPlayer,
@@ -64,11 +70,18 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
         initializeSessionAndPlayer()
+
+        rxBusSubscription += RxBus.activeServerChangeObservable.subscribe {
+            // Update the API endpoint when the active server has changed
+            val newClient: SubsonicAPIClient by inject()
+            apiDataSource.setAPIClient(newClient)
+        }
     }
 
     override fun onDestroy() {
         player.release()
         mediaLibrarySession.release()
+        rxBusSubscription.dispose()
         super.onDestroy()
     }
 
@@ -88,8 +101,10 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         val subsonicAPIClient: SubsonicAPIClient by inject()
 
         // Create a MediaSource which passes calls through our OkHttp Stack
+        apiDataSource = APIDataSource.Factory(subsonicAPIClient)
+
         dataSourceFactory = APIDataSource.Factory(subsonicAPIClient)
-        val cacheDataSourceFactory: DataSource.Factory = CachedDataSource.Factory(dataSourceFactory)
+        val cacheDataSourceFactory: DataSource.Factory = CachedDataSource.Factory(apiDataSource)
 
         // Create a renderer with HW rendering support
         val renderer = DefaultRenderersFactory(this)

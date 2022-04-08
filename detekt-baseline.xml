@@ -2,8 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided>$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
-    <ID>ComplexMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>ImplicitDefaultLocale:EditServerFragment.kt$EditServerFragment.&lt;no name provided>$String.format( "%s %s", resources.getString(R.string.settings_connection_failure), getErrorMessage(error) )</ID>
     <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Failed to write log to %s", file)</ID>
     <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Log file rotated, logging into file %s", file?.name)</ID>
@@ -12,7 +10,7 @@
     <ID>LongMethod:EditServerFragment.kt$EditServerFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:ShareHandler.kt$ShareHandler$private fun showDialog( fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout?, cancellationToken: CancellationToken )</ID>
-    <ID>LongParameterList:ServerRowAdapter.kt$ServerRowAdapter$( private var context: Context, private var data: Array&lt;ServerSetting>, private val model: ServerSettingsModel, private val activeServerProvider: ActiveServerProvider, private val manageMode: Boolean, private val serverDeletedCallback: ((Int) -> Unit), private val serverEditRequestedCallback: ((Int) -> Unit) )</ID>
+    <ID>LongParameterList:ServerRowAdapter.kt$ServerRowAdapter$( private var context: Context, passedData: Array&lt;ServerSetting>, private val model: ServerSettingsModel, private val activeServerProvider: ActiveServerProvider, private val manageMode: Boolean, private val serverDeletedCallback: ((Int) -> Unit), private val serverEditRequestedCallback: ((Int) -> Unit) )</ID>
     <ID>MagicNumber:ActiveServerProvider.kt$ActiveServerProvider$8192</ID>
     <ID>MagicNumber:JukeboxMediaPlayer.kt$JukeboxMediaPlayer$0.05f</ID>
     <ID>MagicNumber:JukeboxMediaPlayer.kt$JukeboxMediaPlayer$50</ID>
