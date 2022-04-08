@@ -27,8 +27,14 @@ import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.di.OFFLINE_MUSIC_SERVICE
 import org.moire.ultrasonic.di.ONLINE_MUSIC_SERVICE
 import org.moire.ultrasonic.di.musicServiceModule
+import timber.log.Timber
 
-// TODO Refactor everywhere to use DI way to get MusicService, and then remove this class
+/*
+ * TODO: When resetMusicService is called, a large number of classes are completely newly instantiated,
+ * which take quite a bit of time.
+ *
+ * Instead it would probably be faster to listen to Rx
+ */
 object MusicServiceFactory : KoinComponent {
     @JvmStatic
     fun getMusicService(): MusicService {
@@ -45,6 +51,7 @@ object MusicServiceFactory : KoinComponent {
      */
     @JvmStatic
     fun resetMusicService() {
+        Timber.i("Regenerating Koin Music Service Module")
         unloadKoinModules(musicServiceModule)
         loadKoinModules(musicServiceModule)
     }

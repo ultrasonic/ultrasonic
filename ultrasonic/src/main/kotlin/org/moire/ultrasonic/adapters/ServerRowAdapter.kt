@@ -30,13 +30,19 @@ import org.moire.ultrasonic.util.Util
  */
 internal class ServerRowAdapter(
     private var context: Context,
-    private var data: Array<ServerSetting>,
+    passedData: Array<ServerSetting>,
     private val model: ServerSettingsModel,
     private val activeServerProvider: ActiveServerProvider,
     private val manageMode: Boolean,
     private val serverDeletedCallback: ((Int) -> Unit),
     private val serverEditRequestedCallback: ((Int) -> Unit)
 ) : BaseAdapter() {
+
+    private var data: MutableList<ServerSetting> = mutableListOf()
+
+    init {
+        setData(passedData)
+    }
 
     companion object {
         private const val MENU_ID_EDIT = 1
@@ -49,12 +55,19 @@ internal class ServerRowAdapter(
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     fun setData(data: Array<ServerSetting>) {
-        this.data = data
+        this.data.clear()
+
+        // In read mode show the offline server as well
+        if (!manageMode) {
+            this.data.add(ActiveServerProvider.OFFLINE_DB)
+        }
+
+        this.data.addAll(data)
         notifyDataSetChanged()
     }
 
     override fun getCount(): Int {
-        return if (manageMode) data.size else data.size + 1
+        return data.size
     }
 
     override fun getItem(position: Int): Any {
@@ -69,11 +82,11 @@ internal class ServerRowAdapter(
      * Creates the Row representation of a Server Setting
      */
     @Suppress("LongMethod")
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-        var index = position
+    override fun getView(pos: Int, convertView: View?, parent: ViewGroup?): View? {
+        var position = pos
 
         // Skip "Offline" in manage mode
-        if (manageMode) index++
+        if (manageMode) position++
 
         var vi: View? = convertView
         if (vi == null) vi = inflater.inflate(R.layout.server_row, parent, false)
@@ -83,22 +96,17 @@ internal class ServerRowAdapter(
         val layout = vi?.findViewById<ConstraintLayout>(R.id.server_layout)
         val image = vi?.findViewById<ImageView>(R.id.server_image)
         val serverMenu = vi?.findViewById<ImageButton>(R.id.server_menu)
-        val setting = data.singleOrNull { t -> t.index == index }
+        val setting = data.singleOrNull { t -> t.index == position }
 
-        if (index == 0) {
-            text?.text = context.getString(R.string.main_offline)
-            description?.text = ""
-        } else {
-            text?.text = setting?.name ?: ""
-            description?.text = setting?.url ?: ""
-            if (setting == null) serverMenu?.visibility = View.INVISIBLE
-        }
+        text?.text = setting?.name ?: ""
+        description?.text = setting?.url ?: ""
+        if (setting == null) serverMenu?.visibility = View.INVISIBLE
 
         val icon: Drawable?
         val background: Drawable?
 
         // Configure icons for the row
-        if (index == 0) {
+        if (setting?.id == ActiveServerProvider.OFFLINE_DB_ID) {
             serverMenu?.visibility = View.INVISIBLE
             icon = Util.getDrawableFromAttribute(context, R.attr.screen_on_off)
             background = ContextCompat.getDrawable(context, R.drawable.circle)
@@ -116,7 +124,7 @@ internal class ServerRowAdapter(
         image?.background = background
 
         // Highlight the Active Server's row by changing its background
-        if (index == activeServerProvider.getActiveServer().index) {
+        if (position == activeServerProvider.getActiveServer().index) {
             layout?.background = ContextCompat.getDrawable(context, R.drawable.select_ripple)
         } else {
             layout?.background = ContextCompat.getDrawable(context, R.drawable.default_ripple)
@@ -128,7 +136,7 @@ internal class ServerRowAdapter(
             R.drawable.select_ripple_circle
         )
 
-        serverMenu?.setOnClickListener { view -> serverMenuClick(view, index) }
+        serverMenu?.setOnClickListener { view -> serverMenuClick(view, position) }
 
         return vi
     }
@@ -192,7 +200,8 @@ internal class ServerRowAdapter(
                 return true
             }
             MENU_ID_DELETE -> {
-                serverDeletedCallback.invoke(position)
+                val server = getItem(position) as ServerSetting
+                serverDeletedCallback.invoke(server.id)
                 return true
             }
             MENU_ID_UP -> {

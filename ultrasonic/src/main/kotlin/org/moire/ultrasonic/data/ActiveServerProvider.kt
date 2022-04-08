@@ -1,6 +1,5 @@
 package org.moire.ultrasonic.data
 
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +10,7 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.di.DB_FILENAME
 import org.moire.ultrasonic.service.MusicServiceFactory.resetMusicService
+import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
@@ -52,10 +52,30 @@ class ActiveServerProvider(
             }
 
             // Fallback to Offline
-            setActiveServerId(OFFLINE_DB_ID)
+            setActiveServerById(OFFLINE_DB_ID)
         }
 
         return OFFLINE_DB
+    }
+
+    /**
+     * Resolves the index (sort order) of a server to its id (unique)
+     * @param index: The index of the server in the server selector
+     * @return id: The unique id of the server
+     */
+    fun getServerIdFromIndex(index: Int): Int {
+        if (index <= OFFLINE_DB_INDEX) {
+            // Offline mode is selected
+            return OFFLINE_DB_ID
+        }
+
+        var id: Int
+
+        runBlocking {
+            id = repository.findByIndex(index)?.id ?: 0
+        }
+
+        return id
     }
 
     /**
@@ -66,13 +86,13 @@ class ActiveServerProvider(
         Timber.d("setActiveServerByIndex $index")
         if (index <= OFFLINE_DB_INDEX) {
             // Offline mode is selected
-            setActiveServerId(OFFLINE_DB_ID)
+            setActiveServerById(OFFLINE_DB_ID)
             return
         }
 
         launch {
             val serverId = repository.findByIndex(index)?.id ?: 0
-            setActiveServerId(serverId)
+            setActiveServerById(serverId)
         }
     }
 
@@ -180,8 +200,6 @@ class ActiveServerProvider(
             minimumApiVersion = null
         )
 
-        val liveActiveServerId: MutableLiveData<Int> = MutableLiveData(getActiveServerId())
-
         /**
          * Queries if the Active Server is the "Offline" mode of Ultrasonic
          * @return True, if the "Offline" mode is selected
@@ -198,13 +216,16 @@ class ActiveServerProvider(
         }
 
         /**
-         * Sets the Id of the Active Server
+         * Sets the Active Server by its unique id
+         * @param serverId: The id of the desired server
          */
-        fun setActiveServerId(serverId: Int) {
+        fun setActiveServerById(serverId: Int) {
             resetMusicService()
 
             Settings.activeServer = serverId
-            liveActiveServerId.postValue(serverId)
+
+            Timber.i("setActiveServerById done, new id: %s", serverId)
+            RxBus.activeServerChangePublisher.onNext(serverId)
         }
 
         /**

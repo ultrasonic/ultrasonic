@@ -40,7 +40,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
-import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
@@ -54,6 +54,7 @@ import org.moire.ultrasonic.service.DownloadFile
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MediaPlayerLifecycleSupport
 import org.moire.ultrasonic.service.RxBus
+import org.moire.ultrasonic.service.plusAssign
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.InfoDialog
@@ -83,8 +84,8 @@ class NavigationActivity : AppCompatActivity() {
     private var headerBackgroundImage: ImageView? = null
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private var themeChangedEventSubscription: Disposable? = null
-    private var playerStateSubscription: Disposable? = null
+
+    private var rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
     private val serverSettingsModel: ServerSettingsModel by viewModel()
     private val lifecycleSupport: MediaPlayerLifecycleSupport by inject()
@@ -181,23 +182,23 @@ class NavigationActivity : AppCompatActivity() {
             hideNowPlaying()
         }
 
-        playerStateSubscription = RxBus.playerStateObservable.subscribe {
+        rxBusSubscription += RxBus.playerStateObservable.subscribe {
             if (it.state === PlayerState.STARTED || it.state === PlayerState.PAUSED)
                 showNowPlaying()
             else
                 hideNowPlaying()
         }
 
-        themeChangedEventSubscription = RxBus.themeChangedEventObservable.subscribe {
+        rxBusSubscription += RxBus.themeChangedEventObservable.subscribe {
             recreate()
+        }
+
+        rxBusSubscription += RxBus.activeServerChangeObservable.subscribe {
+            updateNavigationHeaderForServer()
         }
 
         serverRepository.liveServerCount().observe(this) { count ->
             cachedServerCount = count ?: 0
-            updateNavigationHeaderForServer()
-        }
-
-        ActiveServerProvider.liveActiveServerId.observe(this) {
             updateNavigationHeaderForServer()
         }
     }
@@ -239,8 +240,7 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        themeChangedEventSubscription?.dispose()
-        playerStateSubscription?.dispose()
+        rxBusSubscription.dispose()
         imageLoaderProvider.clearImageLoader()
     }
 

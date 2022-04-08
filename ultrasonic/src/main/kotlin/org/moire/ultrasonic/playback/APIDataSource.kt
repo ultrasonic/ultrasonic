@@ -7,12 +7,12 @@
 
 package org.moire.ultrasonic.playback
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.Assertions
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.datasource.BaseDataSource
 import androidx.media3.datasource.DataSourceException
@@ -43,15 +43,15 @@ import timber.log.Timber
  * priority) the `dataSpec`, [.setRequestProperty] and the default parameters used to
  * construct the instance.
  */
+@SuppressLint("UnsafeOptInUsageError")
 @Suppress("MagicNumber")
-@UnstableApi
 open class APIDataSource private constructor(
     subsonicAPIClient: SubsonicAPIClient
 ) : BaseDataSource(true),
     HttpDataSource {
 
     /** [DataSource.Factory] for [APIDataSource] instances.  */
-    class Factory(private val subsonicAPIClient: SubsonicAPIClient) : HttpDataSource.Factory {
+    class Factory(private var subsonicAPIClient: SubsonicAPIClient) : HttpDataSource.Factory {
         private val defaultRequestProperties: RequestProperties = RequestProperties()
         private var transferListener: TransferListener? = null
 
@@ -73,6 +73,10 @@ open class APIDataSource private constructor(
         fun setTransferListener(transferListener: TransferListener?): Factory {
             this.transferListener = transferListener
             return this
+        }
+
+        fun setAPIClient(newClient: SubsonicAPIClient) {
+            this.subsonicAPIClient = newClient
         }
 
         override fun createDataSource(): APIDataSource {
@@ -318,6 +322,7 @@ open class APIDataSource private constructor(
             return C.RESULT_END_OF_INPUT
         }
         bytesRead += read.toLong()
+        // TODO
         // bytesTransferred(read)
         return read
     }
