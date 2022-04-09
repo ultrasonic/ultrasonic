@@ -21,6 +21,8 @@
 
     <application
         android:allowBackup="false"
+        android:fullBackupContent="@xml/backup_descriptor"
+        android:dataExtractionRules="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/NoActionBar"

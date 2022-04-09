@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Targeting Android 12 or higher -->
+<data-extraction-rules>
+    <cloud-backup disableIfNoEncryptionCapabilities="true">
+    <!--include domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/-->
+    <!--exclude domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/-->
+</cloud-backup>
+<device-transfer>
+    <!--include domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/-->
+    <!--exclude domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/-->
+</device-transfer>
+</data-extraction-rules>
