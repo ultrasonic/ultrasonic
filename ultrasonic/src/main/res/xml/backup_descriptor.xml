@@ -3,8 +3,10 @@
 <full-backup-content>
     <!-- The following "exclude" elements are not part of the auto backup -->
     <!--exclude domain="database" path="name.db" /-->
+    <exclude domain="root"/>
     <!-- Exclude specific shared preferences that contain GCM registration Id -->
 
     <!-- The following "include" elements are part of the auto backup -->
-    <!-- include domain="sharedpref" path="."/-->
+    <include domain="sharedpref" path="."/>
+    <include domain="database" path="."/>
 </full-backup-content>
