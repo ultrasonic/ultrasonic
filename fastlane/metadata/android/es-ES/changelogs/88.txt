@@ -1,1 +1,0 @@
-Cuando un fichero no tiene etiquetas de número de pista lo ordena por orden alfabético. Además hemos arreglado el bug #369

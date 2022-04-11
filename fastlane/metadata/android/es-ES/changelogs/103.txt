@@ -1,0 +1,14 @@
+Corrección de errores
+- #673: La desactivación de la opción "Examinar mediante etiquetas ID3" hace que el contenido de los resultados de la búsqueda de artistas no coincida.
+- #679: El teclado debería estar oculto cuando se navega fuera de la Búsqueda.
+- #686: En modo apaisado, falta la barra de desplazamiento en el texto de acerca de.
+- #691: TrackCollectionFragment: arreglar el botón de reproducir todo.
+- #698: Los menús contextuales basados en pistas no funcionan correctamente en la mayoría de los fragmentos.
+
+Características
+- #669: Opción de cambio de idioma.
+
+Mejoras
+- #654: Actualización de OkHttp.
+- #694: Reformular la alerta para mejorar la ayuda.
+- #702: Mostrar descargas al reproducir.
