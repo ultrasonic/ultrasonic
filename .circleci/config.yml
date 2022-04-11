@@ -1,11 +1,20 @@
-version: 3
+version: 2.1
+parameters:
+  memory-config:
+      type: string
+      default: "-Xmx3200m -Xms256m -XX:MaxMetaspaceSize=1g"
+  memory-config-debug:
+    type: string
+    default: "-Xmx3200m -Xms256m -XX:MaxMetaspaceSize=1g -verbose:gc -Xlog:gc*"
 jobs:
   build:
     docker:
       - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
     environment:
-      JVM_OPTS: -Xmx3200m
+      JVM_OPTS: << pipeline.parameters.memory-config >>
+      JAVA_TOOL_OPTIONS: << pipeline.parameters.memory-config >>
+      GRADLE_OPTS: << pipeline.parameters.memory-config >>
     steps:
       - checkout
       - restore_cache:
@@ -18,6 +27,7 @@ jobs:
           command: |
             sed -i '/^org.gradle.jvmargs/d' gradle.properties
             sed -i 's/^org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
+            cat gradle.properties
       - run:
           name: checkstyle
           command: ./gradlew -Pqc ktlintCheck
@@ -44,7 +54,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key:  v1-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
+          key: v2-ultrasonic-{{ .Branch }}-{{ checksum "gradle/libs.versions.toml" }}
       - store_artifacts:
           path: ultrasonic/build/reports
           destination: reports
@@ -77,6 +87,10 @@ jobs:
     docker:
       - image: cimg/android:2022.03.1
     working_directory: ~/ultrasonic
+    environment:
+      JVM_OPTS: << pipeline.parameters.memory-config >>
+      JAVA_TOOL_OPTIONS: << pipeline.parameters.memory-config >>
+      GRADLE_OPTS: << pipeline.parameters.memory-config >>
     steps:
       - checkout
       - restore_cache:
