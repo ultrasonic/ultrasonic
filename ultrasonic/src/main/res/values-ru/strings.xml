@@ -28,7 +28,9 @@
     <string name="button_bar.playlists">Плейлист</string>
     <string name="button_bar.search">Поиск</string>
     <string name="chat.send_a_message">Отправить сообщение</string>
+    <string name="common.album">Альбом</string>
     <string name="common.appname">Ultrasonic</string>
+    <string name="common.artist">Артист</string>
     <string name="common.cancel">Отмена</string>
     <string name="common.comment">Комментарий</string>
     <string name="common.confirm">Подтвердить</string>
@@ -48,11 +50,14 @@
     <string name="common.play_shuffled">Играть в случайном порядке</string>
     <string name="common.public">Публичный</string>
     <string name="common.save">Сохранить</string>
+    <string name="common.select_all">Выбрать все</string>
+    <string name="common.title">Заголовок</string>
     <string name="common.unpin">Открепить</string>
     <string name="common.various_artists">Различные исполнители</string>
     <string name="delete_playlist">Вы хотите удалить %1$s</string>
     <string name="download.bookmark_removed" formatted="false">Закладка удалена</string>
     <string name="download.bookmark_set_at_position" formatted="false">Закладка установлена ​​на %s</string>
+    <string name="download.empty">Нечего загружать</string>
     <string name="playlist.empty">Плейлист пустой</string>
     <string name="download.jukebox_not_authorized">Пульт дистанционного управления не допускается. Пожалуйста, включите режим музыкального автомата в <b> Пользователи &gt; Настройки </b>на вашем Subsonic сервере.</string>
     <string name="download.jukebox_off">Пульт управления выключен. Музыка играет на телефоне</string>
@@ -91,6 +96,16 @@
     <string name="error.label">Ошибка</string>
     <string name="jukebox.is_default">Jukebox по умолчанию</string>
     <string name="lyrics.nomatch">Текст не найден</string>
+    <string name="language.default">Системный</string>
+    <string name="language.zh_CN">Китайский (Китай)</string>
+    <string name="language.zh_TW">Китайский (Тайвань)</string>
+    <string name="language.cs">Чешский</string>
+    <string name="language.nl">Датский</string>
+    <string name="language.en">Английский</string>
+    <string name="language.de">Немецкий</string>
+    <string name="language.pt">Португальский</string>
+    <string name="language.pt_BR">Португальский (Бразилия)</string>
+    <string name="language.ru">Русский</string>
     <string name="main.albums_alphaByArtist">По исполнителю</string>
     <string name="main.albums_alphaByName">По имени</string>
     <string name="main.albums_frequent">Самое популярное</string>
@@ -116,6 +131,7 @@
     <string name="menu.common">Общий</string>
     <string name="menu.deleted_playlist">Удалить плейлист %s</string>
     <string name="menu.deleted_playlist_error">Не удалось удалить плейлист %s</string>
+    <string name="menu.downloads">Загрузки</string>
     <string name="menu.exit">Выход</string>
     <string name="menu.navigation">Навигация</string>
     <string name="menu.settings">Настройки</string>
@@ -140,7 +156,6 @@
     <string name="search.songs">Песни</string>
     <string name="search.title">Поиск</string>
     <string name="select_album.empty">Медиа не найдена</string>
-    <string name="select_album.no_network">Предупреждение: сеть недоступна.</string>
     <string name="select_album.no_sdcard">Ошибка: нет SD-карты</string>
     <string name="select_album.play_all">Воспроизвести все</string>
     <string name="select_artist.all_folders">Все папки</string>
@@ -205,7 +220,6 @@
     <string name="settings.disc_sort">Время кэша каталогов</string>
     <string name="settings.disc_sort_summary">Сортировать список песен по номеру диска и треку</string>
     <string name="settings.display_bitrate_summary">Добавить имя исполнителя с битрейтом и суффиксом файла</string>
-    <string name="settings.download_transition_summary">Переход к загрузке активности при запуске воспроизведения</string>
     <string name="settings.gapless_playback">Воспроизведение без промежутка</string>
     <string name="settings.gapless_playback_summary">Включить воспроизведение без паузы</string>
     <string name="settings.hide_media_summary">Включить воспроизведение без паузы</string>
@@ -272,10 +286,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">История поиска очищена</string>
     <string name="settings.search_title">Настройки поиска</string>
-    <string name="settings.send_bluetooth_album_art_summary">Отправить обложку альбома через Bluetooth (может привести к сбою уведомлений Bluetooth)</string>
-    <string name="settings.send_bluetooth_album_art">Обложка альбома через Bluetooth</string>
     <string name="settings.send_bluetooth_notification_summary">Отправлять уведомления о воспроизведении через Bluetooth</string>
     <string name="settings.send_bluetooth_notification">Отправить уведомление Bluetooth</string>
+    <string name="settings.send_bluetooth_album_art_summary">Отправить обложку альбома через Bluetooth (может привести к сбою уведомлений Bluetooth)</string>
+    <string name="settings.send_bluetooth_album_art">Обложка альбома через Bluetooth</string>
     <string name="settings.server_manage_servers">Управление серверами</string>
     <string name="settings.server_address">Адрес сервера</string>
     <string name="settings.server_name">Имя</string>
@@ -304,8 +318,6 @@
     <string name="settings.theme_title">Оформление</string>
     <string name="settings.title.allow_self_signed_certificate">Разрешить самоподписанный сертификат HTTPS</string>
     <string name="settings.title.enable_ldap_users_support">Принудительная аутентификация по обычному паролю</string>
-    <string name="settings.summary.enable_ldap_users_support">Это заставляет приложение всегда отправлять пароль в незашифрованном виде.
-        Полезно, если сервер Subsonic не поддерживает новый API аутентификации пользователей.</string>
     <string name="settings.use_folder_for_album_artist">Использовать папки для имени исполнителя</string>
     <string name="settings.use_folder_for_album_artist_summary">Предположим, папка верхнего уровня - это имя исполнителя альбома</string>
     <string name="settings.use_id3">Обзор с использованием тегов ID3</string>
@@ -411,8 +423,6 @@
     <string name="api.subsonic.upgrade_client">Несовместимые версии. Пожалуйста, обновите приложение Ultrasonic для Android.</string>
     <string name="api.subsonic.upgrade_server">Несовместимые версии. Пожалуйста, обновите Subsonic сервер.</string>
 
+    <!-- Subsonic features  -->
     <string name="settings.five_star_rating_title">Использовать пятизвездочный рейтинг для песен</string>
-    <string name="settings.five_star_rating_description">Использовать пятизвездочную систему рейтинга для песен
-        вместо того, чтобы просто ставить/не ставить звезды.</string>
-
-</resources>
+    </resources>

@@ -129,7 +129,6 @@
     <string name="search.songs">Skladby</string>
     <string name="search.title">Hledat</string>
     <string name="select_album.empty">Média nenalezena</string>
-    <string name="select_album.no_network">Varování: Připojení nedostupné.</string>
     <string name="select_album.no_sdcard">Chyba: SD karta nedostupná.</string>
     <string name="select_album.play_all">Přehrát vše</string>
     <string name="select_artist.all_folders">Všechny adresáře</string>
@@ -194,7 +193,6 @@
     <string name="settings.disc_sort">Řadit skladby podle čísla CD</string>
     <string name="settings.disc_sort_summary">Řadit seznam skladeb dle čísla CD a čísla skladby</string>
     <string name="settings.display_bitrate_summary">Připojovat jméno umělce, bitrate a příponu souboru</string>
-    <string name="settings.download_transition_summary">Při spuštění přehrávání přepnout na aktivitu stahování</string>
     <string name="settings.gapless_playback">Přehrávání bez pauz</string>
     <string name="settings.gapless_playback_summary">Zapnout přehrávání bez pauz</string>
     <string name="settings.hide_media_summary">Skrýt hudební soubory před ostatními aplikacemi.</string>
@@ -259,10 +257,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Historie hledání vyčištěna</string>
     <string name="settings.search_title">Nastavení vyhledávání</string>
-    <string name="settings.send_bluetooth_album_art_summary">Odesílat obrázky alb přes bluetooth (může způsobit selhávání bluetooth upozornění)</string>
-    <string name="settings.send_bluetooth_album_art">Obrázky alb přes bluetooth</string>
     <string name="settings.send_bluetooth_notification_summary">Odesílat upozornění přehrávání přes bluetooth</string>
     <string name="settings.send_bluetooth_notification">Odesílat bluetooth upozornění</string>
+    <string name="settings.send_bluetooth_album_art_summary">Odesílat obrázky alb přes bluetooth (může způsobit selhávání bluetooth upozornění)</string>
+    <string name="settings.send_bluetooth_album_art">Obrázky alb přes bluetooth</string>
     <string name="settings.server_manage_servers">Spravovat servery</string>
     <string name="settings.server_address">Adresa serveru</string>
     <string name="settings.server_name">Název</string>
@@ -291,8 +289,6 @@
     <string name="settings.theme_title">Vzhled</string>
     <string name="settings.title.allow_self_signed_certificate">Povolit HTTPS certifikáty podepsané samé sebou</string>
     <string name="settings.title.enable_ldap_users_support">Vynutit ověření nešifrovaným heslem</string>
-    <string name="settings.summary.enable_ldap_users_support">Toto vynutí zaslání hesla v nešifrované podobě.
-Šikovné pokud Subsonic server nepodporuje nové API ověřování uživatel.</string>
     <string name="settings.use_folder_for_album_artist">Jména adresářů jako jména umělců</string>
     <string name="settings.use_folder_for_album_artist_summary">Očekává jména hlavních adresářů obsahující jména umělců</string>
     <string name="settings.use_id3">Procházet za použití ID3 tagů</string>
@@ -395,9 +391,6 @@
     <string name="api.subsonic.upgrade_client">Nekompatibilní verze. Aktualizujte prosím Ultrasonic Android aplikaci.</string>
     <string name="api.subsonic.upgrade_server">Nekompatibilní verze. Aktualizujte prosím Subsonic server.</string>
 
+    <!-- Subsonic features  -->
     <string name="settings.five_star_rating_title">Používat pět hvězdiček pro hodnocení skladeb</string>
-    <string name="settings.five_star_rating_description">Používat pět hvězdiček pro hodnocení skladeb
-        namísto jednoduchého jednohvězdičkového hodnocení.
-    </string>
-
-</resources>
+    </resources>

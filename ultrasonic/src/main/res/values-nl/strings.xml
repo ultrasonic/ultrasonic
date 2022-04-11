@@ -96,6 +96,21 @@
     <string name="error.label">Fout</string>
     <string name="jukebox.is_default">Standaard starten in jukebox-modus</string>
     <string name="lyrics.nomatch">Geen songtekst gevonden</string>
+    <string name="language.default">Systeemtaal gebruiken</string>
+    <string name="language.zh_CN">Chinees (China)</string>
+    <string name="language.zh_TW">Chinees (Taiwan)</string>
+    <string name="language.cs">Tsjechisch</string>
+    <string name="language.nl">Nederlands</string>
+    <string name="language.en">Engels</string>
+    <string name="language.fr">Frans</string>
+    <string name="language.de">Duits</string>
+    <string name="language.hu">Hongaars</string>
+    <string name="language.it">Italiaans</string>
+    <string name="language.es">Spaans</string>
+    <string name="language.pl">Pools</string>
+    <string name="language.pt">Portugees</string>
+    <string name="language.pt_BR">Portugees (Brazilië)</string>
+    <string name="language.ru">Russisch</string>
     <string name="main.albums_alphaByArtist">Op artiest</string>
     <string name="main.albums_alphaByName">Op naam</string>
     <string name="main.albums_frequent">Meest afgespeeld</string>
@@ -148,7 +163,7 @@
     <string name="search.title">Zoeken</string>
     <string name="select_album.empty">Geen media gevonden</string>
     <string name="select_album.n_selected">%d nummers geselecteerd</string>
-    <string name="select_album.no_network">Waarschuwing: geen internetverbinding.</string>
+    <string name="select_album.no_network">Waarschuwing: er is geen internetverbinding!\nAls je mobiel internet gebruikt, dan is het noodzakelijk dat je downloads via beperkte verbindingen toestaat in de instellingen.</string>
     <string name="select_album.no_sdcard">Fout: geen SD-kaart beschikbaar.</string>
     <string name="select_album.play_all">Alles afspelen</string>
     <string name="select_artist.all_folders">Alle mappen</string>
@@ -215,8 +230,8 @@
     <string name="settings.disc_sort_summary">Nummerlijst sorteren op schijfnummer en itemnummer</string>
     <string name="settings.display_bitrate">Bitsnelheid en bestandsextensie tonen</string>
     <string name="settings.display_bitrate_summary">Bitsnelheid en bestandsextensie toevoegen aan artiestennaam</string>
-    <string name="settings.download_transition">Downloads tonen bij afspelen</string>
-    <string name="settings.download_transition_summary">Overschakelen naar downloadactiviteit na starten van afspelen</string>
+    <string name="settings.download_transition">Nu aan het afspelen tonen op afspeelscherm</string>
+    <string name="settings.download_transition_summary">Toon ‘Nu aan het afspelen’ in de mediaweergave</string>
     <string name="settings.gapless_playback">Naadloze overgang</string>
     <string name="settings.gapless_playback_summary">Naadloze overgang tussen nummers inschakelen</string>
     <string name="settings.hide_media_summary">Muziekbestanden verbergen voor andere apps.</string>
@@ -255,6 +270,8 @@
     <string name="settings.notifications_title">Meldingen</string>
     <string name="settings.network_title">Netwerk</string>
     <string name="settings.other_title">Overige instellingen</string>
+    <string name="settings.override_language">Taal afdwingen</string>
+    <string name="settings.override_language_summary">Herstart de app om de wijziging toe te passen</string>
     <string name="settings.playback_control_title">Afspeelbedieningsinstellingen</string>
     <string name="settings.preload">Aantal voor te laden nummers</string>
     <string name="settings.preload_1">1 nummer</string>
@@ -283,12 +300,12 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Zoekgeschiedenis gewist</string>
     <string name="settings.search_title">Zoekinstellingen</string>
+    <string name="settings.send_bluetooth_notification_summary">Afspeelmeldingen sturen via bluetooth</string>
+    <string name="settings.send_bluetooth_notification">Bluetoothmelding sturen</string>
     <string name="settings.send_bluetooth_album_art_summary">Albumhoezen versturen via bluetooth (dit kan leiden tot mislukte bluetoothmeldingen)</string>
     <string name="settings.send_bluetooth_album_art">Albumhoezen versturen via bluetooth</string>
     <string name="settings.disable_send_now_playing_list_summary">De lijst ‘Nu aan het afspelen’ wordt niet gedeeld met verbonden apparaten. Hierdoor wordt de comptabiliteit met AVCRP 1.3-apparaten hersteld als het huidige nummer niet wordt bijgewerkt.</string>
     <string name="settings.disable_send_now_playing_list">‘Nu aan het afspelen’-lijst niet delen</string>
-    <string name="settings.send_bluetooth_notification_summary">Afspeelmeldingen sturen via bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Bluetoothmelding sturen</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Serveradres</string>
     <string name="settings.server_name">Naam</string>
@@ -318,10 +335,11 @@
     <string name="settings.theme_title">Thema</string>
     <string name="settings.title.allow_self_signed_certificate">Zelf-gesigneerd HTTPS-certificaat toestaan</string>
     <string name="settings.title.enable_ldap_users_support">Ondersteuning voor LDAP-gebruikers inschakelen</string>
-    <string name="settings.summary.enable_ldap_users_support">Dit dwingt de app om het wachtwoord altijd op de ouderwetse manier te versturen,
-        omdat de Subsonic-api geen ondersteuning biedt voor het autoriseren van nieuwe LDAP-gebruikers.</string>
+    <string name="settings.summary.enable_ldap_users_support">Dit dwingt de app om het wachtwoord altijd op de ouderwetse manier te versturen, als de Subsonic-server geen ondersteuning biedt voor het autoriseren via de nieuwe api.</string>
     <string name="settings.use_folder_for_album_artist">Mappen gebruiken voor artiestennaam</string>
     <string name="settings.use_folder_for_album_artist_summary">Aannemen dat de naam van de bovenliggende map de naam van de albumartiest is</string>
+    <string name="settings.show_now_playing_details_summary">Toon meer nummerinformatie op het afspeelscherm (genre, jaar, bitsnelheid)</string>
+    <string name="settings.show_now_playing_details">Details tonen op ‘Nu aan het afspelen’</string>
     <string name="settings.use_id3">Navigeren met behulp van ID3-labels</string>
     <string name="settings.use_id3_summary">ID3-labels gebruiken in plaats van systeemlabels</string>
     <string name="settings.show_artist_picture">Artiestfoto tonen op artiestenlijst</string>
@@ -459,8 +477,6 @@
 
     <!-- Subsonic features  -->
     <string name="settings.five_star_rating_title">Vijf sterren gebruiken voor nummers</string>
-    <string name="settings.five_star_rating_description">Toon vijf sterren om nummers te beoordelen
-         in plaats van items toe te voegen aan of te verwijderen uit de favorieten.
-    </string>
+    <string name="settings.five_star_rating_description">Toon vijf sterren om nummers te beoordelen in plaats van items toe te voegen aan of te verwijderen uit de favorieten.</string>
 
 </resources>
