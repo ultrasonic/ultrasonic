@@ -109,9 +109,9 @@ jobs:
           command: |
             export PATH="${JAVA_HOME}/bin:${PATH}"
             mkdir -p /tmp/ultrasonic-release
-            ${ANDROID_HOME}/build-tools/30.0.0/zipalign -v 4 ultrasonic/build/outputs/apk/release/ultrasonic-release-unsigned.apk /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
-            ${ANDROID_HOME}/build-tools/30.0.0/apksigner sign --verbose --ks ~/ultrasonic/ultrasonic-keystore --ks-pass pass:${ULTRASONIC_KEYSTORE_STOREPASS} --key-pass pass:${ULTRASONIC_KEYSTORE_KEYPASS} /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
-            ${ANDROID_HOME}/build-tools/30.0.0/apksigner verify --verbose /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
+            ${ANDROID_HOME}/build-tools/32.0.0/zipalign -v 4 ultrasonic/build/outputs/apk/release/ultrasonic-release-unsigned.apk /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
+            ${ANDROID_HOME}/build-tools/32.0.0/apksigner sign --verbose --ks ~/ultrasonic/ultrasonic-keystore --ks-pass pass:${ULTRASONIC_KEYSTORE_STOREPASS} --key-pass pass:${ULTRASONIC_KEYSTORE_KEYPASS} /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
+            ${ANDROID_HOME}/build-tools/32.0.0/apksigner verify --verbose /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
       - persist_to_workspace:
           root: /tmp/ultrasonic-release
           paths:
