@@ -118,7 +118,7 @@ jobs:
             - ultrasonic-*.apk*
   publish_github_signed_apk:
     docker:
-      - image: cimg/golang
+      - image: cimg/go
     steps:
       - attach_workspace:
           at: /tmp/ultrasonic-release
