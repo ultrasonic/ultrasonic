@@ -90,7 +90,7 @@
         <receiver
             android:name=".provider.UltrasonicAppWidgetProvider4X1"
             android:label="Ultrasonic (4x1)"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -102,7 +102,7 @@
         <receiver
             android:name=".provider.UltrasonicAppWidgetProvider4X2"
             android:label="Ultrasonic (4x2)"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -114,7 +114,7 @@
         <receiver
             android:name=".provider.UltrasonicAppWidgetProvider4X3"
             android:label="Ultrasonic (4x3)"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -126,7 +126,7 @@
         <receiver
             android:name=".provider.UltrasonicAppWidgetProvider4X4"
             android:label="Ultrasonic (4x4)"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -136,7 +136,7 @@
                 android:resource="@xml/appwidget_info_4x4"/>
         </receiver>
         <receiver android:name=".receiver.MediaButtonIntentReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter android:priority="2147483647">
                 <action android:name="android.intent.action.MEDIA_BUTTON"/>
             </intent-filter>
