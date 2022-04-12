@@ -1,6 +1,5 @@
 Correción de errores
-- #594: Agregado un intent de PlaybackComplete cuando se completa la
-  reproducción de una canción.
+- #594: Agregado un intent de PlaybackComplete cuando se completa la reproducción de una canción.
 - #593: Corregidas las listas de álbumes.
 - #602: NPE corregido.
 
@@ -8,11 +7,7 @@ Mejoras
 - #558: La llamada a video puede ser estática.
 - #559: Agregado un mejor soporte sin conexión.
 - #568: Se ha reescrito el downloader.
-- #567: Se utiliza el endpoint semánticamente correcto al realizar streaming
-  o descargar.
-- #572: Se ha movido el botón de arrastre de canción hacia la izquierda en
-  la lista de reproducción.
-- #585: Agregada una configuración para deshabilitar el envío de la Lista de
-  reproducción en curso para dispositivos Bluetooth incompatibles.
-- #596: Se agregó la opción de crear un recurso compartido en el servidor al
-  compartir canciones.
+- #567: Se utiliza el endpoint semánticamente correcto al realizar streaming o descargar.
+- #572: Se ha movido el botón de arrastre de canción hacia la izquierda en la lista de reproducción.
+- #585: Agregada una configuración para deshabilitar el envío de la Lista de reproducción en curso para dispositivos Bluetooth incompatibles.
+- #596: Se agregó la opción de crear un recurso compartido en el servidor al compartir canciones.

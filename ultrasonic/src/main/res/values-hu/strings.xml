@@ -128,7 +128,6 @@
     <string name="search.songs">Dalok</string>
     <string name="search.title">Keresés</string>
     <string name="select_album.empty">Nem található média!</string>
-    <string name="select_album.no_network">Figyelem: Hálózat nem áll rendelkezésre!</string>
     <string name="select_album.no_sdcard">Hiba: SD kártya nem áll rendelkezésre!</string>
     <string name="select_album.play_all">Összes lejátszása</string>
     <string name="select_artist.all_folders">Összes mappa</string>
@@ -190,7 +189,8 @@
     <string name="settings.disc_sort">Dalok rendezése albumok szerint</string>
     <string name="settings.disc_sort_summary">Dalok rendezése albumsorszám és dalsorszám szerint.</string>
     <string name="settings.display_bitrate_summary">Bitráta és fájlkiterjesztés megjelenítése az előadónév mellett.</string>
-    <string name="settings.download_transition_summary">Letöltési aktivitás megjelenítése a lejátszás indításakor.</string>
+    <string name="settings.gapless_playback">Egybefüggő lejátszás</string>
+    <string name="settings.gapless_playback_summary">Kihagyás (dalszünet) nélküli egybefüggő lejátszás (Gapless).</string>
     <string name="settings.hide_media_summary">Zenefájlok elrejtése egyéb alkalmazások elől.</string>
     <string name="settings.hide_media_title">Elrejtés</string>
     <string name="settings.hide_media_toast">A következő alkalomtól lép életbe, amikor az Android zenefájlokat keres a telefonon.</string>
@@ -252,10 +252,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Keresési előzmények törölve.</string>
     <string name="settings.search_title">Keresés beállításai</string>
-    <string name="settings.send_bluetooth_album_art_summary">Albumborító küldése Bluetooth-on (Problémát okozhat a Bluetooth értesítéseknél)</string>
-    <string name="settings.send_bluetooth_album_art">Albumborító Bluetooth-on</string>
     <string name="settings.send_bluetooth_notification_summary">Lejátszási értesítések küldése Bluetooth-on.</string>
     <string name="settings.send_bluetooth_notification">Bluetooth értesítések küldése</string>
+    <string name="settings.send_bluetooth_album_art_summary">Albumborító küldése Bluetooth-on (Problémát okozhat a Bluetooth értesítéseknél)</string>
+    <string name="settings.send_bluetooth_album_art">Albumborító Bluetooth-on</string>
     <string name="settings.server_manage_servers">Kiszolgálók kezelése</string>
     <string name="settings.server_address">Kiszolgáló címe</string>
     <string name="settings.server_name">Név</string>
@@ -282,8 +282,6 @@
     <string name="settings.theme_title">Téma</string>
     <string name="settings.title.allow_self_signed_certificate">Engedélyezze az önaláírt HTTPS tanúsítványt</string>
     <string name="settings.title.enable_ldap_users_support">Az LDAP-felhasználók támogatásának engedélyezése</string>
-    <string name="settings.summary.enable_ldap_users_support">Ez arra kényszeríti az alkalmazást, hogy mindig jelszót küldjön régi módon,
-         mert a Subsonic api nem támogatja az LDAP-felhasználók új engedélyezését.</string>
     <string name="settings.use_folder_for_album_artist">Mappanevek használata az előadók neveként</string>
     <string name="settings.use_folder_for_album_artist_summary">Feltételezi, hogy a legfelső szintű mappa az előadó neve.</string>
     <string name="settings.use_id3">Böngészés ID3 Tag használatával</string>
@@ -372,9 +370,6 @@
     <string name="api.subsonic.upgrade_client">Nem kompatibilis verzió. Kérjük, frissítse az Ultrasonic Android alkalmazást!</string>
     <string name="api.subsonic.upgrade_server">Nem kompatibilis verzió. Kérjük, frissítse a Subsonic kiszolgálót!</string>
 
+    <!-- Subsonic features  -->
     <string name="settings.five_star_rating_title">Öt csillagos értékelés használata a dalokhoz</string>
-    <string name="settings.five_star_rating_description">Öt csillag használata az értékeléshez az egyszerű
-        csillaggal jelölés helyett.
-    </string>
-
-</resources>
+    </resources>

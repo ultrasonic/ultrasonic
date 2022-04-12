@@ -9,7 +9,5 @@ Enhancements
 - #568: Rework Downloader.
 - #567: Use semantically correct API endpoint when streaming/downloading.
 - #572: Moved drag handle to the left in the Now Playing list.
-- #585: Added setting to disable Now Playing List sending for incompatible
-  bluetooth devices.
-- #596: Added option whether to create a share on the server when sharing
-  songs.
+- #585: Added setting to disable Now Playing List sending for incompatible bluetooth devices.
+- #596: Added option whether to create a share on the server when sharing songs.
