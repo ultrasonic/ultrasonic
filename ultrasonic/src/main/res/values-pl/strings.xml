@@ -119,7 +119,6 @@
     <string name="search.songs">Utwory</string>
     <string name="search.title">Wyszukiwanie</string>
     <string name="select_album.empty">Brak mediów</string>
-    <string name="select_album.no_network">Uwaga: sieć niedostępna.</string>
     <string name="select_album.no_sdcard">Błąd: Niedostępna karta SD.</string>
     <string name="select_album.play_all">Odtwórz wszystkie</string>
     <string name="select_artist.all_folders">Wszystkie foldery</string>
@@ -181,7 +180,8 @@
     <string name="settings.disc_sort">Sortuj utwory wg dysku</string>
     <string name="settings.disc_sort_summary">Sortuje listę utworów wg numeru dysku i numeru utworu</string>
     <string name="settings.display_bitrate_summary">Dołącza bitrate i typ pliku do nazwy artysty</string>
-    <string name="settings.download_transition_summary">Wyświetla postęp pobierania podczas odtwarzania</string>
+    <string name="settings.gapless_playback">Odtwarzanie bez przerw</string>
+    <string name="settings.gapless_playback_summary">Włącz odtwarzanie bez przerw między utworami</string>
     <string name="settings.hide_media_summary">Ukrywa pliki muzyczne przed innymi aplikacjami.</string>
     <string name="settings.hide_media_title">Ukryj pliki</string>
     <string name="settings.hide_media_toast">Efekt widoczny będzie po następnym skanowaniu muzyki przez system Android</string>
@@ -241,10 +241,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Wyczyść historię wyszukiwania</string>
     <string name="settings.search_title">Ustawienia wyszukiwania</string>
-    <string name="settings.send_bluetooth_album_art_summary">Wysyła okładki przez Bluetooth (może powodować problemy z powiadomieniami)</string>
-    <string name="settings.send_bluetooth_album_art">Okładki przez Bluetooth</string>
     <string name="settings.send_bluetooth_notification_summary">Wysyła powiadomienia o odtwarzaniu przez Bluetooth</string>
     <string name="settings.send_bluetooth_notification">Wysyłaj powiadomienia Bluetooth</string>
+    <string name="settings.send_bluetooth_album_art_summary">Wysyła okładki przez Bluetooth (może powodować problemy z powiadomieniami)</string>
+    <string name="settings.send_bluetooth_album_art">Okładki przez Bluetooth</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Adres serwera</string>
     <string name="settings.server_name">Nazwa</string>
@@ -270,8 +270,6 @@
     <string name="settings.theme_title">Motyw</string>
     <string name="settings.title.allow_self_signed_certificate">Zezwalaj na własne certyfikaty HTTPS</string>
     <string name="settings.title.enable_ldap_users_support">Włącz wsparcie dla użytkowników LDAP</string>
-    <string name="settings.summary.enable_ldap_users_support">To ustawienie wymusza, aby aplikacja wysyłała hasło w stary sposób,
-ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników LDAP.</string>
     <string name="settings.use_folder_for_album_artist">Używaj folderów jako nazw artystów</string>
     <string name="settings.use_folder_for_album_artist_summary">Zakłada, że folder najwyższego poziomu jest nazwą artysty albumu</string>
     <string name="settings.use_id3">Przeglądaj używając tagów ID3</string>
@@ -353,9 +351,6 @@ ponieważ api Subsonic nie wspiera nowego sposobu autoryzacji dla użytkowników
     <string name="api.subsonic.upgrade_client">Brak zgodności wersji. Uaktualnij aplikację Ultrasonic na Androida.</string>
     <string name="api.subsonic.upgrade_server">Brak zgodności wersji. Uaktualnij serwer Subsonic.</string>
 
+    <!-- Subsonic features  -->
     <string name="settings.five_star_rating_title">Użyj pięciu gwiazdek dla utworów</string>
-    <string name="settings.five_star_rating_description">W przypadku utworów użyj systemu pięciu gwiazdek
-         zamiast po prostu grać gwiazdkami / bez gwiazd.
-    </string>
-
-</resources>
+    </resources>

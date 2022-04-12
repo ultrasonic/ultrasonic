@@ -22,6 +22,7 @@ import java.io.InputStream
 import org.moire.ultrasonic.util.AbstractFile
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Storage
+import timber.log.Timber
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class CachedDataSource(
@@ -92,6 +93,13 @@ class CachedDataSource(
     private var cacheFile: AbstractFile? = null
 
     override fun open(dataSpec: DataSpec): Long {
+        Timber.i(
+            "CachedDatasource: Open: %s %s %s",
+            dataSpec.uri,
+            dataSpec.position,
+            dataSpec.toString()
+        )
+
         this.dataSpec = dataSpec
         bytesRead = 0
         bytesToRead = 0
@@ -112,6 +120,7 @@ class CachedDataSource(
     }
 
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+        Timber.i("CachedDatasource: Read: %s %s %s", buffer, offset, length)
         return if (cachePath != null) {
             try {
                 readInternal(buffer, offset, length)
@@ -156,6 +165,7 @@ class CachedDataSource(
     }
 
     override fun close() {
+        Timber.i("CachedDatasource: close")
         if (openedFile) {
             openedFile = false
             responseByteStream?.close()

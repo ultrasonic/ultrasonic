@@ -132,6 +132,13 @@ open class APIDataSource private constructor(
     @Suppress("LongMethod", "NestedBlockDepth")
     @Throws(HttpDataSourceException::class)
     override fun open(dataSpec: DataSpec): Long {
+        Timber.i(
+            "APIDatasource: Open: %s %s %s",
+            dataSpec.uri,
+            dataSpec.position,
+            dataSpec.toString()
+        )
+
         this.dataSpec = dataSpec
         bytesRead = 0
         bytesToRead = 0
@@ -140,22 +147,15 @@ open class APIDataSource private constructor(
         val components = dataSpec.uri.toString().split('|')
         val id = components[0]
         val bitrate = components[1].toInt()
-
-        Timber.i("DATASOURCE: %s", "Start")
-        // FIXME
-        // WRONG API CLIENT
         val request = subsonicAPIClient.api.stream(id, bitrate, offset = 0)
         val response: retrofit2.Response<ResponseBody>?
         val streamResponse: StreamResponse
-        Timber.i("DATASOURCE: %s", "Start2")
+
         try {
             this.response = request.execute()
-            Timber.i("DATASOURCE: %s", "Start3")
             response = this.response
             streamResponse = response!!.toStreamResponse()
-            Timber.i("DATASOURCE: %s", "Start4")
             responseByteStream = streamResponse.stream
-            Timber.i("DATASOURCE: %s", "Start5")
         } catch (e: IOException) {
             throw HttpDataSourceException.createForIOException(
                 e, dataSpec, HttpDataSourceException.TYPE_OPEN
@@ -193,8 +193,6 @@ open class APIDataSource private constructor(
             )
         }
 
-        Timber.i("DATASOURCE: %s", "Start6")
-
         // If we requested a range starting from a non-zero position and received a 200 rather than a
         // 206, then the server does not support partial requests. We'll need to manually skip to the
         // requested position.
@@ -216,13 +214,13 @@ open class APIDataSource private constructor(
             closeConnectionQuietly()
             throw e
         }
-        Timber.i("DATASOURCE: %s", "Start7")
 
         return bytesToRead
     }
 
     @Throws(HttpDataSourceException::class)
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+        Timber.i("APIDatasource: Read: %s %s %s", buffer, offset, length)
         return try {
             readInternal(buffer, offset, length)
         } catch (e: IOException) {
@@ -233,6 +231,7 @@ open class APIDataSource private constructor(
     }
 
     override fun close() {
+        Timber.i("APIDatasource: Close")
         if (openedNetwork) {
             openedNetwork = false
             transferEnded()
@@ -322,8 +321,7 @@ open class APIDataSource private constructor(
             return C.RESULT_END_OF_INPUT
         }
         bytesRead += read.toLong()
-        // TODO
-        // bytesTransferred(read)
+        bytesTransferred(read)
         return read
     }
 
