@@ -62,7 +62,6 @@
     <string name="download.menu_show_album">Wyświetl album</string>
     <string name="download.menu_shuffle">Wymieszaj</string>
     <string name="download.menu_visualizer">Efekt wizualny</string>
-    <string name="download.playerstate_downloading">Pobieranie - %s</string>
     <string name="download.playerstate_playing_shuffle">Odtwarzanie losowe</string>
     <string name="download.playlist_done">Playlista została zapisana.</string>
     <string name="download.playlist_error">Błąd zapisu playlisty. Proszę spróbować później.</string>

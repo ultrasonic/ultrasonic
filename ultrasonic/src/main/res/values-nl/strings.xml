@@ -76,7 +76,6 @@
     <string name="download.menu_show_album">Album tonen</string>
     <string name="download.menu_shuffle">Willekeurig</string>
     <string name="download.menu_visualizer">Visualisatie</string>
-    <string name="download.playerstate_downloading">Bezig met downloaden - %s</string>
     <string name="download.playerstate_playing_shuffle">Bezig met willekeurig afspelen</string>
     <string name="download.playlist_done">Afspeellijst is opgeslagen.</string>
     <string name="download.playlist_error">Afspeellijst kan niet worden opgeslagen. Probeer het later opnieuw.</string>

@@ -76,7 +76,6 @@
     <string name="download.menu_show_album">显示专辑</string>
     <string name="download.menu_shuffle">随机</string>
     <string name="download.menu_visualizer">可视化</string>
-    <string name="download.playerstate_downloading">下载中 - %s</string>
     <string name="download.playerstate_playing_shuffle">随机播放</string>
     <string name="download.playlist_done">已成功保存播放列表。</string>
     <string name="download.playlist_error">保存播放列表失败，请重试。</string>

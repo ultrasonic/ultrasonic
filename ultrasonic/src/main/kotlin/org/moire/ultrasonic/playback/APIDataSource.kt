@@ -147,7 +147,7 @@ open class APIDataSource private constructor(
         val components = dataSpec.uri.toString().split('|')
         val id = components[0]
         val bitrate = components[1].toInt()
-        val request = subsonicAPIClient.api.stream(id, bitrate, offset = 0)
+        val request = subsonicAPIClient.api.stream(id, bitrate, offset = dataSpec.position)
         val response: retrofit2.Response<ResponseBody>?
         val streamResponse: StreamResponse
 
@@ -220,7 +220,7 @@ open class APIDataSource private constructor(
 
     @Throws(HttpDataSourceException::class)
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
-        Timber.i("APIDatasource: Read: %s %s %s", buffer, offset, length)
+        Timber.d("APIDatasource: Read: %s %s", offset, length)
         return try {
             readInternal(buffer, offset, length)
         } catch (e: IOException) {

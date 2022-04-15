@@ -71,7 +71,6 @@
     <string name="download.menu_show_album">Ugrás az albumhoz</string>
     <string name="download.menu_shuffle">Véletlen sorrendű</string>
     <string name="download.menu_visualizer">Visualizer</string>
-    <string name="download.playerstate_downloading">Letöltés - %s</string>
     <string name="download.playerstate_playing_shuffle">Véletlen sorrendű</string>
     <string name="download.playlist_done">Lejátszási lista mentése sikeres.</string>
     <string name="download.playlist_error">Lejátszási lista mentése sikertelen, próbálja később!</string>

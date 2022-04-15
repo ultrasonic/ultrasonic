@@ -76,7 +76,6 @@
     <string name="download.menu_show_album">Album anzeigen</string>
     <string name="download.menu_shuffle">Mischen</string>
     <string name="download.menu_visualizer">Grafik</string>
-    <string name="download.playerstate_downloading">Herunterladen - %s</string>
     <string name="download.playerstate_playing_shuffle">Wiedergabeliste mischen</string>
     <string name="download.playlist_done">Die Wiedergabeliste wurde gespeichert</string>
     <string name="download.playlist_error">Konnte die Wiedergabeliste nicht speichern, bitte später erneut versuchen.</string>
