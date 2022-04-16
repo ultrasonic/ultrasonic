@@ -76,7 +76,6 @@
     <string name="download.menu_show_album">Mostrar Álbum</string>
     <string name="download.menu_shuffle">Aleatorio</string>
     <string name="download.menu_visualizer">Visualizador</string>
-    <string name="download.playerstate_downloading">Descargando - %s</string>
     <string name="download.playerstate_playing_shuffle">Reproduciendo en modo aleatorio</string>
     <string name="download.playlist_done">Lista de reproducción guardada con éxito.</string>
     <string name="download.playlist_error">Fallo al guardar la lista de reproducción, por favor reinténtalo mas tarde.</string>

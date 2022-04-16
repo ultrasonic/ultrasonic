@@ -62,7 +62,6 @@
     <string name="download.menu_show_album">Zobrazit album</string>
     <string name="download.menu_shuffle">Náhodně</string>
     <string name="download.menu_visualizer">Vizualizér</string>
-    <string name="download.playerstate_downloading">Stahuji - %s</string>
     <string name="download.playerstate_playing_shuffle">Přehrávám mix</string>
     <string name="download.playlist_done">Playlist úspěšně uložen.</string>
     <string name="download.playlist_error">Chyba ukládání playlistu, zkuste později.</string>

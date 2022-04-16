@@ -76,7 +76,6 @@
     <string name="download.menu_show_album">Показать альбом</string>
     <string name="download.menu_shuffle">Случайное воспроизведение</string>
     <string name="download.menu_visualizer">Визуализатор</string>
-    <string name="download.playerstate_downloading">Загрузка - %s</string>
     <string name="download.playerstate_playing_shuffle">Игра в случайном порядке</string>
     <string name="download.playlist_done">Плейлист был успешно сохранен.</string>
     <string name="download.playlist_error">Не удалось сохранить плейлист, попробуйте позже.</string>

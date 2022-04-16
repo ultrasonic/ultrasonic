@@ -298,11 +298,13 @@ class MediaPlayerController(
 
     @Synchronized
     fun seekTo(position: Int) {
+        Timber.i("SeekTo: %s", position)
         controller?.seekTo(position.toLong())
     }
 
     @Synchronized
     fun seekTo(index: Int, position: Int) {
+        Timber.i("SeekTo: %s %s", index, position)
         controller?.seekTo(index, position.toLong())
     }
 

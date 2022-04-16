@@ -76,7 +76,6 @@
     <string name="download.menu_show_album">Afficher l\'album</string>
     <string name="download.menu_shuffle">Aléatoire</string>
     <string name="download.menu_visualizer">Visualiseur</string>
-    <string name="download.playerstate_downloading">Téléchargement - %s</string>
     <string name="download.playerstate_playing_shuffle">En lecture aléatoire</string>
     <string name="download.playlist_done">Playlist enregistrée avec succès !</string>
     <string name="download.playlist_error">Échec de l\'enregistrement de la playlist, veuillez réessayer plus tard.</string>

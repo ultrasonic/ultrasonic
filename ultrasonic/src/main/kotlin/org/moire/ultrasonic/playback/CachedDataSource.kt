@@ -10,15 +10,15 @@ package org.moire.ultrasonic.playback
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.media3.common.C
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.Util
 import androidx.media3.datasource.BaseDataSource
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
-import androidx.media3.datasource.HttpDataSource
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.datasource.cache.CacheDataSource.CacheIgnoredReason
+import androidx.media3.datasource.HttpDataSource.HttpDataSourceException
 import java.io.IOException
 import java.io.InputStream
+import java.io.InterruptedIOException
 import org.moire.ultrasonic.util.AbstractFile
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Storage
@@ -26,29 +26,12 @@ import timber.log.Timber
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class CachedDataSource(
-    private var upstreamDataSource: DataSource,
-    private var eventListener: EventListener?
+    private var upstreamDataSource: DataSource
 ) : BaseDataSource(false) {
 
     class Factory(
         private var upstreamDataSourceFactory: DataSource.Factory
     ) : DataSource.Factory {
-
-        private var eventListener: EventListener? = null
-
-        /**
-         * Sets the {link EventListener} to which events are delivered.
-         *
-         *
-         * The default is `null`.
-         *
-         * @param eventListener The [EventListener].
-         * @return This factory.
-         */
-        fun setEventListener(eventListener: EventListener?): Factory {
-            this.eventListener = eventListener
-            return this
-        }
 
         override fun createDataSource(): CachedDataSource {
             return createDataSourceInternal(
@@ -60,28 +43,9 @@ class CachedDataSource(
             upstreamDataSource: DataSource
         ): CachedDataSource {
             return CachedDataSource(
-                upstreamDataSource,
-                eventListener
+                upstreamDataSource
             )
         }
-    }
-
-    /** Listener of [CacheDataSource] events.  */
-    interface EventListener {
-        /**
-         * Called when bytes have been read from the cache.
-         *
-         * @param cacheSizeBytes Current cache size in bytes.
-         * @param cachedBytesRead Total bytes read from the cache since this method was last called.
-         */
-        fun onCachedBytesRead(cacheSizeBytes: Long, cachedBytesRead: Long)
-
-        /**
-         * Called when the current request ignores cache.
-         *
-         * @param reason Reason cache is bypassed.
-         */
-        fun onCacheIgnored(reason: @CacheIgnoredReason Int)
     }
 
     private var bytesToRead: Long = 0
@@ -94,9 +58,7 @@ class CachedDataSource(
 
     override fun open(dataSpec: DataSpec): Long {
         Timber.i(
-            "CachedDatasource: Open: %s %s %s",
-            dataSpec.uri,
-            dataSpec.position,
+            "CachedDatasource: Open: %s",
             dataSpec.toString()
         )
 
@@ -112,6 +74,8 @@ class CachedDataSource(
         if (cacheLength > 0) {
             transferInitializing(dataSpec)
             bytesToRead = cacheLength
+            transferStarted(dataSpec)
+            skipFully(dataSpec.position, dataSpec)
             return bytesToRead
         }
 
@@ -119,14 +83,16 @@ class CachedDataSource(
         return upstreamDataSource.open(dataSpec)
     }
 
+    @Suppress("MagicNumber")
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
-        Timber.i("CachedDatasource: Read: %s %s %s", buffer, offset, length)
+        if (offset > 0 || length > 4)
+            Timber.d("CachedDatasource: Read: %s %s", offset, length)
         return if (cachePath != null) {
             try {
                 readInternal(buffer, offset, length)
             } catch (e: IOException) {
-                throw HttpDataSource.HttpDataSourceException.createForIOException(
-                    e, Util.castNonNull(dataSpec), HttpDataSource.HttpDataSourceException.TYPE_READ
+                throw HttpDataSourceException.createForIOException(
+                    e, Util.castNonNull(dataSpec), HttpDataSourceException.TYPE_READ
                 )
             }
         } else {
@@ -148,12 +114,61 @@ class CachedDataSource(
         }
         val read = Util.castNonNull(responseByteStream).read(buffer, offset, readLength)
         if (read == -1) {
+            Timber.i("CachedDatasource: EndOfInput")
             return C.RESULT_END_OF_INPUT
         }
         bytesRead += read.toLong()
-        // TODO
-        // bytesTransferred(read)
+        bytesTransferred(read)
         return read
+    }
+
+    /**
+     * Attempts to skip the specified number of bytes in full.
+     *
+     * @param bytesToSkip The number of bytes to skip.
+     * @param dataSpec The [DataSpec].
+     * @throws HttpDataSourceException If the thread is interrupted during the operation, or an error
+     * occurs while reading from the source, or if the data ended before skipping the specified
+     * number of bytes.
+     */
+    @Suppress("ThrowsCount")
+    @Throws(HttpDataSourceException::class)
+    private fun skipFully(bytesToSkip: Long, dataSpec: DataSpec) {
+        var bytesToSkip = bytesToSkip
+        if (bytesToSkip == 0L) {
+            return
+        }
+        val skipBuffer = ByteArray(4096)
+        try {
+            while (bytesToSkip > 0) {
+                val readLength =
+                    bytesToSkip.coerceAtMost(skipBuffer.size.toLong()).toInt()
+                val read = Util.castNonNull(responseByteStream).read(skipBuffer, 0, readLength)
+                if (Thread.currentThread().isInterrupted) {
+                    throw InterruptedIOException()
+                }
+                if (read == -1) {
+                    throw HttpDataSourceException(
+                        dataSpec,
+                        PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE,
+                        HttpDataSourceException.TYPE_OPEN
+                    )
+                }
+                bytesToSkip -= read.toLong()
+                bytesTransferred(read)
+            }
+            return
+        } catch (e: IOException) {
+            if (e is HttpDataSourceException) {
+                throw e
+            } else {
+                throw HttpDataSourceException(
+                    dataSpec,
+                    PlaybackException.ERROR_CODE_IO_UNSPECIFIED,
+                    HttpDataSourceException.TYPE_OPEN
+                )
+            }
+        }
     }
 
     /*
@@ -165,9 +180,10 @@ class CachedDataSource(
     }
 
     override fun close() {
-        Timber.i("CachedDatasource: close")
+        Timber.i("CachedDatasource: close %s", openedFile)
         if (openedFile) {
             openedFile = false
+            transferEnded()
             responseByteStream?.close()
             responseByteStream = null
         }
@@ -193,6 +209,10 @@ class CachedDataSource(
         cacheFile = Storage.getFromPath(filePath)!!
         responseByteStream = cacheFile!!.getFileInputStream()
 
-        return cacheFile!!.getDocumentFileDescriptor("r")!!.length
+        val descriptor = cacheFile!!.getDocumentFileDescriptor("r")
+        val length = descriptor!!.length
+        descriptor.close()
+
+        return length
     }
 }

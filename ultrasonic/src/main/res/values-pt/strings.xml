@@ -62,7 +62,6 @@
     <string name="download.menu_show_album">Mostrar Álbum</string>
     <string name="download.menu_shuffle">Misturar</string>
     <string name="download.menu_visualizer">Visualizador</string>
-    <string name="download.playerstate_downloading">Descarregando - %s</string>
     <string name="download.playerstate_playing_shuffle">Tocando misturado</string>
     <string name="download.playlist_done">Playlist salva com sucesso.</string>
     <string name="download.playlist_error">Falha ao salvar a playlist, Tente mais tarde.</string>

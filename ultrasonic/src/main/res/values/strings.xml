@@ -78,7 +78,7 @@
     <string name="download.menu_shuffle_on">Shuffle mode enabled</string>
     <string name="download.menu_shuffle_off">Shuffle mode disabled</string>
     <string name="download.menu_visualizer">Visualizer</string>
-    <string name="download.playerstate_downloading">Downloading - %s</string>
+    <string name="download.playerstate_loading">Buffering …</string>
     <string name="download.playerstate_playing_shuffle">Playing shuffle</string>
     <string name="download.playlist_done">Playlist was successfully saved.</string>
     <string name="download.playlist_error">Failed to save playlist, please try later.</string>

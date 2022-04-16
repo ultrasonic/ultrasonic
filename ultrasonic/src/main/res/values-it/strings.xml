@@ -59,7 +59,6 @@
     <string name="download.menu_show_album">Visualizza Album</string>
     <string name="download.menu_shuffle">Casuale</string>
     <string name="download.menu_visualizer">Visualizzatore</string>
-    <string name="download.playerstate_downloading">In scaricamento - %s</string>
     <string name="download.playerstate_playing_shuffle">Riproduzione casuale</string>
     <string name="download.playlist_done">Playlist salvata con successo </string>
     <string name="download.playlist_error">Impossibile salvare la playlist, riprovare più tardi.</string>
