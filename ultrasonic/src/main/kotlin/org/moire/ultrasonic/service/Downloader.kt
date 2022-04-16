@@ -68,8 +68,7 @@ class Downloader(
         override fun run() {
             try {
                 Timber.w("Checking Downloads")
-                // FIXME
-                // checkDownloadsInternal()
+                checkDownloadsInternal()
             } catch (all: Exception) {
                 Timber.e(all, "checkDownloads() failed.")
             } finally {
