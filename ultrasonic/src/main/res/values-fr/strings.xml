@@ -41,11 +41,8 @@
     <string name="common.name">Nom</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Épingler</string>
-    <string name="common.pause">Pause</string>
-    <string name="common.play">Lecture</string>
     <string name="common.play_last">Jouer en dernier</string>
     <string name="common.play_next">Jouer à la suite</string>
-    <string name="common.play_previous">Lire le précédent</string>
     <string name="common.play_now">Jouer maintenant</string>
     <string name="common.play_shuffled">Jouer aléatoirement</string>
     <string name="common.public">Public</string>
@@ -107,7 +104,6 @@
     <string name="main.music">Musique</string>
     <string name="main.offline">Hors-ligne</string>
     <string name="main.setup_server">%s - Configurer le serveur</string>
-    <string name="main.shuffle">Lecture aléatoire</string>
     <string name="main.songs_random">Aléatoire</string>
     <string name="main.songs_starred">Favoris</string>
     <string name="main.songs_title">Titres</string>
@@ -201,8 +197,6 @@
     <string name="settings.disc_sort_summary">Trier la liste des titres par numéro de disques/pistes</string>
     <string name="settings.display_bitrate">Afficher le débit et l’extension de fichier</string>
     <string name="settings.display_bitrate_summary">Ajouter le nom d\'artiste, débit et suffixe du fichier</string>
-    <string name="settings.gapless_playback">Lecture sans interruption</string>
-    <string name="settings.gapless_playback_summary">Activer la lecture sans interruption</string>
     <string name="settings.hide_media_summary">Masquer les fichiers musicaux et les couvertures d\'album aux autres applis (Galerie, Musique, etc.)</string>
     <string name="settings.hide_media_title">Masquer aux autres</string>
     <string name="settings.hide_media_toast">Prendra effet la prochaine fois qu\'Android recensera les médias disponibles sur l\'appareil.</string>
@@ -355,12 +349,6 @@
     <string name="download.menu_show_artist">Afficher l\'artiste</string>
     <string name="albumArt">Pochette d\'album</string>
     <string name="common_multiple_years">Années multiples</string>
-    <string name="settings.playback.resume_on_bluetooth_device">Reprendre lorsqu’un appareil Bluetooth se connecte</string>
-    <string name="settings.playback.pause_on_bluetooth_device">Mettre en pause lorsqu’un appareil Bluetooth se déconnecte</string>
-    <string name="settings.playback.bluetooth_all">Tous les appareils Bluetooth</string>
-    <string name="settings.playback.bluetooth_a2dp">Seulement les appareils audio (A2DP)</string>
-    <string name="settings.playback.bluetooth_disabled">Désactivé</string>
-    <string name="settings.playback.single_button_bluetooth_device_summary">Activer cela peut aider sur les anciens appareils Bluetooth lorsque Lecture/Pause ne fonctionne pas correctement</string>
     <string name="settings.debug.title">Paramètres de debug</string>
     <string name="settings.debug.log_to_file">Enregistrer les logs de debug dans des fichiers</string>
     <string name="settings.debug.log_path">Les fichiers de log sont disponibles dans %1$s/%2$s</string>
