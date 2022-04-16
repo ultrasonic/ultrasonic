@@ -44,7 +44,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     private lateinit var player: ExoPlayer
     private lateinit var mediaLibrarySession: MediaLibrarySession
     private lateinit var apiDataSource: APIDataSource.Factory
-    private lateinit var dataSourceFactory: DataSource.Factory
 
     private lateinit var librarySessionCallback: MediaLibrarySession.MediaLibrarySessionCallback
 
@@ -102,8 +101,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         // Create a MediaSource which passes calls through our OkHttp Stack
         apiDataSource = APIDataSource.Factory(subsonicAPIClient)
-
-        dataSourceFactory = APIDataSource.Factory(subsonicAPIClient)
         val cacheDataSourceFactory: DataSource.Factory = CachedDataSource.Factory(apiDataSource)
 
         // Create a renderer with HW rendering support

@@ -220,7 +220,7 @@ open class APIDataSource private constructor(
 
     @Throws(HttpDataSourceException::class)
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
-        Timber.d("APIDatasource: Read: %s %s", offset, length)
+        //Timber.d("APIDatasource: Read: %s %s", offset, length)
         return try {
             readInternal(buffer, offset, length)
         } catch (e: IOException) {
