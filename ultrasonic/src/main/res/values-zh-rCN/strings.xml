@@ -41,11 +41,8 @@
     <string name="common.name">名称</string>
     <string name="common.ok">确定</string>
     <string name="common.pin">固定</string>
-    <string name="common.pause">暂停</string>
-    <string name="common.play">播放</string>
     <string name="common.play_last">最后一首</string>
     <string name="common.play_next">下一首</string>
-    <string name="common.play_previous">上一首</string>
     <string name="common.play_now">现在播放</string>
     <string name="common.play_shuffled">随机播放</string>
     <string name="common.public">公开</string>
@@ -64,6 +61,7 @@
     <string name="download.jukebox_offline">离线模式不支持远程控制</string>
     <string name="download.jukebox_on">打开远程控制，音乐将在服务端播放。</string>
     <string name="download.jukebox_server_too_old">远程控制不支持，请升级您的 Subsonic服务器。</string>
+    <string name="download.jukebox_volume">远程音量</string>
     <string name="download.menu_equalizer">均衡器</string>
     <string name="download.menu_jukebox_off">关闭 Jukebox</string>
     <string name="download.menu_jukebox_on">开启 Jukebox</string>
@@ -75,7 +73,6 @@
     <string name="download.menu_show_album">显示专辑</string>
     <string name="download.menu_shuffle">随机</string>
     <string name="download.menu_visualizer">可视化</string>
-    <string name="download.playerstate_downloading">下载中 - %s</string>
     <string name="download.playerstate_playing_shuffle">随机播放</string>
     <string name="download.playlist_done">已成功保存播放列表。</string>
     <string name="download.playlist_error">保存播放列表失败，请重试。</string>
@@ -106,6 +103,7 @@
     <string name="main.genres_title">流派</string>
     <string name="main.music">音乐</string>
     <string name="main.offline">离线</string>
+    <string name="main.setup_server">%s - 已设置服务器</string>
     <string name="main.songs_random">随机</string>
     <string name="main.songs_starred">收藏夹</string>
     <string name="main.songs_title">歌曲</string>
@@ -135,7 +133,7 @@
     <string name="search.songs">歌曲</string>
     <string name="search.title">搜索</string>
     <string name="select_album.empty">找不到歌曲</string>
-    <string name="select_album.no_network">警告：网络不可用</string>
+    <string name="select_album.n_selected">已选择 %d 首曲目</string>
     <string name="select_album.no_sdcard">错误：没有SD卡</string>
     <string name="select_album.play_all">播放所有</string>
     <string name="select_artist.all_folders">所有文件夹</string>
@@ -243,6 +241,7 @@
     <string name="settings.preload_5">5 首歌</string>
     <string name="settings.preload_unlimited">不限制</string>
     <string name="settings.scrobble_summary">请记得在服务器上的 Scrobble 服务中设置您的用户名和密码</string>
+    <string name="settings.scrobble_title">Scrobble我的播放列表</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -259,12 +258,12 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">搜索记录已清除</string>
     <string name="settings.search_title">搜索设置</string>
+    <string name="settings.send_bluetooth_notification_summary">通过蓝牙发送播放通知</string>
+    <string name="settings.send_bluetooth_notification">发送蓝牙通知</string>
     <string name="settings.send_bluetooth_album_art_summary">通过蓝牙发送专辑封面（可能导致蓝牙通知失败）</string>
     <string name="settings.send_bluetooth_album_art">通过蓝牙发送专辑封面</string>
     <string name="settings.disable_send_now_playing_list_summary">现在播放列表不会发送到已连接的设备。 当前曲目显示未更新时，这可能会恢复AVRCP 1.3的设备的兼容性。</string>
     <string name="settings.disable_send_now_playing_list">禁用发送正在播放列表</string>
-    <string name="settings.send_bluetooth_notification_summary">通过蓝牙发送播放通知</string>
-    <string name="settings.send_bluetooth_notification">发送蓝牙通知</string>
     <string name="settings.server_manage_servers">管理服务器</string>
     <string name="settings.server_address">服务器地址</string>
     <string name="settings.server_name">名称</string>
@@ -292,8 +291,6 @@
     <string name="settings.theme_title">主题</string>
     <string name="settings.title.allow_self_signed_certificate">允许自签名 HTTPS 证书</string>
     <string name="settings.title.enable_ldap_users_support">强制原始密码认证</string>
-    <string name="settings.summary.enable_ldap_users_support">这会强制应用始终以未加密的方式发送密码。
- 如果 Subsonic 服务器不支持新的用户身份验证 API，则很有用。</string>
     <string name="settings.use_folder_for_album_artist">将艺术家名称作为文件夹</string>
     <string name="settings.use_folder_for_album_artist_summary">将艺术家名称作为顶层文件夹名</string>
     <string name="settings.use_id3">使用 ID3 标签浏览</string>
@@ -376,6 +373,9 @@
     <string name="server_editor.disabled_feature">一项或多项功能被禁用，因为此服务器不支持它们。\您可以随时再次运行此测试。</string>
     <string name="server_menu.demo">试用服务器</string>
 
+    <string name="about.webpage">访问网页</string>
+    <string name="about.report">提交漏洞报告</string>
+    <string name="about.text"><b>Ultrasonic</b>是一个免费且开源的安卓流式音乐客户端，支持 Subsonic API（1.7.0版本以上）兼容的服务端。\n\n通过使用 <b>Ultrasonic</b> 你可以轻松的从你的电脑上的Subsonic兼容服务端流式传输或者下载音乐。 Subsonic服务端与Ultrasonic都需要额外的配置才可使用。\n\n默认情况下，Ultrasonic并未进行配置，当服务端配置完成后，请确保配置允许客户端连接到你的计算机。</string>
     <plurals name="select_album_n_songs">
         <item quantity="other">%d 首曲目</item>
     </plurals>
@@ -412,7 +412,4 @@
 
     <!-- Subsonic features  -->
     <string name="settings.five_star_rating_title">为歌曲使用五星评分</string>
-    <string name="settings.five_star_rating_description">对歌曲使用五星级评级系统
-而不是简单地为项目加星标/取消星标。</string>
-
-</resources>
+    </resources>

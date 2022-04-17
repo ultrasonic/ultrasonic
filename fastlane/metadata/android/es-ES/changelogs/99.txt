@@ -2,16 +2,13 @@ Corrección de errores
 - #609: Comportamiento extraño de scrobbling (offset).
 
 Mejoras
-- #599: Se ha movido el selector de servidor y la configuración al menú de
-  navegación.
-- #600: Migración de la utilidad de permisos a Kotlin, aumento del SDK
-  mínimo a 17.
+- #599: Se ha movido el selector de servidor y la configuración al menú de navegación.
+- #600: Migración de la utilidad de permisos a Kotlin, aumento del SDK mínimo a 17.
 - #604: Implementar una vista de Descarga.
 - #613: targetSdkVersion debe ser 30 o superior.
 - #622: Refactorización de eventos.
 - #641: Eliminar el almacenamiento de funciones.
 - #642: Eliminar MergeAdapter y SackOfViewsAdapter.
 - #649: Unificar el manejo del diálogo de error.
-- #652: Manejo de ubicación de caché personalizado actualizado para eliminar
-  isUri.
+- #652: Manejo de ubicación de caché personalizado actualizado para eliminar isUri.
 - #662: Mejorar las migraciones de bases de datos.
