@@ -7,13 +7,13 @@
 
 package org.moire.ultrasonic.provider
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Environment
 import android.view.KeyEvent
 import android.widget.RemoteViews
@@ -164,7 +164,6 @@ open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
         /**
          * Link up various button actions using [PendingIntent].
          */
-        @SuppressLint("UnspecifiedImmutableFlag")
         private fun linkButtons(context: Context, views: RemoteViews, playerActive: Boolean) {
             var intent = Intent(
                 context,
@@ -173,8 +172,13 @@ open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
             if (playerActive) intent.putExtra(Constants.INTENT_SHOW_PLAYER, true)
             intent.action = "android.intent.action.MAIN"
             intent.addCategory("android.intent.category.LAUNCHER")
+            var flags = PendingIntent.FLAG_UPDATE_CURRENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // needed starting Android 12 (S = 31)
+                flags = flags or PendingIntent.FLAG_IMMUTABLE
+            }
             var pendingIntent =
-                PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getActivity(context, 10, intent, flags)
             views.setOnClickPendingIntent(R.id.appwidget_coverart, pendingIntent)
             views.setOnClickPendingIntent(R.id.appwidget_top, pendingIntent)
 
@@ -185,7 +189,12 @@ open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
                 Intent.EXTRA_KEY_EVENT,
                 KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE)
             )
-            pendingIntent = PendingIntent.getBroadcast(context, 11, intent, 0)
+            flags = 0
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // needed starting Android 12 (S = 31)
+                flags = flags or PendingIntent.FLAG_IMMUTABLE
+            }
+            pendingIntent = PendingIntent.getBroadcast(context, 11, intent, flags)
             views.setOnClickPendingIntent(R.id.control_play, pendingIntent)
             intent = Intent(Constants.CMD_PROCESS_KEYCODE)
             intent.component = ComponentName(context, MediaButtonIntentReceiver::class.java)
@@ -193,7 +202,7 @@ open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
                 Intent.EXTRA_KEY_EVENT,
                 KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT)
             )
-            pendingIntent = PendingIntent.getBroadcast(context, 12, intent, 0)
+            pendingIntent = PendingIntent.getBroadcast(context, 12, intent, flags)
             views.setOnClickPendingIntent(R.id.control_next, pendingIntent)
             intent = Intent(Constants.CMD_PROCESS_KEYCODE)
             intent.component = ComponentName(context, MediaButtonIntentReceiver::class.java)
@@ -201,7 +210,7 @@ open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
                 Intent.EXTRA_KEY_EVENT,
                 KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS)
             )
-            pendingIntent = PendingIntent.getBroadcast(context, 13, intent, 0)
+            pendingIntent = PendingIntent.getBroadcast(context, 13, intent, flags)
             views.setOnClickPendingIntent(R.id.control_previous, pendingIntent)
         }
     }
