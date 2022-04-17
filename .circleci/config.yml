@@ -109,22 +109,22 @@ jobs:
           command: |
             export PATH="${JAVA_HOME}/bin:${PATH}"
             mkdir -p /tmp/ultrasonic-release
-            ${ANDROID_HOME}/build-tools/30.0.0/zipalign -v 4 ultrasonic/build/outputs/apk/release/ultrasonic-release-unsigned.apk /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
-            ${ANDROID_HOME}/build-tools/30.0.0/apksigner sign --verbose --ks ~/ultrasonic/ultrasonic-keystore --ks-pass pass:${ULTRASONIC_KEYSTORE_STOREPASS} --key-pass pass:${ULTRASONIC_KEYSTORE_KEYPASS} /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
-            ${ANDROID_HOME}/build-tools/30.0.0/apksigner verify --verbose /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
+            ${ANDROID_HOME}/build-tools/32.0.0/zipalign -v 4 ultrasonic/build/outputs/apk/release/ultrasonic-release-unsigned.apk /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
+            ${ANDROID_HOME}/build-tools/32.0.0/apksigner sign --verbose --ks ~/ultrasonic/ultrasonic-keystore --ks-pass pass:${ULTRASONIC_KEYSTORE_STOREPASS} --key-pass pass:${ULTRASONIC_KEYSTORE_KEYPASS} /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
+            ${ANDROID_HOME}/build-tools/32.0.0/apksigner verify --verbose /tmp/ultrasonic-release/ultrasonic-${CIRCLE_TAG}.apk
       - persist_to_workspace:
           root: /tmp/ultrasonic-release
           paths:
             - ultrasonic-*.apk*
   publish_github_signed_apk:
     docker:
-      - image: cimg/golang
+      - image: cimg/go:1.18
     steps:
       - attach_workspace:
           at: /tmp/ultrasonic-release
       - run:
           name: install ghr
-          command: go get -v github.com/tcnksm/ghr
+          command: go install -v github.com/tcnksm/ghr@latest
       - run:
           name: publish release on github tag
           command: ghr -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_TAG} /tmp/ultrasonic-release

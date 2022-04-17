@@ -1,1 +1,0 @@
-Fall backs to path when comparing tracks and fixes #369

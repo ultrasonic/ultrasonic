@@ -1079,8 +1079,7 @@ class PlayerFragment :
             Player.STATE_BUFFERING -> {
 
                 val downloadStatus = resources.getString(
-                    R.string.download_playerstate_downloading,
-                    Util.formatPercentage(progress)
+                    R.string.download_playerstate_loading
                 )
                 progressBar.secondaryProgress = progress
                 setTitle(this@PlayerFragment, downloadStatus)

@@ -62,7 +62,6 @@
     <string name="download.menu_show_album">Mostrar Álbum</string>
     <string name="download.menu_shuffle">Misturar</string>
     <string name="download.menu_visualizer">Visualizador</string>
-    <string name="download.playerstate_downloading">Descarregando - %s</string>
     <string name="download.playerstate_playing_shuffle">Tocando misturado</string>
     <string name="download.playlist_done">Playlist salva com sucesso.</string>
     <string name="download.playlist_error">Falha ao salvar a playlist, Tente mais tarde.</string>
@@ -119,7 +118,6 @@
     <string name="search.songs">Músicas</string>
     <string name="search.title">Pesquisar</string>
     <string name="select_album.empty">Nenhuma mídia encontrada</string>
-    <string name="select_album.no_network">Aviso: Nenhuma rede disponível.</string>
     <string name="select_album.no_sdcard">Erro: Nenhum cartão SD disponível.</string>
     <string name="select_album.play_all">Tocar Tudo</string>
     <string name="select_artist.all_folders">Todas as Pastas</string>
@@ -181,7 +179,6 @@
     <string name="settings.disc_sort">Classificar Músicas por Álbum</string>
     <string name="settings.disc_sort_summary">Classificar músicas pelo número do álbum e faixas.</string>
     <string name="settings.display_bitrate_summary">Adiciona o nome do artista com a taxa de bits e sufixo do ficheiro</string>
-    <string name="settings.download_transition_summary">Transição para atividade de download quando iniciar reprodução</string>
     <string name="settings.hide_media_summary">Esconder músicas de outros aplicativos.</string>
     <string name="settings.hide_media_title">Esconder de Outros</string>
     <string name="settings.hide_media_toast">Será realizado na próxima vez que o Android procurar por músicas em seu telemóvel.</string>
@@ -241,10 +238,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Histórico de pesquisas apagado</string>
     <string name="settings.search_title">Configurações de Pesquisa</string>
-    <string name="settings.send_bluetooth_album_art_summary">Envia a arte do álbum via Bluetooth (Pode causar falhas nas notificações do Bluetooth)</string>
-    <string name="settings.send_bluetooth_album_art">Arte do Álbum via Bluetooth</string>
     <string name="settings.send_bluetooth_notification_summary">Envia notificações de reprodução via Bluetooth</string>
     <string name="settings.send_bluetooth_notification">Notificações via Bluetooth</string>
+    <string name="settings.send_bluetooth_album_art_summary">Envia a arte do álbum via Bluetooth (Pode causar falhas nas notificações do Bluetooth)</string>
+    <string name="settings.send_bluetooth_album_art">Arte do Álbum via Bluetooth</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Endereço do Servidor</string>
     <string name="settings.server_name">Nome</string>
@@ -270,8 +267,6 @@
     <string name="settings.theme_title">Tema</string>
     <string name="settings.title.allow_self_signed_certificate">Permitir o certificado HTTPS auto-assinado</string>
     <string name="settings.title.enable_ldap_users_support">Ative o suporte para usuários LDAP</string>
-    <string name="settings.summary.enable_ldap_users_support">Isso força o aplicativo a enviar sempre a senha de forma antiga,
-         porque a api Subsonic não suporta a nova autorização para usuários LDAP.</string>
     <string name="settings.use_folder_for_album_artist">Usar Pasta para Nome do Artista</string>
     <string name="settings.use_folder_for_album_artist_summary">Assumir que a pasta mais acima é o nome do artista</string>
     <string name="settings.use_id3">Navegar Usando Etiquetas ID3</string>
@@ -351,9 +346,6 @@
     <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo Ultrasonic para Android.</string>
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor Ultrasonic.</string>
 
+    <!-- Subsonic features  -->
     <string name="settings.five_star_rating_title">Use classificação de cinco estrelas para músicas</string>
-    <string name="settings.five_star_rating_description">Use o sistema de classificação de cinco estrelas para músicas
-         em vez de simplesmente estrelar / não estrelar itens.
-    </string>
-
-</resources>
+    </resources>

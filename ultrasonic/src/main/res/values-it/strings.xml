@@ -59,7 +59,6 @@
     <string name="download.menu_show_album">Visualizza Album</string>
     <string name="download.menu_shuffle">Casuale</string>
     <string name="download.menu_visualizer">Visualizzatore</string>
-    <string name="download.playerstate_downloading">In scaricamento - %s</string>
     <string name="download.playerstate_playing_shuffle">Riproduzione casuale</string>
     <string name="download.playlist_done">Playlist salvata con successo </string>
     <string name="download.playlist_error">Impossibile salvare la playlist, riprovare più tardi.</string>
@@ -115,7 +114,6 @@
     <string name="search.songs">Canzoni</string>
     <string name="search.title">Cerca</string>
     <string name="select_album.empty">Nessun media trovato</string>
-    <string name="select_album.no_network">Attenzione: nessuna rete disponibile.</string>
     <string name="select_album.no_sdcard">Errore: Nessuna memoria SD disponibile.</string>
     <string name="select_album.play_all">Riproduci tutto</string>
     <string name="select_artist.all_folders">Tutte le cartelle</string>
@@ -177,7 +175,6 @@
     <string name="settings.disc_sort">Ordina Canzoni secondo Disco</string>
     <string name="settings.disc_sort_summary">Ordina lista canzoni secondo il numero disco e traccia</string>
     <string name="settings.display_bitrate_summary">Aggiungi nome artista con bitrare ed estensione file</string>
-    <string name="settings.download_transition_summary">Passa al download quando inizia riproduzione</string>
     <string name="settings.hide_media_summary">Nascondi file musicali di altre app</string>
     <string name="settings.hide_media_title">Nascondi Da Altro</string>
     <string name="settings.hide_media_toast">Effettivo alla prossima scansione Android per file musicali sul telefono.</string>
@@ -236,10 +233,10 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Storico ricerche eliminato</string>
     <string name="settings.search_title">Impostazioni ricerca</string>
-    <string name="settings.send_bluetooth_album_art_summary">Invia copertine degli album tramite Bluetooth (potrebbe causare errori nelle notifiche)</string>
-    <string name="settings.send_bluetooth_album_art">Copertine Album tramite Bluetooth</string>
     <string name="settings.send_bluetooth_notification_summary">Invia notifiche di riproduzione via Bluetooth</string>
     <string name="settings.send_bluetooth_notification">Invia notifica Bluetooth</string>
+    <string name="settings.send_bluetooth_album_art_summary">Invia copertine degli album tramite Bluetooth (potrebbe causare errori nelle notifiche)</string>
+    <string name="settings.send_bluetooth_album_art">Copertine Album tramite Bluetooth</string>
     <string name="settings.server_address">Indirizzo Server</string>
     <string name="settings.server_name">Nome</string>
     <string name="settings.server_password">Password</string>

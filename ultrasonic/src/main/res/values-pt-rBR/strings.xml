@@ -41,11 +41,8 @@
     <string name="common.name">Nome</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Fixar</string>
-    <string name="common.pause">Pausar</string>
-    <string name="common.play">Tocar</string>
     <string name="common.play_last">Tocar por Último</string>
     <string name="common.play_next">Tocar na Próxima</string>
-    <string name="common.play_previous">Tocar a Anterior</string>
     <string name="common.play_now">Tocar Agora</string>
     <string name="common.play_shuffled">Tocar Aleatoriamente</string>
     <string name="common.public">Público</string>
@@ -74,7 +71,6 @@
     <string name="download.menu_show_album">Mostrar Álbum</string>
     <string name="download.menu_shuffle">Misturar</string>
     <string name="download.menu_visualizer">Visualizador</string>
-    <string name="download.playerstate_downloading">Baixando - %s</string>
     <string name="download.playerstate_playing_shuffle">Tocando misturado</string>
     <string name="download.playlist_done">Playlist salva com sucesso.</string>
     <string name="download.playlist_error">Falha ao salvar a playlist, Tente mais tarde.</string>
@@ -134,7 +130,6 @@
     <string name="search.songs">Músicas</string>
     <string name="search.title">Pesquisar</string>
     <string name="select_album.empty">Nenhuma mídia encontrada</string>
-    <string name="select_album.no_network">Aviso: Nenhuma rede disponível.</string>
     <string name="select_album.no_sdcard">Erro: Nenhum cartão SD disponível.</string>
     <string name="select_album.play_all">Tocar Tudo</string>
     <string name="select_artist.all_folders">Todas as Pastas</string>
@@ -197,8 +192,6 @@
     <string name="settings.disc_sort_summary">Classificar músicas pelo número do álbum e faixas</string>
     <string name="settings.display_bitrate">Mostrar Bitrate se Sufixo do Arquivo</string>
     <string name="settings.display_bitrate_summary">Adicionar o nome do artista com a taxa de bits e sufixo do arquivo</string>
-    <string name="settings.download_transition">Mostrar Downloads na Reprodução</string>
-    <string name="settings.download_transition_summary">Transição para atividade de download quando iniciar reprodução</string>
     <string name="settings.hide_media_summary">Esconder arquivos de músicas de outros aplicativos</string>
     <string name="settings.hide_media_title">Esconder de Outros</string>
     <string name="settings.hide_media_toast">Será efetivado na próxima vez que o Android procurar por músicas em seu celular.</string>
@@ -260,12 +253,12 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Histórico de pesquisas apagado</string>
     <string name="settings.search_title">Configurações de Pesquisa</string>
+    <string name="settings.send_bluetooth_notification_summary">Enviar notificações de reprodução via Bluetooth</string>
+    <string name="settings.send_bluetooth_notification">Notificações via Bluetooth</string>
     <string name="settings.send_bluetooth_album_art_summary">Enviar a arte do álbum via Bluetooth (Pode causar falhas nas notificações do Bluetooth)</string>
     <string name="settings.send_bluetooth_album_art">Arte do Álbum via Bluetooth</string>
     <string name="settings.disable_send_now_playing_list_summary">A Lista Tocando Agora não será enviada aos dispositivos conectados. Isso pode restaurar a compatibilidade com dispositivos AVRCP 1.3 quando a exibição da trilha atual não é atualizada</string>
     <string name="settings.disable_send_now_playing_list">Desativar Envio da Lista Tocando Agora</string>
-    <string name="settings.send_bluetooth_notification_summary">Enviar notificações de reprodução via Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Notificações via Bluetooth</string>
     <string name="settings.server_manage_servers">Gerenciar Servidores</string>
     <string name="settings.server_address">Endereço do Servidor</string>
     <string name="settings.server_name">Nome</string>
@@ -292,8 +285,6 @@
     <string name="settings.theme_title">Tema</string>
     <string name="settings.title.allow_self_signed_certificate">Permitir o certificado HTTPS auto-assinado</string>
     <string name="settings.title.enable_ldap_users_support">Forçar autenticação não criptografada</string>
-    <string name="settings.summary.enable_ldap_users_support">Isso força o aplicativo a sempre enviar a senha na forma antiga,
-         porque a api Subsonic não suporta a nova autorização para usuários LDAP.</string>
     <string name="settings.use_folder_for_album_artist">Usar Pasta para Nome do Artista</string>
     <string name="settings.use_folder_for_album_artist_summary">Assumir que a pasta mais acima é o nome do artista</string>
     <string name="settings.use_id3">Navegar Usando Etiquetas ID3</string>
@@ -391,9 +382,6 @@
     <string name="api.subsonic.upgrade_client">Versões incompativeis. Atualize o aplicativo Ultrasonic para Android.</string>
     <string name="api.subsonic.upgrade_server">Versões incompativeis. Atualize o servidor Ultrasonic.</string>
 
+    <!-- Subsonic features  -->
     <string name="settings.five_star_rating_title">Usar Classif. 5 Estrelas para Músicas</string>
-    <string name="settings.five_star_rating_description">Usar o sistema de classificação de 5 estrelas para músicas
-         em vez de simplesmente estrelar/não estrelar itens
-    </string>
-
-</resources>
+    </resources>

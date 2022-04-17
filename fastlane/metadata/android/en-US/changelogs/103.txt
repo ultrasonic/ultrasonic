@@ -1,0 +1,14 @@
+Bug fixes
+- #673: Disabling "Browse Using ID3 Tags" causes artist search result content to mismatch.
+- #679: Keyboard should be hidden when navigating away from Search.
+- #686: In landscape mode, the scroll bar is missing in the about text.
+- #691: TrackCollectionFragment: fix play all button.
+- #698: Track based context menus do not function correctly in most fragments.
+
+Features
+- #669: Option to change language.
+
+Enhancements
+- #654: Update OkHttp.
+- #694: Reword alert for better help.
+- #702: Show Downloads on Play.
