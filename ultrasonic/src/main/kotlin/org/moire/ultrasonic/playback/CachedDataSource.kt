@@ -85,8 +85,8 @@ class CachedDataSource(
 
     @Suppress("MagicNumber")
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
-        if (offset > 0 || length > 4)
-            Timber.d("CachedDatasource: Read: %s %s", offset, length)
+        // if (offset > 0 || length > 4)
+        //    Timber.d("CachedDatasource: Read: %s %s", offset, length)
         return if (cachePath != null) {
             try {
                 readInternal(buffer, offset, length)
