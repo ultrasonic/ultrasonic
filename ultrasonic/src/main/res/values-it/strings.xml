@@ -175,8 +175,6 @@
     <string name="settings.disc_sort">Ordina Canzoni secondo Disco</string>
     <string name="settings.disc_sort_summary">Ordina lista canzoni secondo il numero disco e traccia</string>
     <string name="settings.display_bitrate_summary">Aggiungi nome artista con bitrare ed estensione file</string>
-    <string name="settings.gapless_playback">Riproduzione Ininterrotta</string>
-    <string name="settings.gapless_playback_summary">Abilita riproduzione ininterrotta</string>
     <string name="settings.hide_media_summary">Nascondi file musicali di altre app</string>
     <string name="settings.hide_media_title">Nascondi Da Altro</string>
     <string name="settings.hide_media_toast">Effettivo alla prossima scansione Android per file musicali sul telefono.</string>

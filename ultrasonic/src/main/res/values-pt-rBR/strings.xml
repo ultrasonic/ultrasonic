@@ -41,11 +41,8 @@
     <string name="common.name">Nome</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Fixar</string>
-    <string name="common.pause">Pausar</string>
-    <string name="common.play">Tocar</string>
     <string name="common.play_last">Tocar por Último</string>
     <string name="common.play_next">Tocar na Próxima</string>
-    <string name="common.play_previous">Tocar a Anterior</string>
     <string name="common.play_now">Tocar Agora</string>
     <string name="common.play_shuffled">Tocar Aleatoriamente</string>
     <string name="common.public">Público</string>
@@ -195,8 +192,6 @@
     <string name="settings.disc_sort_summary">Classificar músicas pelo número do álbum e faixas</string>
     <string name="settings.display_bitrate">Mostrar Bitrate se Sufixo do Arquivo</string>
     <string name="settings.display_bitrate_summary">Adicionar o nome do artista com a taxa de bits e sufixo do arquivo</string>
-    <string name="settings.gapless_playback">Reprodução sem Interrupção</string>
-    <string name="settings.gapless_playback_summary">Ativar reprodução sem interrupção</string>
     <string name="settings.hide_media_summary">Esconder arquivos de músicas de outros aplicativos</string>
     <string name="settings.hide_media_title">Esconder de Outros</string>
     <string name="settings.hide_media_toast">Será efetivado na próxima vez que o Android procurar por músicas em seu celular.</string>

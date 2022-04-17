@@ -41,11 +41,8 @@
     <string name="common.name">Name</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Pin</string>
-    <string name="common.pause">Pause</string>
-    <string name="common.play">Play</string>
     <string name="common.play_last">Play Last</string>
     <string name="common.play_next">Play Next</string>
-    <string name="common.play_previous">Play Previous</string>
     <string name="common.play_now">Play Now</string>
     <string name="common.play_shuffled">Play Shuffled</string>
     <string name="common.public">Public</string>

@@ -41,11 +41,8 @@
     <string name="common.name">Naam</string>
     <string name="common.ok">Oké</string>
     <string name="common.pin">Vastmaken</string>
-    <string name="common.pause">Pauzeren</string>
-    <string name="common.play">Afspelen</string>
     <string name="common.play_last">Laatste afspelen</string>
     <string name="common.play_next">Volgende afspelen</string>
-    <string name="common.play_previous">Vorige afspelen</string>
     <string name="common.play_now">Nu afspelen</string>
     <string name="common.play_shuffled">Willekeurig afspelen</string>
     <string name="common.public">Openbaar</string>
@@ -218,8 +215,6 @@
     <string name="settings.display_bitrate_summary">Bitsnelheid en bestandsextensie toevoegen aan artiestennaam</string>
     <string name="settings.download_transition">Nu aan het afspelen tonen op afspeelscherm</string>
     <string name="settings.download_transition_summary">Toon ‘Nu aan het afspelen’ in de mediaweergave</string>
-    <string name="settings.gapless_playback">Naadloze overgang</string>
-    <string name="settings.gapless_playback_summary">Naadloze overgang tussen nummers inschakelen</string>
     <string name="settings.hide_media_summary">Muziekbestanden verbergen voor andere apps.</string>
     <string name="settings.hide_media_title">Verbergen voor andere apps</string>
     <string name="settings.hide_media_toast">Dit wordt toegepast bij de volgende keer dat Android je muziek doorzoekt.</string>

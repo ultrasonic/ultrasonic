@@ -41,11 +41,8 @@
     <string name="common.name">Nombre</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Anclar</string>
-    <string name="common.pause">Pausar</string>
-    <string name="common.play">Reproducir</string>
     <string name="common.play_last">Reproducir última</string>
     <string name="common.play_next">Reproducir a continuación</string>
-    <string name="common.play_previous">Reproducir anterior </string>
     <string name="common.play_now">Reproducir ahora</string>
     <string name="common.play_shuffled">Reproducción aleatoria</string>
     <string name="common.public">Public</string>
@@ -218,8 +215,6 @@
     <string name="settings.display_bitrate_summary">Añadir el nombre del artista con la tasa de bits y la extensión del archivo</string>
     <string name="settings.download_transition">Mostrar reproduciendo ahora al reproducir</string>
     <string name="settings.download_transition_summary">Cambiar a reproduciendo ahora después de iniciar la reproducción en la vista multimedia</string>
-    <string name="settings.gapless_playback">Reproducción sin pausas</string>
-    <string name="settings.gapless_playback_summary">Activa la reproducción sin pausas</string>
     <string name="settings.hide_media_summary">Oculta los archivos de música desde otras aplicaciones.</string>
     <string name="settings.hide_media_title">Ocultar desde otras</string>
     <string name="settings.hide_media_toast">Tiene efecto la próxima vez que Android escanee la música de tu dispositivo.</string>
