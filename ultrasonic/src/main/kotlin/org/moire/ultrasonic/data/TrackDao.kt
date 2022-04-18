@@ -1,9 +1,13 @@
 package org.moire.ultrasonic.data
 
+import androidx.room.Dao
+import androidx.room.Entity
 import androidx.room.Query
-import org.moire.ultrasonic.domain.MusicDirectory
+import org.moire.ultrasonic.domain.Track
 
-interface TrackDao {
+@Dao
+@Entity(tableName = "tracks")
+interface TrackDao : GenericDao<Track> {
     /**
      * Clear the whole database
      */
@@ -14,12 +18,11 @@ interface TrackDao {
      * Get all albums
      */
     @Query("SELECT * FROM tracks")
-    fun get(): List<MusicDirectory.Album>
+    fun get(): List<Track>
 
     /**
      * Get albums by artist
      */
     @Query("SELECT * FROM tracks WHERE albumId LIKE :id")
-    fun byAlbum(id: String): List<MusicDirectory.Entry>
-
+    fun byAlbum(id: String): List<Track>
 }

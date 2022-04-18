@@ -44,6 +44,7 @@ import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.domain.UserInfo
 import org.moire.ultrasonic.util.AbstractFile
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.Util.safeClose
@@ -56,8 +57,9 @@ class OfflineMusicService : MusicService, KoinComponent {
     private var metaDatabase: MetaDatabase = activeServerProvider.getActiveMetaDatabase()
 
     // New Room Database
-    private var cachedArtists = metaDatabase.artistsDao()
+    private var cachedArtists = metaDatabase.artistDao()
     private var cachedAlbums = metaDatabase.albumDao()
+    private var cachedTracks = metaDatabase.trackDao()
     private var cachedIndexes = metaDatabase.indexDao()
     private val cachedMusicFolders = metaDatabase.musicFoldersDao()
 
@@ -108,7 +110,7 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     @Throws(OfflineException::class)
     override fun getArtists(refresh: Boolean): List<Artist> {
-        var result = cachedArtists.get()
+        val result = cachedArtists.get()
 
         if (result.isEmpty()) {
             // use indexes?
@@ -478,7 +480,15 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     @Throws(OfflineException::class)
     override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {
-        throw OfflineException("getAlbum isn't available in offline mode")
+
+        val list = cachedTracks
+            .byAlbum(id)
+            .sortedWith(EntryByDiscAndTrackComparator())
+
+        var dir = MusicDirectory()
+        dir.addAll(list)
+
+        return dir
     }
 
     @Throws(OfflineException::class)

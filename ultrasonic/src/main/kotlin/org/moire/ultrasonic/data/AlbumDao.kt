@@ -32,7 +32,7 @@ interface AlbumDao : GenericDao<Album> {
     fun clearByArtist(id: String)
 
     /**
-     * FIXME: Make generic
+     * TODO: Make generic
      * Upserts (insert or update) an object to the database
      *
      * @param obj the object to upsert

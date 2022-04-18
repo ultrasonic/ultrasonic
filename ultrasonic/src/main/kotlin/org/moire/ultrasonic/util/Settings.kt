@@ -130,6 +130,7 @@ object Settings {
     @JvmStatic
     var mediaButtonsEnabled
         by BooleanSetting(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true)
+
     var resumePlayOnHeadphonePlug
         by BooleanSetting(R.string.setting_keys_resume_play_on_headphones_plug, true)
 
@@ -161,6 +162,9 @@ object Settings {
 
     @JvmStatic
     var shouldUseId3Tags by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
+
+    @JvmStatic
+    var useId3TagsOffline by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS_OFFLINE, false)
 
     var activeServer by IntSetting(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1)
 
@@ -243,8 +247,6 @@ object Settings {
     var useFiveStarRating by BooleanSetting(Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING, false)
 
     var useHwOffload by BooleanSetting(Constants.PREFERENCES_KEY_HARDWARE_OFFLOAD, false)
-
-    var useId3TagsOffline = true
 
     // TODO: Remove in December 2022
     fun migrateFeatureStorage() {

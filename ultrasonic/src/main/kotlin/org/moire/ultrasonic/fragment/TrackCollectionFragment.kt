@@ -600,7 +600,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 listModel.getRandom(albumListSize)
             } else {
                 setTitle(name)
-                if (!isOffline() && Settings.shouldUseId3Tags) {
+                if (!isOffline() && Settings.shouldUseId3Tags || Settings.useId3TagsOffline) {
                     if (isAlbum) {
                         listModel.getAlbum(refresh2, id!!, name)
                     } else {

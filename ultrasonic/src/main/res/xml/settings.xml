@@ -61,6 +61,12 @@
             app:iconSpaceReserved="false"/>
         <CheckBoxPreference
             a:defaultValue="true"
+            a:key="useId3TagsOffline"
+            a:summary="@string/settings.use_id3_offline_summary"
+            a:title="@string/settings.use_id3_offline"
+            app:iconSpaceReserved="false"/>
+        <CheckBoxPreference
+            a:defaultValue="true"
             a:key="showArtistPicture"
             a:summary="@string/settings.show_artist_picture_summary"
             a:title="@string/settings.show_artist_picture"

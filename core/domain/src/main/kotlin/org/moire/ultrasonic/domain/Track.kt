@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.util.Date
 
-@Entity
+@Entity(tableName = "tracks")
 data class Track(
     @PrimaryKey override var id: String,
     override var parent: String? = null,

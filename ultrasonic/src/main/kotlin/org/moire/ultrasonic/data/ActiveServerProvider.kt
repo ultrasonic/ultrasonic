@@ -24,6 +24,7 @@ class ActiveServerProvider(
     private val repository: ServerSettingDao
 ) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
     private var cachedServer: ServerSetting? = null
+    // FIXME cach never set
     private var cachedDatabase: MetaDatabase? = null
     private var cachedServerId: Int? = null
 
@@ -110,27 +111,21 @@ class ActiveServerProvider(
 
         Timber.i("Switching to new database, id:$activeServer")
         cachedServerId = activeServer
-        return Room.databaseBuilder(
-            UApp.applicationContext(),
-            MetaDatabase::class.java,
-            METADATA_DB + cachedServerId
-        )
-            .addMigrations(META_MIGRATION_2_1)
-            .fallbackToDestructiveMigrationOnDowngrade()
-            .build()
+        cachedDatabase = initDatabase(activeServer)
+
+        return cachedDatabase!!
     }
 
     val offlineMetaDatabase: MetaDatabase by lazy {
-        buildDatabase(OFFLINE_DB_ID)
+        initDatabase(0)
     }
 
-    private fun buildDatabase(id: Int?): MetaDatabase {
+    private fun initDatabase(serverId: Int): MetaDatabase {
         return Room.databaseBuilder(
             UApp.applicationContext(),
             MetaDatabase::class.java,
-            METADATA_DB + id
-        )
-            .fallbackToDestructiveMigration()
+            METADATA_DB + serverId
+        ).fallbackToDestructiveMigration()
             .build()
     }
 

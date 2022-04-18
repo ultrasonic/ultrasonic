@@ -52,8 +52,9 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     private val cachedGenres = TimeLimitedCache<List<Genre>>(10 * 3600, TimeUnit.SECONDS)
 
     // New Room Database
-    private var cachedArtists = metaDatabase.artistsDao()
+    private var cachedArtists = metaDatabase.artistDao()
     private var cachedAlbums = metaDatabase.albumDao()
+    private var cachedTracks = metaDatabase.trackDao()
     private var cachedIndexes = metaDatabase.indexDao()
     private val cachedMusicFolders = metaDatabase.musicFoldersDao()
 
@@ -353,7 +354,7 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         if (!Util.equals(newUrl, restUrl) || !Util.equals(cachedMusicFolderId, newFolderId)) {
             // Switch database
             metaDatabase = activeServerProvider.getActiveMetaDatabase()
-            cachedArtists = metaDatabase.artistsDao()
+            cachedArtists = metaDatabase.artistDao()
             cachedAlbums = metaDatabase.albumDao()
             cachedIndexes = metaDatabase.indexDao()
 
