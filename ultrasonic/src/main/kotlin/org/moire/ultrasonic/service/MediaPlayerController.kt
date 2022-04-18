@@ -22,7 +22,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.playback.LegacyPlaylistManager
 import org.moire.ultrasonic.playback.PlaybackService
@@ -82,6 +81,26 @@ class MediaPlayerController(
             controller = mediaControllerFuture.get()
 
             controller?.addListener(object : Player.Listener {
+
+                /*
+                 * Log all events
+                 */
+//                override fun onEvents(player: Player, events: Player.Events) {
+//                    //Timber.i("Media3 Event: %s", events)
+//                }
+
+                //                override fun onIsLoadingChanged(isLoading: Boolean) {
+//                    super.onIsLoadingChanged(isLoading)
+//                }
+//
+//                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+//                    super.onPlayWhenReadyChanged(playWhenReady, reason)
+//                }
+//
+//                override fun onPlaylistMetadataChanged(mediaMetadata: MediaMetadata) {
+//                    super.onPlaylistMetadataChanged(mediaMetadata)
+//                }
+//
                 /*
                  * This will be called everytime the playlist has changed.
                  */
@@ -191,19 +210,21 @@ class MediaPlayerController(
 
     @Synchronized
     fun restore(
-        songs: List<Track?>?,
+        songs: List<Track>,
         currentPlayingIndex: Int,
         currentPlayingPosition: Int,
         autoPlay: Boolean,
         newPlaylist: Boolean
     ) {
+        val insertionMode = if (newPlaylist) InsertionMode.CLEAR
+        else InsertionMode.APPEND
+
         addToPlaylist(
             songs,
             cachePermanently = false,
             autoPlay = false,
-            playNext = false,
             shuffle = false,
-            newPlaylist = newPlaylist
+            insertionMode = insertionMode
         )
 
         if (currentPlayingIndex != -1) {
@@ -293,32 +314,6 @@ class MediaPlayerController(
         } else {
             controller?.stop()
         }
-    }
-
-    @Synchronized
-    @Deprecated("Use InsertionMode Syntax")
-    @Suppress("LongParameterList")
-    fun addToPlaylist(
-        songs: List<Track?>?,
-        cachePermanently: Boolean,
-        autoPlay: Boolean,
-        playNext: Boolean,
-        shuffle: Boolean,
-        newPlaylist: Boolean
-    ) {
-        if (songs == null) return
-
-        val insertionMode = when {
-            newPlaylist -> InsertionMode.CLEAR
-            playNext -> InsertionMode.AFTER_CURRENT
-            else -> InsertionMode.APPEND
-        }
-
-        val filteredSongs = songs.filterNotNull()
-
-        addToPlaylist(
-            filteredSongs, cachePermanently, autoPlay, shuffle, insertionMode
-        )
     }
 
     @Synchronized
@@ -513,10 +508,6 @@ class MediaPlayerController(
         get() {
             return controller?.duration?.toInt() ?: return 0
         }
-
-    @Deprecated("Use Controller.playbackState and Controller.isPlaying")
-    @set:Synchronized
-    var legacyPlayerState: PlayerState = PlayerState.IDLE
 
     val playbackState: Int
         get() = controller?.playbackState ?: 0
