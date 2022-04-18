@@ -46,7 +46,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSettingDao
-import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.fragment.OnBackPressedHandler
 import org.moire.ultrasonic.model.ServerSettingsModel
 import org.moire.ultrasonic.provider.SearchSuggestionProvider
@@ -183,7 +182,7 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         rxBusSubscription += RxBus.playerStateObservable.subscribe {
-            if (it.state === PlayerState.STARTED || it.state === PlayerState.PAUSED)
+            if (it.state == STATE_READY)
                 showNowPlaying()
             else
                 hideNowPlaying()

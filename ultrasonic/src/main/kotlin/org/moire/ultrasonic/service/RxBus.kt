@@ -5,7 +5,6 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
-import org.moire.ultrasonic.domain.PlayerState
 
 class RxBus {
     companion object {
@@ -46,7 +45,12 @@ class RxBus {
             dismissNowPlayingCommandPublisher.observeOn(AndroidSchedulers.mainThread())
     }
 
-    data class StateWithTrack(val state: PlayerState, val track: DownloadFile?, val index: Int = -1)
+    data class StateWithTrack(
+        val track: DownloadFile?,
+        val index: Int = -1,
+        val isPlaying: Boolean = false,
+        val state: Int
+    )
 }
 
 operator fun CompositeDisposable.plusAssign(disposable: Disposable) {

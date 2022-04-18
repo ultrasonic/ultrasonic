@@ -22,7 +22,6 @@ import java.lang.Exception
 import kotlin.math.abs
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -85,18 +84,16 @@ class NowPlayingFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     private fun update() {
         try {
-            val playerState = mediaPlayerController.legacyPlayerState
-
-            if (playerState === PlayerState.PAUSED) {
-                playButton!!.setImageDrawable(
-                    getDrawableFromAttribute(
-                        requireContext(), R.attr.media_play
-                    )
-                )
-            } else if (playerState === PlayerState.STARTED) {
+            if (mediaPlayerController.isPlaying) {
                 playButton!!.setImageDrawable(
                     getDrawableFromAttribute(
                         requireContext(), R.attr.media_pause
+                    )
+                )
+            } else {
+                playButton!!.setImageDrawable(
+                    getDrawableFromAttribute(
+                        requireContext(), R.attr.media_play
                     )
                 )
             }

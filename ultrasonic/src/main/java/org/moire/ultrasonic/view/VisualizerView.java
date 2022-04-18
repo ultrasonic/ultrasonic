@@ -18,6 +18,8 @@
  */
 package org.moire.ultrasonic.view;
 
+import static org.koin.java.KoinJavaComponent.inject;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -29,13 +31,10 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
 import org.moire.ultrasonic.audiofx.VisualizerController;
-import org.moire.ultrasonic.domain.PlayerState;
 import org.moire.ultrasonic.service.MediaPlayerController;
 
 import kotlin.Lazy;
 import timber.log.Timber;
-
-import static org.koin.java.KoinJavaComponent.inject;
 
 /**
  * A simple class that draws waveform data received from a
@@ -130,7 +129,7 @@ public class VisualizerView extends View
 			return;
 		}
 
-		if (mediaPlayerControllerLazy.getValue().getLegacyPlayerState() != PlayerState.STARTED)
+		if (!mediaPlayerControllerLazy.getValue().isPlaying())
 		{
 			return;
 		}

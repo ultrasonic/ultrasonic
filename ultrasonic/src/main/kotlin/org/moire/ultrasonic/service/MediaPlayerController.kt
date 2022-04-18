@@ -13,7 +13,6 @@ import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
-import androidx.media3.common.Player.STATE_BUFFERING
 import androidx.media3.common.Timeline
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -91,13 +90,11 @@ class MediaPlayerController(
                 }
 
                 override fun onPlaybackStateChanged(playbackState: Int) {
-                    translatePlaybackState(playbackState = playbackState)
                     playerStateChangedHandler()
                     publishPlaybackState()
                 }
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
-                    translatePlaybackState(isPlaying = isPlaying)
                     playerStateChangedHandler()
                     publishPlaybackState()
                 }
@@ -121,57 +118,29 @@ class MediaPlayerController(
         Timber.i("MediaPlayerController created")
     }
 
-    @Suppress("DEPRECATION")
-    fun translatePlaybackState(
-        playbackState: Int = controller?.playbackState ?: 0,
-        isPlaying: Boolean = controller?.isPlaying ?: false
-    ) {
-        legacyPlayerState = when (playbackState) {
-            STATE_BUFFERING -> PlayerState.DOWNLOADING
-            Player.STATE_ENDED -> {
-                PlayerState.COMPLETED
-            }
-            Player.STATE_IDLE -> {
-                PlayerState.IDLE
-            }
-            Player.STATE_READY -> {
-                if (isPlaying) {
-                    PlayerState.STARTED
-                } else {
-                    PlayerState.PAUSED
-                }
-            }
-            else -> {
-                PlayerState.IDLE
-            }
-        }
-    }
-
     private fun playerStateChangedHandler() {
 
-        val playerState = legacyPlayerState
         val currentPlaying = legacyPlaylistManager.currentPlaying
 
-        when {
-            playerState === PlayerState.PAUSED -> {
-                playbackStateSerializer.serialize(
-                    playList, currentMediaItemIndex, playerPosition
-                )
+        when (playbackState) {
+            Player.STATE_READY -> {
+                if (isPlaying) {
+                    scrobbler.scrobble(currentPlaying, false)
+                } else {
+                    playbackStateSerializer.serialize(
+                        playList, currentMediaItemIndex, playerPosition
+                    )
+                }
             }
-            playerState === PlayerState.STARTED -> {
-                scrobbler.scrobble(currentPlaying, false)
-            }
-            playerState === PlayerState.COMPLETED -> {
+            Player.STATE_ENDED -> {
                 scrobbler.scrobble(currentPlaying, true)
             }
         }
 
         // Update widget
         if (currentPlaying != null) {
-            updateWidget(playerState, currentPlaying.track)
+            updateWidget(currentPlaying.track)
         }
-
-        Timber.d("Processed player state change")
     }
 
     private fun onTrackCompleted() {
@@ -190,23 +159,23 @@ class MediaPlayerController(
     }
 
     private fun publishPlaybackState() {
-        RxBus.playerStatePublisher.onNext(
-            RxBus.StateWithTrack(
-                state = legacyPlayerState,
-                track = legacyPlaylistManager.currentPlaying,
-                index = currentMediaItemIndex
-            )
+        val newState = RxBus.StateWithTrack(
+            track = legacyPlaylistManager.currentPlaying,
+            index = currentMediaItemIndex,
+            isPlaying = isPlaying,
+            state = playbackState
         )
+        RxBus.playerStatePublisher.onNext(newState)
+        Timber.i("New PlaybackState: %s", newState)
     }
 
-    private fun updateWidget(playerState: PlayerState, song: Track?) {
-        val started = playerState === PlayerState.STARTED
+    private fun updateWidget(song: Track?) {
         val context = UApp.applicationContext()
 
-        UltrasonicAppWidgetProvider4X1.instance?.notifyChange(context, song, started, false)
-        UltrasonicAppWidgetProvider4X2.instance?.notifyChange(context, song, started, true)
-        UltrasonicAppWidgetProvider4X3.instance?.notifyChange(context, song, started, false)
-        UltrasonicAppWidgetProvider4X4.instance?.notifyChange(context, song, started, false)
+        UltrasonicAppWidgetProvider4X1.instance?.notifyChange(context, song, isPlaying, false)
+        UltrasonicAppWidgetProvider4X2.instance?.notifyChange(context, song, isPlaying, true)
+        UltrasonicAppWidgetProvider4X3.instance?.notifyChange(context, song, isPlaying, false)
+        UltrasonicAppWidgetProvider4X4.instance?.notifyChange(context, song, isPlaying, false)
     }
 
     fun onDestroy() {

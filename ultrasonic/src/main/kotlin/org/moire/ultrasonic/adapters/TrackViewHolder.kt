@@ -109,6 +109,7 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
         }
 
         rxSubscription = RxBus.playerStateObservable.subscribe {
+            Timber.i("NEW PLAY STATE")
             setPlayIcon(it.index == bindingAdapterPosition && it.track == downloadFile)
         }
     }
