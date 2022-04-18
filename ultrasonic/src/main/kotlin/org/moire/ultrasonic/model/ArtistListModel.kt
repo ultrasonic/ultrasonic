@@ -26,6 +26,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.text.Collator
 import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.service.MusicService
+import org.moire.ultrasonic.util.Settings
 
 /**
  * Provides ViewModel which contains the list of available Artists
@@ -58,7 +59,7 @@ class ArtistListModel(application: Application) : GenericListModel(application) 
 
         val result: List<ArtistOrIndex>
 
-        if (!isOffline && useId3Tags) {
+        if (!isOffline && useId3Tags || Settings.useId3TagsOffline) {
             result = musicService.getArtists(refresh)
         } else {
             result = musicService.getIndexes(musicFolderId, refresh)

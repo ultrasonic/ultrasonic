@@ -23,6 +23,7 @@ import java.util.regex.Pattern
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.data.MetaDatabase
 import org.moire.ultrasonic.domain.Album
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.ArtistOrIndex
@@ -51,6 +52,14 @@ import timber.log.Timber
 @Suppress("TooManyFunctions")
 class OfflineMusicService : MusicService, KoinComponent {
     private val activeServerProvider: ActiveServerProvider by inject()
+
+    private var metaDatabase: MetaDatabase = activeServerProvider.getActiveMetaDatabase()
+
+    // New Room Database
+    private var cachedArtists = metaDatabase.artistsDao()
+    private var cachedAlbums = metaDatabase.albumDao()
+    private var cachedIndexes = metaDatabase.indexDao()
+    private val cachedMusicFolders = metaDatabase.musicFoldersDao()
 
     override fun getIndexes(musicFolderId: String?, refresh: Boolean): List<Index> {
         val indexes: MutableList<Index> = ArrayList()
@@ -95,6 +104,16 @@ class OfflineMusicService : MusicService, KoinComponent {
         }
 
         return indexes
+    }
+
+    @Throws(OfflineException::class)
+    override fun getArtists(refresh: Boolean): List<Artist> {
+        var result = cachedArtists.get()
+
+        if (result.isEmpty()) {
+            // use indexes?
+        }
+        return result
     }
 
     /*
@@ -450,15 +469,11 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     override fun isLicenseValid(): Boolean = true
 
-    @Throws(OfflineException::class)
-    override fun getArtists(refresh: Boolean): List<Artist> {
-        throw OfflineException("getArtists isn't available in offline mode")
-    }
-
-    @Throws(OfflineException::class)
-    override fun getArtist(id: String, name: String?, refresh: Boolean):
+    @Throws(Exception::class)
+    override fun getAlbumsOfArtist(id: String, name: String?, refresh: Boolean):
         List<Album> {
-        throw OfflineException("getArtist isn't available in offline mode")
+        // FIXME: Add fallback?
+        return cachedAlbums.byArtist(id)
     }
 
     @Throws(OfflineException::class)

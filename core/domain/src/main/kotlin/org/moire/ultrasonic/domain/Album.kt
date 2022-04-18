@@ -1,8 +1,10 @@
 package org.moire.ultrasonic.domain
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
+@Entity(tableName = "albums")
 data class Album(
     @PrimaryKey override var id: String,
     override var parent: String? = null,

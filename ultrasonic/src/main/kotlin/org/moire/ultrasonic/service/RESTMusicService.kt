@@ -141,7 +141,7 @@ open class RESTMusicService(
     }
 
     @Throws(Exception::class)
-    override fun getArtist(
+    override fun getAlbumsOfArtist(
         id: String,
         name: String?,
         refresh: Boolean

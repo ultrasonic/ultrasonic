@@ -59,7 +59,7 @@ interface MusicService {
     fun getMusicDirectory(id: String, name: String?, refresh: Boolean): MusicDirectory
 
     @Throws(Exception::class)
-    fun getArtist(id: String, name: String?, refresh: Boolean): List<Album>
+    fun getAlbumsOfArtist(id: String, name: String?, refresh: Boolean): List<Album>
 
     @Throws(Exception::class)
     fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory

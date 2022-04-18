@@ -39,7 +39,7 @@ class AlbumListModel(application: Application) : GenericListModel(application) {
         id: String,
         name: String?
     ) {
-        list.postValue(musicService.getArtist(id, name, refresh))
+        list.postValue(musicService.getAlbumsOfArtist(id, name, refresh))
     }
 
     override fun load(

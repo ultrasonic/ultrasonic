@@ -43,5 +43,5 @@ interface ArtistsDao {
      * Get artist by id
      */
     @Query("SELECT * FROM artists WHERE id LIKE :id")
-    fun get(id: String): Artist
+    fun get(id: String): Artist?
 }

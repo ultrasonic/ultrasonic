@@ -110,7 +110,14 @@ class ActiveServerProvider(
 
         Timber.i("Switching to new database, id:$activeServer")
         cachedServerId = activeServer
-        return buildDatabase(cachedServerId)
+        return Room.databaseBuilder(
+            UApp.applicationContext(),
+            MetaDatabase::class.java,
+            METADATA_DB + cachedServerId
+        )
+            .addMigrations(META_MIGRATION_2_1)
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
     }
 
     val offlineMetaDatabase: MetaDatabase by lazy {
