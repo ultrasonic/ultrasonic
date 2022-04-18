@@ -31,6 +31,8 @@ abstract class MetaDatabase : RoomDatabase() {
 
     abstract fun albumDao(): AlbumDao
 
+    abstract fun trackDao(): AlbumDao
+
     abstract fun musicFoldersDao(): MusicFoldersDao
 
     abstract fun indexDao(): IndexDao
