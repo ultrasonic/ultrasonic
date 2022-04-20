@@ -74,9 +74,6 @@ class SettingsFragment :
     private var chatRefreshInterval: ListPreference? = null
     private var directoryCacheTime: ListPreference? = null
     private var mediaButtonsEnabled: CheckBoxPreference? = null
-    private var lockScreenEnabled: CheckBoxPreference? = null
-    private var sendBluetoothNotifications: CheckBoxPreference? = null
-    private var sendBluetoothAlbumArt: CheckBoxPreference? = null
     private var showArtistPicture: CheckBoxPreference? = null
     private var sharingDefaultDescription: EditTextPreference? = null
     private var sharingDefaultGreeting: EditTextPreference? = null
@@ -120,7 +117,7 @@ class SettingsFragment :
         showArtistPicture = findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE)
         customCacheLocation = findPreference(Constants.PREFERENCES_KEY_CUSTOM_CACHE_LOCATION)
 
-        sharingDefaultGreeting!!.text = shareGreeting
+        sharingDefaultGreeting?.text = shareGreeting
         setupClearSearchPreference()
         setupCacheLocationPreference()
     }
@@ -294,23 +291,16 @@ class SettingsFragment :
         sharingDefaultExpiration!!.summary = sharingDefaultExpiration!!.text
         sharingDefaultDescription!!.summary = sharingDefaultDescription!!.text
         sharingDefaultGreeting!!.summary = sharingDefaultGreeting!!.text
-        if (!mediaButtonsEnabled!!.isChecked) {
-            lockScreenEnabled!!.isChecked = false
-            lockScreenEnabled!!.isEnabled = false
-        }
-        if (!sendBluetoothNotifications!!.isChecked) {
-            sendBluetoothAlbumArt!!.isChecked = false
-            sendBluetoothAlbumArt!!.isEnabled = false
-        }
-        if (debugLogToFile!!.isChecked) {
-            debugLogToFile!!.summary = getString(
+
+        if (debugLogToFile?.isChecked == true) {
+            debugLogToFile?.summary = getString(
                 R.string.settings_debug_log_path,
                 ultrasonicDirectory, FileLoggerTree.FILENAME
             )
         } else {
-            debugLogToFile!!.summary = ""
+            debugLogToFile?.summary = ""
         }
-        showArtistPicture!!.isEnabled = shouldUseId3Tags
+        showArtistPicture?.isEnabled = shouldUseId3Tags
     }
 
     private fun setHideMedia(hide: Boolean) {
