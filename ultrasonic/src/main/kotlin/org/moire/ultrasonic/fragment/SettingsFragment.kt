@@ -17,7 +17,6 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import java.io.File
 import kotlin.math.ceil
@@ -112,10 +111,6 @@ class SettingsFragment :
         chatRefreshInterval = findPreference(Constants.PREFERENCES_KEY_CHAT_REFRESH_INTERVAL)
         directoryCacheTime = findPreference(Constants.PREFERENCES_KEY_DIRECTORY_CACHE_TIME)
         mediaButtonsEnabled = findPreference(Constants.PREFERENCES_KEY_MEDIA_BUTTONS)
-        lockScreenEnabled = findPreference(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS)
-        sendBluetoothAlbumArt = findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART)
-        sendBluetoothNotifications =
-            findPreference(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS)
         sharingDefaultDescription =
             findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_DESCRIPTION)
         sharingDefaultGreeting = findPreference(Constants.PREFERENCES_KEY_DEFAULT_SHARE_GREETING)
@@ -128,21 +123,6 @@ class SettingsFragment :
         sharingDefaultGreeting!!.text = shareGreeting
         setupClearSearchPreference()
         setupCacheLocationPreference()
-
-        // After API26 foreground services must be used for music playback, and they must have a notification
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationsCategory =
-                findPreference<PreferenceCategory>(Constants.PREFERENCES_KEY_CATEGORY_NOTIFICATIONS)
-            var preferenceToRemove =
-                findPreference<Preference>(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION)
-            if (preferenceToRemove != null) notificationsCategory!!.removePreference(
-                preferenceToRemove
-            )
-            preferenceToRemove = findPreference(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION)
-            if (preferenceToRemove != null) notificationsCategory!!.removePreference(
-                preferenceToRemove
-            )
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -207,9 +187,6 @@ class SettingsFragment :
         when (key) {
             Constants.PREFERENCES_KEY_HIDE_MEDIA -> {
                 setHideMedia(sharedPreferences.getBoolean(key, false))
-            }
-            Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS -> {
-                setBluetoothPreferences(sharedPreferences.getBoolean(key, true))
             }
             Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE -> {
                 setDebugLogToFile(sharedPreferences.getBoolean(key, false))
@@ -349,10 +326,6 @@ class SettingsFragment :
             }
         }
         toast(activity, R.string.settings_hide_media_toast, false)
-    }
-
-    private fun setBluetoothPreferences(enabled: Boolean) {
-        sendBluetoothAlbumArt!!.isEnabled = enabled
     }
 
     private fun setCacheLocation(path: String) {

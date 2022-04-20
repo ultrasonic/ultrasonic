@@ -113,42 +113,6 @@
             a:summary="@string/settings.show_now_playing_summary"
             a:title="@string/settings.show_now_playing"
             app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="showNotification"
-            a:summary="@string/settings.show_notification_summary"
-            a:title="@string/settings.show_notification"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="alwaysShowNotification"
-            a:summary="@string/settings.show_notification_always_summary"
-            a:title="@string/settings.show_notification_always"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="showLockScreen"
-            a:summary="@string/settings.show_lockscreen_controls_summary"
-            a:title="@string/settings.show_lockscreen_controls"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="sendBluetoothNotifications"
-            a:summary="@string/settings.send_bluetooth_notification_summary"
-            a:title="@string/settings.send_bluetooth_notification"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="sendBluetoothAlbumArt"
-            a:summary="@string/settings.send_bluetooth_album_art_summary"
-            a:title="@string/settings.send_bluetooth_album_art"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="disableNowPlayingListSending"
-            a:summary="@string/settings.disable_send_now_playing_list_summary"
-            a:title="@string/settings.disable_send_now_playing_list"
-            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
         a:title="@string/settings.sharing_title"

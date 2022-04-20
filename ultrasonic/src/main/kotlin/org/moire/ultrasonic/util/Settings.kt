@@ -183,12 +183,6 @@ object Settings {
     var shouldClearBookmark
         by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false)
 
-    // Inverted for readability
-    var shouldSendBluetoothNotifications by BooleanSetting(
-        Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS,
-        true
-    )
-
     var shouldAskForShareDetails
         by BooleanSetting(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true)
 

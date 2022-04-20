@@ -1,6 +1,7 @@
 package org.moire.ultrasonic.app
 
 import android.content.Context
+import android.os.StrictMode
 import androidx.multidex.MultiDexApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -25,6 +26,8 @@ class UApp : MultiDexApplication() {
 
     init {
         instance = this
+        if (BuildConfig.DEBUG)
+            StrictMode.enableDefaults()
     }
 
     override fun onCreate() {
