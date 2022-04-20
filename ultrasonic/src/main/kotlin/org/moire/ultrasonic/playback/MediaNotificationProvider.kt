@@ -148,9 +148,9 @@ internal class MediaNotificationProvider(context: Context) :
     }
 
     companion object {
-        private const val NOTIFICATION_ID = 1001
-        private const val NOTIFICATION_CHANNEL_ID = "default_channel_id"
-        private const val NOTIFICATION_CHANNEL_NAME = "Now playing"
+        private const val NOTIFICATION_CHANNEL_ID = "org.moire.ultrasonic"
+        private const val NOTIFICATION_CHANNEL_NAME = "Ultrasonic background service"
+        private const val NOTIFICATION_ID = 3033
         private fun getSmallIconResId(): Int {
             return R.drawable.ic_stat_ultrasonic
         }
