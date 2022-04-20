@@ -3,6 +3,9 @@ package org.moire.ultrasonic.app
 import android.content.Context
 import android.os.StrictMode
 import androidx.multidex.MultiDexApplication
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
@@ -24,6 +27,8 @@ import timber.log.Timber.DebugTree
 
 class UApp : MultiDexApplication() {
 
+    private var ioScope = CoroutineScope(Dispatchers.IO)
+
     init {
         instance = this
         if (BuildConfig.DEBUG)
@@ -36,8 +41,12 @@ class UApp : MultiDexApplication() {
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
-        if (Settings.debugLogToFile) {
-            FileLoggerTree.plantToTimberForest()
+
+        // In general we should not access the settings from the main thread to avoid blocking...
+        ioScope.launch {
+            if (Settings.debugLogToFile) {
+                FileLoggerTree.plantToTimberForest()
+            }
         }
 
         startKoin {

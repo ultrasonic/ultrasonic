@@ -29,32 +29,37 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         onCreate(false, null)
     }
 
-    private fun onCreate(autoPlay: Boolean, afterCreated: Runnable?) {
+    private fun onCreate(autoPlay: Boolean, afterRestore: Runnable?) {
 
         if (created) {
-            afterCreated?.run()
+            afterRestore?.run()
             return
         }
 
-        mediaPlayerController.onCreate()
-        if (autoPlay) mediaPlayerController.preload()
+        mediaPlayerController.onCreate {
+            restoreLastSession(autoPlay, afterRestore)
+        }
 
+        CacheCleaner().clean()
+        created = true
+        Timber.i("LifecycleSupport created")
+    }
+
+    private fun restoreLastSession(autoPlay: Boolean, afterRestore: Runnable?) {
         playbackStateSerializer.deserialize {
 
+            Timber.i("Restoring %s songs", it!!.songs.size)
+
             mediaPlayerController.restore(
-                it!!.songs,
+                it.songs,
                 it.currentPlayingIndex,
                 it.currentPlayingPosition,
                 autoPlay,
                 false
             )
 
-            afterCreated?.run()
+            afterRestore?.run()
         }
-
-        CacheCleaner().clean()
-        created = true
-        Timber.i("LifecycleSupport created")
     }
 
     fun onDestroy() {

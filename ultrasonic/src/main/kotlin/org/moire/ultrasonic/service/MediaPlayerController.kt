@@ -29,7 +29,6 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X1
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X2
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4
-import org.moire.ultrasonic.service.DownloadService.Companion.getInstance
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
@@ -72,7 +71,7 @@ class MediaPlayerController(
 
     var controller: MediaController? = null
 
-    fun onCreate() {
+    fun onCreate(onCreated: () -> Unit) {
         if (created) return
         externalStorageMonitor.onCreate { reset() }
         isJukeboxEnabled = activeServerProvider.getActiveServer().jukeboxByDefault
@@ -80,32 +79,25 @@ class MediaPlayerController(
         mediaControllerFuture.addListener({
             controller = mediaControllerFuture.get()
 
+            Timber.i("MediaController Instance received")
+
             controller?.addListener(object : Player.Listener {
 
                 /*
                  * Log all events
                  */
-//                override fun onEvents(player: Player, events: Player.Events) {
-//                    //Timber.i("Media3 Event: %s", events)
-//                }
+                override fun onEvents(player: Player, events: Player.Events) {
+                    for (i in 0 until events.size()) {
+                        Timber.i("Media3 Event, event type: %s", events[i])
+                    }
+                }
 
-                //                override fun onIsLoadingChanged(isLoading: Boolean) {
-//                    super.onIsLoadingChanged(isLoading)
-//                }
-//
-//                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-//                    super.onPlayWhenReadyChanged(playWhenReady, reason)
-//                }
-//
-//                override fun onPlaylistMetadataChanged(mediaMetadata: MediaMetadata) {
-//                    super.onPlaylistMetadataChanged(mediaMetadata)
-//                }
-//
                 /*
                  * This will be called everytime the playlist has changed.
                  */
                 override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                     legacyPlaylistManager.rebuildPlaylist(controller!!)
+                    serializeCurrentSession()
                 }
 
                 override fun onPlaybackStateChanged(playbackState: Int) {
@@ -125,6 +117,10 @@ class MediaPlayerController(
                 }
             })
 
+            onCreated()
+
+            Timber.i("MediaPlayerController creation complete")
+
             // controller?.play()
         }, MoreExecutors.directExecutor())
 
@@ -134,7 +130,7 @@ class MediaPlayerController(
         }
 
         created = true
-        Timber.i("MediaPlayerController created")
+        Timber.i("MediaPlayerController started")
     }
 
     private fun playerStateChangedHandler() {
@@ -145,16 +141,17 @@ class MediaPlayerController(
             Player.STATE_READY -> {
                 if (isPlaying) {
                     scrobbler.scrobble(currentPlaying, false)
-                } else {
-                    playbackStateSerializer.serialize(
-                        playList, currentMediaItemIndex, playerPosition
-                    )
                 }
             }
             Player.STATE_ENDED -> {
                 scrobbler.scrobble(currentPlaying, true)
             }
         }
+
+        // Save playback state
+        playbackStateSerializer.serialize(
+            playList, currentMediaItemIndex, playerPosition
+        )
 
         // Update widget
         if (currentPlaying != null) {
@@ -237,18 +234,14 @@ class MediaPlayerController(
                 seekTo(currentPlayingIndex, currentPlayingPosition)
             }
 
+            prepare()
+
             if (autoPlay) {
-                prepare()
                 play()
             }
 
             autoPlayStart = false
         }
-    }
-
-    @Synchronized
-    fun preload() {
-        getInstance()
     }
 
     @Synchronized
@@ -356,12 +349,6 @@ class MediaPlayerController(
         } else {
             downloader.checkDownloads()
         }
-
-        playbackStateSerializer.serialize(
-            legacyPlaylistManager.playlist,
-            currentMediaItemIndex,
-            playerPosition
-        )
     }
 
     @Synchronized
@@ -370,11 +357,7 @@ class MediaPlayerController(
         val filteredSongs = songs.filterNotNull()
         downloader.downloadBackground(filteredSongs, save)
 
-        playbackStateSerializer.serialize(
-            legacyPlaylistManager.playlist,
-            currentMediaItemIndex,
-            playerPosition
-        )
+        serializeCurrentSession()
     }
 
     fun stopJukeboxService() {
@@ -439,12 +422,6 @@ class MediaPlayerController(
         downloader.clearActiveDownloads()
         downloader.clearBackground()
 
-        playbackStateSerializer.serialize(
-            legacyPlaylistManager.playlist,
-            currentMediaItemIndex,
-            playerPosition
-        )
-
         jukeboxMediaPlayer.updatePlaylist()
     }
 
@@ -453,13 +430,16 @@ class MediaPlayerController(
 
         controller?.removeMediaItem(position)
 
+        jukeboxMediaPlayer.updatePlaylist()
+    }
+
+    @Synchronized
+    private fun serializeCurrentSession() {
         playbackStateSerializer.serialize(
             legacyPlaylistManager.playlist,
             currentMediaItemIndex,
             playerPosition
         )
-
-        jukeboxMediaPlayer.updatePlaylist()
     }
 
     @Synchronized
@@ -625,7 +605,7 @@ class MediaPlayerController(
     }
 
     init {
-        Timber.i("MediaPlayerController constructed")
+        Timber.i("MediaPlayerController instance initiated")
     }
 
     enum class InsertionMode {
