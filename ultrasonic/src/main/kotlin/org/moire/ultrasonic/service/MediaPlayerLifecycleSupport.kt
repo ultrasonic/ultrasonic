@@ -27,8 +27,6 @@ class MediaPlayerLifecycleSupport : KoinComponent {
     private val mediaPlayerController by inject<MediaPlayerController>()
 
     private var created = false
-    private var headsetEventReceiver: BroadcastReceiver? = null
-    private var mediaButtonEventSubscription: Disposable? = null
 
     fun onCreate() {
         onCreate(false, null)
@@ -73,8 +71,6 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         )
 
         mediaPlayerController.clear(false)
-        mediaButtonEventSubscription?.dispose()
-        applicationContext().unregisterReceiver(headsetEventReceiver)
         mediaPlayerController.onDestroy()
 
         created = false
