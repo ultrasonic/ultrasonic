@@ -246,10 +246,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Keresési előzmények törölve.</string>
     <string name="settings.search_title">Keresés beállításai</string>
-    <string name="settings.send_bluetooth_notification_summary">Lejátszási értesítések küldése Bluetooth-on.</string>
-    <string name="settings.send_bluetooth_notification">Bluetooth értesítések küldése</string>
-    <string name="settings.send_bluetooth_album_art_summary">Albumborító küldése Bluetooth-on (Problémát okozhat a Bluetooth értesítéseknél)</string>
-    <string name="settings.send_bluetooth_album_art">Albumborító Bluetooth-on</string>
     <string name="settings.server_manage_servers">Kiszolgálók kezelése</string>
     <string name="settings.server_address">Kiszolgáló címe</string>
     <string name="settings.server_name">Név</string>
@@ -257,12 +253,6 @@
     <string name="settings.server_scaling_summary">Teljes méretű helyett átméretezett képek letöltése a kiszolgálóról (sávszélesség-takarékos).</string>
     <string name="settings.server_scaling_title">Albumborító átméretezés (Kiszolgáló-oldali)</string>
     <string name="settings.server_username">Felhasználónév</string>
-    <string name="settings.show_lockscreen_controls">Képernyőzár kezelése</string>
-    <string name="settings.show_lockscreen_controls_summary">Lejátszó-kezelőpanel megjelenítése a képernyőzáron.</string>
-    <string name="settings.show_notification">Értesítések megjelenítése</string>
-    <string name="settings.show_notification_always">Állandó kijelzés</string>
-    <string name="settings.show_notification_always_summary">Lejátszás jelzése az értesítési sávon, míg a várólista aktív.</string>
-    <string name="settings.show_notification_summary">Lejátszás jelzése az értesítési sávon.</string>
     <string name="settings.show_now_playing">Lejátszó-kezelőpanel</string>
     <string name="settings.show_now_playing_summary">Lejátszó-kezelőpanel megjelenítése minden oldalon.</string>
     <string name="settings.show_track_number">Sorszám megjelenítése</string>

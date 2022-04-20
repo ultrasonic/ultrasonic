@@ -13,24 +13,13 @@
     </issue>
 
     <issue
-        id="Typos"
-        message="&quot;lizensiert&quot; is a common misspelling; did you mean &quot;lizenziert&quot; ?"
-        errorLine1="    &lt;string name=&quot;settings.testing_unlicensed&quot;>Verbindung OK, Server nicht lizensiert.&lt;/string>"
-        errorLine2="                                                                           ^">
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="283"
-            column="76"/>
-    </issue>
-
-    <issue
         id="PluralsCandidate"
         message="Formatting %d followed by words (&quot;tracks&quot;): This should probably be a plural rather than a string"
         errorLine1="    &lt;string name=&quot;select_album.n_selected&quot;>%d tracks selected&lt;/string>"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="157"
+            line="154"
             column="5"/>
     </issue>
 
@@ -255,50 +244,6 @@
             file="src/main/res/drawable/ic_menu_arrow.xml"
             line="1"
             column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.media3_notification_small_icon` appears to be unused"
-        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/media3_notification_small_icon.xml"
-            line="1"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.common_pause` appears to be unused"
-        errorLine1="    &lt;string name=&quot;common.pause&quot;>Pause&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="44"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.common_play` appears to be unused"
-        errorLine1="    &lt;string name=&quot;common.play&quot;>Play&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="45"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.common_play_previous` appears to be unused"
-        errorLine1="    &lt;string name=&quot;common.play_previous&quot;>Play Previous&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="48"
-            column="13"/>
     </issue>
 
     <issue

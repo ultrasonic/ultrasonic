@@ -281,12 +281,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Search history cleared</string>
     <string name="settings.search_title">Search Settings</string>
-    <string name="settings.send_bluetooth_notification_summary">Send playback notifications via Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Send Bluetooth Notification</string>
-    <string name="settings.send_bluetooth_album_art_summary">Send album art over Bluetooth (May cause Bluetooth notifications to fail)</string>
-    <string name="settings.send_bluetooth_album_art">Album Art Over Bluetooth</string>
-    <string name="settings.disable_send_now_playing_list_summary">Now Playing List won\'t be sent to connected devices. This may restore compatibility with AVRCP 1.3 devices, when current track display is not updated</string>
-    <string name="settings.disable_send_now_playing_list">Disable sending of Now Playing List</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Server Address</string>
     <string name="settings.server_name">Name</string>
@@ -295,12 +289,6 @@
     <string name="settings.server_scaling_title">Server-Side Album Art Scaling</string>
     <string name="settings.server_username">Username</string>
     <string name="settings.server_color">Server color</string>
-    <string name="settings.show_lockscreen_controls">Show Lock Screen Controls</string>
-    <string name="settings.show_lockscreen_controls_summary">Show playback controls on the lock screen</string>
-    <string name="settings.show_notification">Show Notification</string>
-    <string name="settings.show_notification_always">Always Show Notification</string>
-    <string name="settings.show_notification_always_summary">Always show now playing notification when playlist is populated</string>
-    <string name="settings.show_notification_summary">Show now playing notification in the status bar</string>
     <string name="settings.show_now_playing">Show Now Playing</string>
     <string name="settings.show_now_playing_summary">Show currently playing track in all activities</string>
     <string name="settings.show_track_number">Show Track Number</string>

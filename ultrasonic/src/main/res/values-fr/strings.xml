@@ -258,12 +258,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Historique des recherches effacé</string>
     <string name="settings.search_title">Paramètres de recherche</string>
-    <string name="settings.send_bluetooth_notification_summary">Envoyer des notifications de lecture via Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Envoyer une notification Bluetooth</string>
-    <string name="settings.send_bluetooth_album_art_summary">Envoyer la pochette de l\'album via Bluetooth (peut causer l\'échec des notifications Bluetooth)</string>
-    <string name="settings.send_bluetooth_album_art">Pochette de l\'album via Bluetooth</string>
-    <string name="settings.disable_send_now_playing_list_summary">La liste de lecture ne sera pas envoyée aux appareils connectés. Cela peut restaurer la compatibilité avec les appareils AVRCP 1.3 lorsque l’affichage de la piste actuelle n’est pas mise à jour.</string>
-    <string name="settings.disable_send_now_playing_list">Désactiver l’envoi de la liste de lecture</string>
     <string name="settings.server_manage_servers">Gérer les serveurs</string>
     <string name="settings.server_address">Adresse du serveur</string>
     <string name="settings.server_name">Nom</string>
@@ -272,12 +266,6 @@
     <string name="settings.server_scaling_title">Mise à l\'échelle des pochettes d\'album sur le serveur</string>
     <string name="settings.server_username">Nom d\'utilisateur</string>
     <string name="settings.server_color">Couleur du serveur</string>
-    <string name="settings.show_lockscreen_controls">Boutons de contrôle sur l\'écran de verrouillage</string>
-    <string name="settings.show_lockscreen_controls_summary">Afficher les contrôles de lecture sur l\'écran de verrouillage</string>
-    <string name="settings.show_notification">Notifications</string>
-    <string name="settings.show_notification_always">Toujours afficher les notifications</string>
-    <string name="settings.show_notification_always_summary">Toujours afficher la notification de lecture en cours lorsque la liste de lecture est remplie</string>
-    <string name="settings.show_notification_summary">Afficher la notification d\'un nouveau titre en lecture dans la barre d\'état</string>
     <string name="settings.show_now_playing">Montrer la lecture en cours</string>
     <string name="settings.show_now_playing_summary">Afficher les pistes en cours de lecture dans les autres activités d\'Ultrasonic</string>
     <string name="settings.show_track_number">Afficher le numéro du titre</string>

@@ -278,12 +278,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Se ha limpiado el historial de búsqueda</string>
     <string name="settings.search_title">Configuración de la búsqueda</string>
-    <string name="settings.send_bluetooth_notification_summary">Enviar notificaciones de reproducción vía Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Enviar notificaciones Bluetooth</string>
-    <string name="settings.send_bluetooth_album_art_summary">Enviar la carátula del álbum vía Bluetooth (Puede causar que las notificaciones Bluetooth fallen)</string>
-    <string name="settings.send_bluetooth_album_art">Carátula del Álbum vía Bluetooth</string>
-    <string name="settings.disable_send_now_playing_list_summary">La lista de reproducción actual no se enviará a los dispositivos conectados. Esto puede restaurar la compatibilidad con dispositivos AVRCP 1.3, cuando la visualización de la pista actual no se actualiza</string>
-    <string name="settings.disable_send_now_playing_list">Desactivar el envío de la lista de reproducción actual</string>
     <string name="settings.server_manage_servers">Administrar servidores</string>
     <string name="settings.server_address">Dirección del servidor</string>
     <string name="settings.server_name">Nombre</string>
@@ -292,12 +286,6 @@
     <string name="settings.server_scaling_title">Escalado de caratulas en el servidor</string>
     <string name="settings.server_username">Nombre de usuario</string>
     <string name="settings.server_color">Color del servidor</string>
-    <string name="settings.show_lockscreen_controls">Mostrar controles en la pantalla de bloqueo</string>
-    <string name="settings.show_lockscreen_controls_summary">Mostrar controles de reproducción en la pantalla de bloqueo</string>
-    <string name="settings.show_notification">Mostrar notificación</string>
-    <string name="settings.show_notification_always">Mostrar siempre la notificación</string>
-    <string name="settings.show_notification_always_summary">Mostrar siempre la notificación de reproduciendo ahora cuando la lista de reproducción contiene datos</string>
-    <string name="settings.show_notification_summary">Mostrar la notificación de reproduciendo ahora en la barra de estado</string>
     <string name="settings.show_now_playing">Mostrar reproduciendo ahora</string>
     <string name="settings.show_now_playing_summary">Mostrar la pista que se esta reproduciendo en todas las actividades</string>
     <string name="settings.show_track_number">Mostrar número de pista</string>

@@ -238,10 +238,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Wyczyść historię wyszukiwania</string>
     <string name="settings.search_title">Ustawienia wyszukiwania</string>
-    <string name="settings.send_bluetooth_notification_summary">Wysyła powiadomienia o odtwarzaniu przez Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Wysyłaj powiadomienia Bluetooth</string>
-    <string name="settings.send_bluetooth_album_art_summary">Wysyła okładki przez Bluetooth (może powodować problemy z powiadomieniami)</string>
-    <string name="settings.send_bluetooth_album_art">Okładki przez Bluetooth</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Adres serwera</string>
     <string name="settings.server_name">Nazwa</string>
@@ -249,12 +245,6 @@
     <string name="settings.server_scaling_summary">Pobiera przeskalowane obrazy z serwera zamiast pełnego rozmiaru (oszczędza ilość przesyłanych danych)</string>
     <string name="settings.server_scaling_title">Skalowanie okładek po stronie serwera</string>
     <string name="settings.server_username">Nazwa użytkownika</string>
-    <string name="settings.show_lockscreen_controls">Wyświetlaj na ekranie blokady</string>
-    <string name="settings.show_lockscreen_controls_summary">Wyświetla widżet odtwarzacza na ekranie blokady</string>
-    <string name="settings.show_notification">Wyświetlaj powiadomienia</string>
-    <string name="settings.show_notification_always">Zawsze wyświetlaj powiadomienia</string>
-    <string name="settings.show_notification_always_summary">Zawsze wyświetla powiadomienia o odtwarzanych utworach, gdy playlista jest wypełniona</string>
-    <string name="settings.show_notification_summary">Wyświetla powiadomienia o odtwarzanym utworze na pasku statusu</string>
     <string name="settings.show_now_playing">Wyświetlaj powiadomienia o utworach</string>
     <string name="settings.show_now_playing_summary">Wyświetla bieżący utwór we wszystkich aktywnościach</string>
     <string name="settings.show_track_number">Wyświetlaj numer utworu</string>

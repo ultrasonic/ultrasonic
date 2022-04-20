@@ -258,12 +258,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">搜索记录已清除</string>
     <string name="settings.search_title">搜索设置</string>
-    <string name="settings.send_bluetooth_notification_summary">通过蓝牙发送播放通知</string>
-    <string name="settings.send_bluetooth_notification">发送蓝牙通知</string>
-    <string name="settings.send_bluetooth_album_art_summary">通过蓝牙发送专辑封面（可能导致蓝牙通知失败）</string>
-    <string name="settings.send_bluetooth_album_art">通过蓝牙发送专辑封面</string>
-    <string name="settings.disable_send_now_playing_list_summary">现在播放列表不会发送到已连接的设备。 当前曲目显示未更新时，这可能会恢复AVRCP 1.3的设备的兼容性。</string>
-    <string name="settings.disable_send_now_playing_list">禁用发送正在播放列表</string>
     <string name="settings.server_manage_servers">管理服务器</string>
     <string name="settings.server_address">服务器地址</string>
     <string name="settings.server_name">名称</string>
@@ -272,12 +266,6 @@
     <string name="settings.server_scaling_title">服务器端专辑图片缩放</string>
     <string name="settings.server_username">用户名</string>
     <string name="settings.server_color">服务器颜色</string>
-    <string name="settings.show_lockscreen_controls">锁屏显示控制器</string>
-    <string name="settings.show_lockscreen_controls_summary">在锁定屏幕上显示播放控件</string>
-    <string name="settings.show_notification">显示通知</string>
-    <string name="settings.show_notification_always">总是显示通知</string>
-    <string name="settings.show_notification_always_summary">当播放列表有音乐时，总是在通知栏显示播放信息</string>
-    <string name="settings.show_notification_summary">在状态栏中显示正在播放通知</string>
     <string name="settings.show_now_playing">显示正在播放</string>
     <string name="settings.show_now_playing_summary">在所有活动页面显示正在播放信息</string>
     <string name="settings.show_track_number">显示曲目编号</string>

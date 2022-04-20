@@ -278,12 +278,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Suchhistorie gelöscht</string>
     <string name="settings.search_title">Sucheinstellungen</string>
-    <string name="settings.send_bluetooth_notification_summary">Wiedergabe-Benachrichtigungen über Bluetooth senden</string>
-    <string name="settings.send_bluetooth_notification">Bluetooth-Benachrichtigung</string>
-    <string name="settings.send_bluetooth_album_art_summary">Albumcover über Bluetooth versenden (kann dazu führen, dass Bluetooth-Benachrichtigungen fehlschlagen)</string>
-    <string name="settings.send_bluetooth_album_art">Album Cover über Bluetooth</string>
-    <string name="settings.disable_send_now_playing_list_summary">Die aktuellen Wiedergabeliste wird nicht an verbundene Geräte gesendet. Das kann die Kompatibilität mit AVRCP 1.3 Geräten herstellen, wenn die aktuelle Titelanzeige nicht dargestellt wird</string>
-    <string name="settings.disable_send_now_playing_list">Deaktiviere senden der aktuellen Wiedergabeliste</string>
     <string name="settings.server_manage_servers">Server verwalten</string>
     <string name="settings.server_address">Server Adresse</string>
     <string name="settings.server_name">Name</string>
@@ -292,12 +286,6 @@
     <string name="settings.server_scaling_title">Serverseitige Skalierung der Cover</string>
     <string name="settings.server_username">Benutzername</string>
     <string name="settings.server_color">Server Farbe</string>
-    <string name="settings.show_lockscreen_controls">Steuerelemente auf Sperrbildschirm</string>
-    <string name="settings.show_lockscreen_controls_summary">Wiedergabeelemente auf dem Sperrbildschirm anzeigen</string>
-    <string name="settings.show_notification">Benachrichtigungen anzeigen</string>
-    <string name="settings.show_notification_always">Immer Benachrichtigungen zeigen</string>
-    <string name="settings.show_notification_always_summary">Benachrichtigung beim Abspielen immer anzeigen, wenn Einträge in der Wiedergabeliste sind</string>
-    <string name="settings.show_notification_summary">Abspielbenachrichtigung in der Statusleiste anzeigen</string>
     <string name="settings.show_now_playing">Aktuellen Titel anzeigen</string>
     <string name="settings.show_now_playing_summary">Aktuellen Titel in allen Aktivitäten anzeigen</string>
     <string name="settings.show_track_number">Titelnummer anzeigen</string>

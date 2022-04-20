@@ -238,10 +238,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Historie hledání vyčištěna</string>
     <string name="settings.search_title">Nastavení vyhledávání</string>
-    <string name="settings.send_bluetooth_notification_summary">Odesílat upozornění přehrávání přes bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Odesílat bluetooth upozornění</string>
-    <string name="settings.send_bluetooth_album_art_summary">Odesílat obrázky alb přes bluetooth (může způsobit selhávání bluetooth upozornění)</string>
-    <string name="settings.send_bluetooth_album_art">Obrázky alb přes bluetooth</string>
     <string name="settings.server_manage_servers">Spravovat servery</string>
     <string name="settings.server_address">Adresa serveru</string>
     <string name="settings.server_name">Název</string>
@@ -249,12 +245,6 @@
     <string name="settings.server_scaling_summary">Stahovat škálované obrázky ze serveru místo plné velikosti (šetří přenos dat)</string>
     <string name="settings.server_scaling_title">Škálování obrázků alb na serveru</string>
     <string name="settings.server_username">Uživatelské jméno</string>
-    <string name="settings.show_lockscreen_controls">Zobrazit ovládání na zamknuté obrazovce</string>
-    <string name="settings.show_lockscreen_controls_summary">Zobrazí ovládání přehrávače na zamknuté obrazovce</string>
-    <string name="settings.show_notification">Zobrazení upozornění</string>
-    <string name="settings.show_notification_always">Vždy zobrazovat upozornění</string>
-    <string name="settings.show_notification_always_summary">Vždy zobrazovat upozornění přehrávané skladby při vytvoření playlistu</string>
-    <string name="settings.show_notification_summary">Zobrazovat přehrávanou skladbu ve stavovém panelu</string>
     <string name="settings.show_now_playing">Zobrazovat přehrávanou skladbu</string>
     <string name="settings.show_now_playing_summary">Zobrazovat přehrávanou skladbu v aktivitách</string>
     <string name="settings.show_track_number">Zobrazovat číslo skladby</string>

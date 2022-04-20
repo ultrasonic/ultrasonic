@@ -264,10 +264,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">История поиска очищена</string>
     <string name="settings.search_title">Настройки поиска</string>
-    <string name="settings.send_bluetooth_notification_summary">Отправлять уведомления о воспроизведении через Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Отправить уведомление Bluetooth</string>
-    <string name="settings.send_bluetooth_album_art_summary">Отправить обложку альбома через Bluetooth (может привести к сбою уведомлений Bluetooth)</string>
-    <string name="settings.send_bluetooth_album_art">Обложка альбома через Bluetooth</string>
     <string name="settings.server_manage_servers">Управление серверами</string>
     <string name="settings.server_address">Адрес сервера</string>
     <string name="settings.server_name">Имя</string>
@@ -275,12 +271,6 @@
     <string name="settings.server_scaling_summary">Загрузка масштабированных изображений с сервера вместо полноразмерного (экономит трафик)</string>
     <string name="settings.server_scaling_title">Серверное масштабирование обложек альбомов</string>
     <string name="settings.server_username">Имя пользователя</string>
-    <string name="settings.show_lockscreen_controls">Показать блокировку экрана</string>
-    <string name="settings.show_lockscreen_controls_summary">Показать элементы управления воспроизведением на экране блокировки</string>
-    <string name="settings.show_notification">Показывать уведомления</string>
-    <string name="settings.show_notification_always">Всегда показывать уведомления</string>
-    <string name="settings.show_notification_always_summary">Всегда показывать воспроизведение, когда плейлист заполнен</string>
-    <string name="settings.show_notification_summary">Показать уведомление о воспроизведении в строке состояния</string>
     <string name="settings.show_now_playing">Показать что сейчас играет</string>
     <string name="settings.show_now_playing_summary">Показать текущий воспроизводимый трек во всех активностях</string>
     <string name="settings.show_track_number">Показать номер трека</string>

@@ -253,12 +253,6 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Histórico de pesquisas apagado</string>
     <string name="settings.search_title">Configurações de Pesquisa</string>
-    <string name="settings.send_bluetooth_notification_summary">Enviar notificações de reprodução via Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Notificações via Bluetooth</string>
-    <string name="settings.send_bluetooth_album_art_summary">Enviar a arte do álbum via Bluetooth (Pode causar falhas nas notificações do Bluetooth)</string>
-    <string name="settings.send_bluetooth_album_art">Arte do Álbum via Bluetooth</string>
-    <string name="settings.disable_send_now_playing_list_summary">A Lista Tocando Agora não será enviada aos dispositivos conectados. Isso pode restaurar a compatibilidade com dispositivos AVRCP 1.3 quando a exibição da trilha atual não é atualizada</string>
-    <string name="settings.disable_send_now_playing_list">Desativar Envio da Lista Tocando Agora</string>
     <string name="settings.server_manage_servers">Gerenciar Servidores</string>
     <string name="settings.server_address">Endereço do Servidor</string>
     <string name="settings.server_name">Nome</string>
@@ -266,12 +260,6 @@
     <string name="settings.server_scaling_summary">Baixar imagens reduzidas do servidor ao invés do tamanho completo (economiza banda)</string>
     <string name="settings.server_scaling_title">Reduzir Arte dos Álbuns</string>
     <string name="settings.server_username">Login</string>
-    <string name="settings.show_lockscreen_controls">Controles na Tela de Bloqueio</string>
-    <string name="settings.show_lockscreen_controls_summary">Mostrar controles de reprodução na tela de bloqueio</string>
-    <string name="settings.show_notification">Mostrar Notificações</string>
-    <string name="settings.show_notification_always">Sempre Mostrar Notificações</string>
-    <string name="settings.show_notification_always_summary">Sempre mostrar a reprodução atual quando uma playlist é preenchida</string>
-    <string name="settings.show_notification_summary">Mostrar a notificação de reprodução atual na barra de status</string>
     <string name="settings.show_now_playing">Mostrar Reprodução Atual</string>
     <string name="settings.show_now_playing_summary">Mostrar a faixa tocada atualmente em todas as atividades</string>
     <string name="settings.show_track_number">Mostrar o Número da Faixa</string>

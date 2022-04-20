@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentContainerView
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player.STATE_BUFFERING
 import androidx.media3.common.Player.STATE_READY
 import androidx.navigation.NavController
@@ -417,8 +418,8 @@ class NavigationActivity : AppCompatActivity() {
         if (nowPlayingView != null) {
             val playerState: Int = mediaPlayerController.playbackState
             if (playerState == STATE_BUFFERING || playerState == STATE_READY) {
-                val file: DownloadFile? = mediaPlayerController.currentPlayingLegacy
-                if (file != null) {
+                val item: MediaItem? = mediaPlayerController.currentMediaItem
+                if (item != null) {
                     nowPlayingView?.visibility = View.VISIBLE
                 }
             } else {
