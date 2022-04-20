@@ -136,6 +136,7 @@ class NowPlayingFragment : Fragment() {
                         .navigate(R.id.trackCollectionFragment, bundle)
                 }
             }
+
             requireView().setOnTouchListener { _: View?, event: MotionEvent ->
                 handleOnTouch(event)
             }

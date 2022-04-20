@@ -7,13 +7,10 @@
 
 package org.moire.ultrasonic.service
 
-import android.content.BroadcastReceiver
 import android.content.Intent
 import android.view.KeyEvent
-import io.reactivex.rxjava3.disposables.Disposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.moire.ultrasonic.app.UApp.Companion.applicationContext
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Util.ifNotNull

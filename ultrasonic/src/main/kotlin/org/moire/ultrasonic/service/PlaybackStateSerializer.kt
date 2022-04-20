@@ -33,7 +33,8 @@ class PlaybackStateSerializer : KoinComponent {
     private val lock: Lock = ReentrantLock()
     private val setup = AtomicBoolean(false)
 
-    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     fun serialize(
         songs: Iterable<DownloadFile>,
@@ -42,7 +43,7 @@ class PlaybackStateSerializer : KoinComponent {
     ) {
         if (!setup.get()) return
 
-        appScope.launch {
+        ioScope.launch {
             if (lock.tryLock()) {
                 try {
                     serializeNow(songs, currentPlayingIndex, currentPlayingPosition)
@@ -78,7 +79,7 @@ class PlaybackStateSerializer : KoinComponent {
 
     fun deserialize(afterDeserialized: (State?) -> Unit?) {
 
-        appScope.launch {
+        ioScope.launch {
             try {
                 lock.lock()
                 deserializeNow(afterDeserialized)
@@ -103,6 +104,8 @@ class PlaybackStateSerializer : KoinComponent {
             state.currentPlayingPosition
         )
 
-        afterDeserialized(state)
+        mainScope.launch {
+            afterDeserialized(state)
+        }
     }
 }
