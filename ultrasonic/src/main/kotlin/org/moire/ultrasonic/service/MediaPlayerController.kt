@@ -343,8 +343,9 @@ class MediaPlayerController(
 
         if (shuffle) isShufflePlayEnabled = true
 
+        prepare()
+
         if (autoPlay) {
-            prepare()
             play(0)
         } else {
             downloader.checkDownloads()
