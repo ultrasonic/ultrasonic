@@ -43,8 +43,8 @@ class PlaybackStateSerializer : KoinComponent {
     ) {
         if (!setup.get()) return
 
-        ioScope.launch {
-            if (lock.tryLock()) {
+        if (lock.tryLock()) {
+            ioScope.launch {
                 try {
                     serializeNow(songs, currentPlayingIndex, currentPlayingPosition)
                 } finally {

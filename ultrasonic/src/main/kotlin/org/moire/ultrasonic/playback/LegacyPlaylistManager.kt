@@ -77,7 +77,7 @@ class LegacyPlaylistManager : KoinComponent {
 
     // Public facing playlist (immutable)
     val playlist: List<DownloadFile>
-        get() = _playlist
+        get() = _playlist.toList()
 
     @get:Synchronized
     val playlistDuration: Long
