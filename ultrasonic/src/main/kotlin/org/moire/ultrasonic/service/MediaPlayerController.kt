@@ -115,6 +115,20 @@ class MediaPlayerController(
                     legacyPlaylistManager.updateCurrentPlaying(mediaItem)
                     publishPlaybackState()
                 }
+
+                /*
+                 * If the same item is contained in a playlist multiple times directly after each
+                 * other, Media3 on emits a PositionDiscontinuity event.
+                 * Can be removed if https://github.com/androidx/media/issues/68 is fixed.
+                 */
+                override fun onPositionDiscontinuity(
+                    oldPosition: Player.PositionInfo,
+                    newPosition: Player.PositionInfo,
+                    reason: Int
+                ) {
+                    playerStateChangedHandler()
+                    publishPlaybackState()
+                }
             })
 
             onCreated()
@@ -149,9 +163,7 @@ class MediaPlayerController(
         }
 
         // Save playback state
-        playbackStateSerializer.serialize(
-            playList, currentMediaItemIndex, playerPosition
-        )
+        serializeCurrentSession()
 
         // Update widget
         if (currentPlaying != null) {
@@ -347,8 +359,6 @@ class MediaPlayerController(
 
         if (autoPlay) {
             play(0)
-        } else {
-            downloader.checkDownloads()
         }
     }
 

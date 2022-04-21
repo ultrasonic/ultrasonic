@@ -35,6 +35,7 @@ import org.koin.core.component.inject
 import org.moire.ultrasonic.activity.NavigationActivity
 import org.moire.ultrasonic.api.subsonic.SubsonicAPIClient
 import org.moire.ultrasonic.app.UApp
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.service.plusAssign
 import org.moire.ultrasonic.util.Constants
@@ -74,7 +75,14 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             // Update the API endpoint when the active server has changed
             val newClient: SubsonicAPIClient by inject()
             apiDataSource.setAPIClient(newClient)
+
+            // Set the player wake mode
+            player.setWakeMode(getWakeModeFlag())
         }
+    }
+
+    private fun getWakeModeFlag(): Int {
+        return if (ActiveServerProvider.isOffline()) C.WAKE_MODE_LOCAL else C.WAKE_MODE_NETWORK
     }
 
     override fun onDestroy() {
@@ -90,10 +98,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun initializeSessionAndPlayer() {
-        /*
-        * TODO:
-        *  * Could be refined to use WAKE_MODE_LOCAL when offline....
-        */
 
         setMediaNotificationProvider(MediaNotificationProvider(UApp.applicationContext()))
 
@@ -112,7 +116,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         // Create the player
         player = ExoPlayer.Builder(this)
             .setAudioAttributes(getAudioAttributes(), true)
-            .setWakeMode(C.WAKE_MODE_NETWORK)
+            .setWakeMode(getWakeModeFlag())
             .setHandleAudioBecomingNoisy(true)
             .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
             .setRenderersFactory(renderer)

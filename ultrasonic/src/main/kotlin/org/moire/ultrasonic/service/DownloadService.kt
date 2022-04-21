@@ -56,7 +56,7 @@ class DownloadService : Service() {
         updateNotification()
 
         instance = this
-        Timber.i("DownloadService created")
+        Timber.i("DownloadService initiated")
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -74,10 +74,11 @@ class DownloadService : Service() {
             mediaSession = null
         } catch (ignored: Throwable) {
         }
-        Timber.i("DownloadService stopped")
+        Timber.i("DownloadService destroyed")
     }
 
     fun notifyDownloaderStopped() {
+        Timber.i("DownloadService stopped")
         isInForeground = false
         stopForeground(true)
         stopSelf()
@@ -193,6 +194,7 @@ class DownloadService : Service() {
                     } else {
                         context.startService(Intent(context, DownloadService::class.java))
                     }
+                    Timber.i("DownloadService started")
                 }
                 Util.sleepQuietly(100L)
             }

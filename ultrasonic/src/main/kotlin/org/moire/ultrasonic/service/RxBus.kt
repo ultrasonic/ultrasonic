@@ -5,6 +5,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 class RxBus {
     companion object {
@@ -37,6 +38,7 @@ class RxBus {
             playlistPublisher.observeOn(AndroidSchedulers.mainThread())
                 .replay(1)
                 .autoConnect(0)
+                .throttleLatest(1, TimeUnit.SECONDS)
 
         // Commands
         val dismissNowPlayingCommandPublisher: PublishSubject<Unit> =

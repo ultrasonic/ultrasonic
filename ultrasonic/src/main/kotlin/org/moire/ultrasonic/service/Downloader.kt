@@ -64,6 +64,13 @@ class Downloader(
 
     private val rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
+    init {
+        // Check downloads if the playlist changed
+        rxBusSubscription += RxBus.playlistObservable.subscribe {
+            checkDownloads()
+        }
+    }
+
     private var downloadChecker = object : Runnable {
         override fun run() {
             try {
@@ -100,11 +107,6 @@ class Downloader(
             wifiLock = Util.createWifiLock(toString())
             wifiLock?.acquire()
         }
-
-        // Check downloads if the playlist changed
-        rxBusSubscription += RxBus.playlistObservable.subscribe {
-            checkDownloads()
-        }
     }
 
     fun stop() {
@@ -133,7 +135,7 @@ class Downloader(
 
     @Suppress("ComplexMethod", "ComplexCondition")
     @Synchronized
-    fun checkDownloadsInternal() {
+    private fun checkDownloadsInternal() {
         if (!Util.isExternalStoragePresent() || !storageMonitor.isExternalStorageAvailable) {
             return
         }
