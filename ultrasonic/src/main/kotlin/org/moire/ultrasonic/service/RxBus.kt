@@ -38,7 +38,6 @@ class RxBus {
             playlistPublisher.observeOn(AndroidSchedulers.mainThread())
                 .replay(1)
                 .autoConnect(0)
-                .throttleLatest(1, TimeUnit.SECONDS)
 
         // Commands
         val dismissNowPlayingCommandPublisher: PublishSubject<Unit> =
