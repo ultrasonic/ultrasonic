@@ -393,13 +393,18 @@ class PlayerFragment :
         }
 
         // Observe playlist changes and update the UI
-        // FIXME
         rxBusSubscription += RxBus.playlistObservable.subscribe {
-            onPlaylistChanged()
+            // Use launch to ensure running it in the main thread
+            launch {
+                onPlaylistChanged()
+            }
         }
 
         rxBusSubscription += RxBus.playerStateObservable.subscribe {
-            update()
+            // Use launch to ensure running it in the main thread
+            launch {
+                update()
+            }
         }
 
         mediaPlayerController.controller?.addListener(object : Player.Listener {
