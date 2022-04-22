@@ -150,18 +150,20 @@ class Downloader(
         // Store the result in a flag to know if changes have occurred
         var listChanged = cleanupActiveDownloads()
 
+        val playlist = legacyPlaylistManager.playlist
+
         // Check if need to preload more from playlist
         val preloadCount = Settings.preloadCount
 
         // Start preloading at the current playing song
         var start = mediaController.currentMediaItemIndex
 
-        if (start == -1) start = 0
+        if (start == -1 || start > playlist.size) start = 0
 
-        val end = (start + preloadCount).coerceAtMost(mediaController.mediaItemCount)
+        val end = (start + preloadCount).coerceAtMost(playlist.size)
 
         for (i in start until end) {
-            val download = legacyPlaylistManager.playlist[i]
+            val download = playlist[i]
 
             // Set correct priority (the lower the number, the higher the priority)
             download.priority = i

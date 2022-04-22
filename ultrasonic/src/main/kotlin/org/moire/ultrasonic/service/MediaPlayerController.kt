@@ -18,6 +18,9 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.app.UApp
@@ -61,6 +64,8 @@ class MediaPlayerController(
 
     private val rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
+    private var mainScope = CoroutineScope(Dispatchers.Main)
+
     private var sessionToken =
         SessionToken(context, ComponentName(context, PlaybackService::class.java))
 
@@ -94,10 +99,10 @@ class MediaPlayerController(
 
                 /*
                  * This will be called everytime the playlist has changed.
+                 * We run the event through RxBus in order to throttle them
                  */
                 override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                     legacyPlaylistManager.rebuildPlaylist(controller!!)
-                    serializeCurrentSession()
                 }
 
                 override fun onPlaybackStateChanged(playbackState: Int) {
@@ -143,6 +148,20 @@ class MediaPlayerController(
             isJukeboxEnabled = activeServerProvider.getActiveServer().jukeboxByDefault
         }
 
+        rxBusSubscription += RxBus.throttledPlaylistObservable.subscribe {
+            // Even though Rx should launch on the main thread it doesn't always :(
+            mainScope.launch {
+                serializeCurrentSession()
+            }
+        }
+
+        rxBusSubscription += RxBus.throttledPlayerStateObservable.subscribe {
+            // Even though Rx should launch on the main thread it doesn't always :(
+            mainScope.launch {
+                serializeCurrentSession()
+            }
+        }
+
         created = true
         Timber.i("MediaPlayerController started")
     }
@@ -161,9 +180,6 @@ class MediaPlayerController(
                 scrobbler.scrobble(currentPlaying, true)
             }
         }
-
-        // Save playback state
-        serializeCurrentSession()
 
         // Update widget
         if (currentPlaying != null) {
@@ -367,8 +383,6 @@ class MediaPlayerController(
         if (songs == null) return
         val filteredSongs = songs.filterNotNull()
         downloader.downloadBackground(filteredSongs, save)
-
-        serializeCurrentSession()
     }
 
     fun stopJukeboxService() {

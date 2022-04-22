@@ -1,5 +1,6 @@
 package org.moire.ultrasonic.service
 
+import android.os.Looper
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -8,42 +9,55 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 class RxBus {
+
     companion object {
+
+        private fun mainThread() = AndroidSchedulers.from(Looper.getMainLooper())
 
         var activeServerChangePublisher: PublishSubject<Int> =
             PublishSubject.create()
         var activeServerChangeObservable: Observable<Int> =
-            activeServerChangePublisher.observeOn(AndroidSchedulers.mainThread())
+            activeServerChangePublisher.observeOn(mainThread())
 
         val themeChangedEventPublisher: PublishSubject<Unit> =
             PublishSubject.create()
         val themeChangedEventObservable: Observable<Unit> =
-            themeChangedEventPublisher.observeOn(AndroidSchedulers.mainThread())
+            themeChangedEventPublisher.observeOn(mainThread())
 
         val musicFolderChangedEventPublisher: PublishSubject<String> =
             PublishSubject.create()
         val musicFolderChangedEventObservable: Observable<String> =
-            musicFolderChangedEventPublisher.observeOn(AndroidSchedulers.mainThread())
+            musicFolderChangedEventPublisher.observeOn(mainThread())
 
         val playerStatePublisher: PublishSubject<StateWithTrack> =
             PublishSubject.create()
         val playerStateObservable: Observable<StateWithTrack> =
-            playerStatePublisher.observeOn(AndroidSchedulers.mainThread())
+            playerStatePublisher.observeOn(mainThread())
                 .replay(1)
                 .autoConnect(0)
+        val throttledPlayerStateObservable: Observable<StateWithTrack> =
+            playerStatePublisher.observeOn(mainThread())
+                .replay(1)
+                .autoConnect(0)
+                .throttleLatest(300, TimeUnit.MILLISECONDS)
 
         val playlistPublisher: PublishSubject<List<DownloadFile>> =
             PublishSubject.create()
         val playlistObservable: Observable<List<DownloadFile>> =
-            playlistPublisher.observeOn(AndroidSchedulers.mainThread())
+            playlistPublisher.observeOn(mainThread())
                 .replay(1)
                 .autoConnect(0)
+        val throttledPlaylistObservable: Observable<List<DownloadFile>> =
+            playlistPublisher.observeOn(mainThread())
+                .replay(1)
+                .autoConnect(0)
+                .throttleLatest(300, TimeUnit.MILLISECONDS)
 
         // Commands
         val dismissNowPlayingCommandPublisher: PublishSubject<Unit> =
             PublishSubject.create()
         val dismissNowPlayingCommandObservable: Observable<Unit> =
-            dismissNowPlayingCommandPublisher.observeOn(AndroidSchedulers.mainThread())
+            dismissNowPlayingCommandPublisher.observeOn(mainThread())
     }
 
     data class StateWithTrack(
