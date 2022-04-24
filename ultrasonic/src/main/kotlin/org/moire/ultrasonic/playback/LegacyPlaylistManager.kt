@@ -30,7 +30,9 @@ class LegacyPlaylistManager : KoinComponent {
     @JvmField
     var currentPlaying: DownloadFile? = null
 
-    private val mediaItemCache = LRUCache<String, DownloadFile>(1000)
+    // TODO This limits the maximum size of the playlist.
+    // This will be fixed when this class is refactored and removed
+    private val mediaItemCache = LRUCache<String, DownloadFile>(2000)
 
     val jukeboxMediaPlayer: JukeboxMediaPlayer by inject()
     val downloader: Downloader by inject()

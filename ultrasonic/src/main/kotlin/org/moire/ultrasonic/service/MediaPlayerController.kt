@@ -347,10 +347,6 @@ class MediaPlayerController(
     ) {
         var insertAt = 0
 
-        if (insertionMode == InsertionMode.CLEAR) {
-            clear()
-        }
-
         when (insertionMode) {
             InsertionMode.CLEAR -> clear()
             InsertionMode.APPEND -> insertAt = mediaItemCount

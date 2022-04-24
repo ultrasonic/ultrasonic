@@ -205,7 +205,7 @@ class Downloader(
     private fun startDownloadOnService(file: DownloadFile) {
         if (file.isDownloading) return
         file.prepare()
-        DownloadService.executeOnStartedMediaPlayerService {
+        DownloadService.executeOnStartedDownloadService {
             FileUtil.createDirectoryForParent(file.pinnedFile)
             file.isFailed = false
             file.downloadTask = DownloadTask(file)

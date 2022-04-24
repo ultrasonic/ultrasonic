@@ -26,6 +26,8 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.SimpleServiceBinder
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import java.util.concurrent.Semaphore
+import java.util.concurrent.TimeUnit
 
 /**
  * Android Foreground service which is used to download tracks even when the app is not visible
@@ -56,6 +58,7 @@ class DownloadService : Service() {
         updateNotification()
 
         instance = this
+        startedSemaphore.release()
         Timber.i("DownloadService initiated")
     }
 
@@ -176,29 +179,29 @@ class DownloadService : Service() {
         @Volatile
         private var instance: DownloadService? = null
         private val instanceLock = Any()
+        private val startedSemaphore: Semaphore = Semaphore(0)
 
         @JvmStatic
         fun getInstance(): DownloadService? {
             val context = UApp.applicationContext()
-            // Try for twenty times to retrieve a running service,
-            // sleep 100 millis between each try,
-            // and run the block that creates a service only synchronized.
-            for (i in 0..19) {
+            if (instance != null) return instance
+            synchronized(instanceLock) {
                 if (instance != null) return instance
-                synchronized(instanceLock) {
-                    if (instance != null) return instance
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        context.startForegroundService(
-                            Intent(context, DownloadService::class.java)
-                        )
-                    } else {
-                        context.startService(Intent(context, DownloadService::class.java))
-                    }
-                    Timber.i("DownloadService started")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(
+                        Intent(context, DownloadService::class.java)
+                    )
+                } else {
+                    context.startService(Intent(context, DownloadService::class.java))
                 }
-                Util.sleepQuietly(100L)
+                Timber.i("DownloadService starting...")
+                if (startedSemaphore.tryAcquire(10, TimeUnit.SECONDS)) {
+                    Timber.i("DownloadService started")
+                    return instance
+                }
+                Timber.w("DownloadService failed to start!")
+                return null
             }
-            return instance
         }
 
         @JvmStatic
@@ -208,7 +211,7 @@ class DownloadService : Service() {
             }
 
         @JvmStatic
-        fun executeOnStartedMediaPlayerService(
+        fun executeOnStartedDownloadService(
             taskToExecute: (DownloadService) -> Unit
         ) {
 
