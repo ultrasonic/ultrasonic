@@ -18,16 +18,15 @@ import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import java.util.concurrent.Semaphore
+import java.util.concurrent.TimeUnit
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.activity.NavigationActivity
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.SimpleServiceBinder
-import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import java.util.concurrent.Semaphore
-import java.util.concurrent.TimeUnit
 
 /**
  * Android Foreground service which is used to download tracks even when the app is not visible
