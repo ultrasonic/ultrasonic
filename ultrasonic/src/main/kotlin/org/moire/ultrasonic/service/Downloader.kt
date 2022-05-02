@@ -46,6 +46,7 @@ class Downloader(
 
     var started: Boolean = false
     var shouldStop: Boolean = false
+    var isPolling: Boolean = false
 
     private val downloadQueue = PriorityQueue<DownloadFile>()
     private val activelyDownloading = mutableListOf<DownloadFile>()
@@ -67,6 +68,7 @@ class Downloader(
     init {
         // Check downloads if the playlist changed
         rxBusSubscription += RxBus.playlistObservable.subscribe {
+            Timber.v("Playlist has changed, checking Downloads...")
             checkDownloads()
         }
     }
@@ -79,10 +81,14 @@ class Downloader(
             } catch (all: Exception) {
                 Timber.e(all, "checkDownloads() failed.")
             } finally {
-                if (!shouldStop) {
-                    Handler(Looper.getMainLooper()).postDelayed(this, CHECK_INTERVAL)
-                } else {
-                    shouldStop = false
+                if (!isPolling) {
+                    isPolling = true
+                    if (!shouldStop) {
+                        Handler(Looper.getMainLooper()).postDelayed(this, CHECK_INTERVAL)
+                    } else {
+                        shouldStop = false
+                        isPolling = false
+                    }
                 }
             }
         }
@@ -98,6 +104,7 @@ class Downloader(
 
     @Synchronized
     fun start() {
+        if (started) return
         started = true
 
         // Start our loop
@@ -110,6 +117,7 @@ class Downloader(
     }
 
     fun stop() {
+        if (!started) return
         started = false
         shouldStop = true
         wifiLock?.release()
@@ -210,6 +218,7 @@ class Downloader(
             file.isFailed = false
             file.downloadTask = DownloadTask(file)
             file.downloadTask!!.start()
+            Timber.v("startDownloadOnService started downloading file ${file.completeFile}")
         }
     }
 
@@ -313,6 +322,7 @@ class Downloader(
             }
         }
 
+        Timber.v("downloadBackground Checking Downloads")
         checkDownloads()
     }
 
@@ -490,6 +500,7 @@ class Downloader(
                 inputStream.safeClose()
                 outputStream.safeClose()
                 CacheCleaner().cleanSpace()
+                Timber.v("DownloadTask checking downloads")
                 checkDownloads()
             }
         }
