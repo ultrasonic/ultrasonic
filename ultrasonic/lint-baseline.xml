@@ -55,18 +55,18 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="135"
+            line="151"
             column="10"/>
     </issue>
 
     <issue
         id="ExportedReceiver"
         message="Exported receiver does not require permission"
-        errorLine1="        &lt;receiver android:name=&quot;.receiver.UltrasonicIntentReceiver&quot;>"
+        errorLine1="        &lt;receiver android:name=&quot;.receiver.UltrasonicIntentReceiver&quot;"
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="74"
+            line="75"
             column="10"/>
     </issue>
 
@@ -77,7 +77,7 @@
         errorLine2="         ~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="64"
+            line="65"
             column="10"/>
     </issue>
 
@@ -89,72 +89,6 @@
         <location
             file="src/main/AndroidManifest.xml"
             line="41"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver android:name=&quot;.receiver.UltrasonicIntentReceiver&quot;>"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="74"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="86"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="97"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="108"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="119"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver android:name=&quot;.receiver.MediaButtonIntentReceiver&quot;>"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="130"
             column="10"/>
     </issue>
 
