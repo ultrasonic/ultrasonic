@@ -246,6 +246,8 @@
     <string name="settings.preload_3">3 песни</string>
     <string name="settings.preload_5">5 песен</string>
     <string name="settings.preload_unlimited">Неограниченный</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Возобновить подключение наушников</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">Приложение возобновит приостановленное воспроизведение после того, как в устройство будут вставлены проводные наушники.</string>
     <string name="settings.scrobble_summary">Не забудьте установить своего пользователя и пароль в Скроббл сервисах на сервере.</string>
     <string name="settings.scrobble_title">Скробблить мои воспроизведения</string>
     <string name="settings.search_1">1</string>
@@ -336,6 +338,11 @@
     <string name="download.menu_show_artist">Показать исполнителей</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Несколько лет</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Возобновить при подключении устройства Bluetooth</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Пауза при отключении устройства Bluetooth</string>
+    <string name="settings.playback.bluetooth_all">Все устройства Bluetooth</string>
+    <string name="settings.playback.bluetooth_a2dp">Только аудио (A2DP) устройства</string>
+    <string name="settings.playback.bluetooth_disabled">Отключено</string>
     <string name="settings.debug.title">Настройки отладки</string>
     <string name="settings.debug.log_to_file">Записать журнал отладки в файл</string>
     <string name="settings.debug.log_path">Файлы журнала доступны по адресу %1$s/%2$s</string>

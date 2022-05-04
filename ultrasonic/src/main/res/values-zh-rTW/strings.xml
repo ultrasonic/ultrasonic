@@ -54,5 +54,6 @@
     <string name="settings.server_name">名稱</string>
     <string name="time_span_disabled">已停用</string>
     <string name="share_comment">註記</string>
+    <string name="settings.playback.bluetooth_disabled">已停用</string>
     <string name="server_menu.delete">刪除</string>
     </resources>

@@ -222,6 +222,8 @@
     <string name="settings.preload_3">3 músicas</string>
     <string name="settings.preload_5">5 músicas</string>
     <string name="settings.preload_unlimited">Ilimitado</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Retomar ao inserir Auscultadores</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos auscultadores no dispositivo.</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -307,6 +309,11 @@
     <string name="download.menu_show_artist">Mostrar Artista</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Múltiplos Anos</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
+    <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
+    <string name="settings.playback.bluetooth_a2dp">Only audio (A2DP) devices</string>
+    <string name="settings.playback.bluetooth_disabled">Disabilitando</string>
     <string name="server_selector.label">Configured servers</string>
     <string name="server_selector.delete_confirmation">Are you sure you want to delete the server?</string>
     <string name="server_editor.label">Editing server</string>

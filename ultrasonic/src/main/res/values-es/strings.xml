@@ -260,6 +260,8 @@
     <string name="settings.preload_3">3 canciónes</string>
     <string name="settings.preload_5">5 canciónes</string>
     <string name="settings.preload_unlimited">Ilimitado</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Reanudar al insertar los auriculares</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">La aplicación reanudará la reproducción en pausa al insertar los auriculares en el dispositivo.</string>
     <string name="settings.scrobble_summary">Recuerda configurar tu nombre de usuario y contraseña en los servicios de Scrobble en el servidor</string>
     <string name="settings.scrobble_title">Hacer Scrobble de mis reproducciones</string>
     <string name="settings.search_1">1</string>
@@ -360,6 +362,11 @@
     <string name="download.menu_show_artist">Mostrar artista</string>
     <string name="albumArt">Caratula del Álbum</string>
     <string name="common_multiple_years">Múltiples años</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Reanudar al conectar un dispositivo Bluetooth</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pausar al desconectar un dispositivo Bluetooth</string>
+    <string name="settings.playback.bluetooth_all">Todos los dispositivos Bluetooth</string>
+    <string name="settings.playback.bluetooth_a2dp">Solo dispositivos de audio (A2DP)</string>
+    <string name="settings.playback.bluetooth_disabled">Deshabilitado</string>
     <string name="settings.debug.title">Opciones de depuración</string>
     <string name="settings.debug.log_to_file">Escribir registro de depuración en un archivo</string>
     <string name="settings.debug.log_path">Los archivos de registro están disponibles en %1$s/%2$s</string>

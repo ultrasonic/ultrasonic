@@ -131,6 +131,20 @@ object Settings {
     @JvmStatic
     var mediaButtonsEnabled
         by BooleanSetting(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true)
+    var resumePlayOnHeadphonePlug
+        by BooleanSetting(R.string.setting_keys_resume_play_on_headphones_plug, true)
+
+    @JvmStatic
+    var resumeOnBluetoothDevice by IntSetting(
+        Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE,
+        Constants.PREFERENCE_VALUE_DISABLED
+    )
+
+    @JvmStatic
+    var pauseOnBluetoothDevice by IntSetting(
+        Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE,
+        Constants.PREFERENCE_VALUE_A2DP
+    )
 
     @JvmStatic
     var showNowPlaying

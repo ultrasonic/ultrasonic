@@ -256,6 +256,13 @@
     <string name="settings.override_language">Override the language</string>
     <string name="settings.override_language_summary">You need to restart the app after changing the language</string>
     <string name="settings.playback_control_title">Playback Control Settings</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Resume when a Bluetooth device is connected</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pause when a Bluetooth device is disconnected</string>
+    <string name="settings.playback.bluetooth_all">All Bluetooth devices</string>
+    <string name="settings.playback.bluetooth_a2dp">Only audio (A2DP) devices</string>
+    <string name="settings.playback.bluetooth_disabled">Disabled</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Resume on headphones insertion</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">App will resume paused playback on wired headphones insertion into device.</string>
     <string name="settings.preload">Songs To Preload</string>
     <string name="settings.preload_1">1 song</string>
     <string name="settings.preload_10">10 songs</string>

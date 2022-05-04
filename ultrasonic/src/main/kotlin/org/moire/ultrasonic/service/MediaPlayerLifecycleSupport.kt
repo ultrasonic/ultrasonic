@@ -7,12 +7,18 @@
 
 package org.moire.ultrasonic.service
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
 import android.view.KeyEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.moire.ultrasonic.app.UApp.Companion.applicationContext
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util.ifNotNull
 import timber.log.Timber
 
@@ -24,6 +30,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
     private val mediaPlayerController by inject<MediaPlayerController>()
 
     private var created = false
+    private var headsetEventReceiver: BroadcastReceiver? = null
 
     fun onCreate() {
         onCreate(false, null)
@@ -39,6 +46,8 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         mediaPlayerController.onCreate {
             restoreLastSession(autoPlay, afterRestore)
         }
+
+        registerHeadsetReceiver()
 
         CacheCleaner().clean()
         created = true
@@ -73,6 +82,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         )
 
         mediaPlayerController.clear(false)
+        applicationContext().unregisterReceiver(headsetEventReceiver)
         mediaPlayerController.onDestroy()
 
         created = false
@@ -96,6 +106,42 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         } else {
             handleUltrasonicIntent(intentAction)
         }
+    }
+
+    /**
+     * The Headset Intent Receiver is responsible for resuming playback when a headset is inserted
+     * and pausing it when it is removed.
+     * Unfortunately this Intent can't be registered in the AndroidManifest, so it works only
+     * while Ultrasonic is running.
+     */
+    private fun registerHeadsetReceiver() {
+
+        headsetEventReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val extras = intent.extras ?: return
+
+                Timber.i("Headset event for: %s", extras["name"])
+
+                val state = extras.getInt("state")
+
+                if (state == 0) {
+                    if (!mediaPlayerController.isJukeboxEnabled) {
+                        mediaPlayerController.pause()
+                    }
+                } else if (state == 1) {
+                    if (!mediaPlayerController.isJukeboxEnabled &&
+                        Settings.resumePlayOnHeadphonePlug && !mediaPlayerController.isPlaying
+                    ) {
+                        mediaPlayerController.prepare()
+                        mediaPlayerController.play()
+                    }
+                }
+            }
+        }
+
+        val headsetIntentFilter = IntentFilter(AudioManager.ACTION_HEADSET_PLUG)
+
+        applicationContext().registerReceiver(headsetEventReceiver, headsetIntentFilter)
     }
 
     @Suppress("MagicNumber", "ComplexMethod")

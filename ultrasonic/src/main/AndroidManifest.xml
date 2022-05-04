@@ -83,6 +83,14 @@
                 <action android:name="org.moire.ultrasonic.CMD_PROCESS_KEYCODE"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".receiver.BluetoothIntentReceiver">
+            <intent-filter>
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED"/>
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED"/>
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED"/>
+                <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
         <receiver
             android:name=".provider.UltrasonicAppWidgetProvider4X1"
             android:label="Ultrasonic (4x1)">

@@ -240,6 +240,8 @@
     <string name="settings.preload_3">3 首歌</string>
     <string name="settings.preload_5">5 首歌</string>
     <string name="settings.preload_unlimited">不限制</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">插入耳机时恢复播放</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">应用将在有线耳机插入设备时恢复已暂停的播放。</string>
     <string name="settings.scrobble_summary">请记得在服务器上的 Scrobble 服务中设置您的用户名和密码</string>
     <string name="settings.scrobble_title">Scrobble我的播放列表</string>
     <string name="settings.search_1">1</string>
@@ -337,6 +339,11 @@
     <string name="download.menu_show_artist">显示艺术家</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Multiple Years</string>
+    <string name="settings.playback.resume_on_bluetooth_device">连接蓝牙设备时恢复播放</string>
+    <string name="settings.playback.pause_on_bluetooth_device">断开蓝牙设备时暂停播放</string>
+    <string name="settings.playback.bluetooth_all">所有蓝牙设备</string>
+    <string name="settings.playback.bluetooth_a2dp">仅音频 (A2DP) 设备</string>
+    <string name="settings.playback.bluetooth_disabled">已禁用</string>
     <string name="settings.debug.title">调试选项</string>
     <string name="settings.debug.log_to_file">将调试日志写入文件</string>
     <string name="settings.debug.log_path">日志文件可在 %1$s/%2$s 获取</string>

@@ -235,6 +235,8 @@
     <string name="settings.preload_3">3 músicas</string>
     <string name="settings.preload_5">5 músicas</string>
     <string name="settings.preload_unlimited">Ilimitado</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Retomar ao Inserir Fone de Ouvido</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">O aplicativo retomará a reprodução em pausa na inserção dos fones de ouvido no dispositivo</string>
     <string name="settings.scrobble_summary">Lembre-se de configurar usuário e senha nos serviços Scrobble do servidor</string>
     <string name="settings.scrobble_title">Registrar Minhas Músicas</string>
     <string name="settings.search_1">1</string>
@@ -329,6 +331,11 @@
     <string name="download.menu_show_artist">Mostrar Artista</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Anos Múltiplos</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Retomar ao Conectar Dispositivo Bluetooth</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pausar ao Desconectar Dispositivo Bluetooth</string>
+    <string name="settings.playback.bluetooth_all">Todos os dispositivos Bluetooth</string>
+    <string name="settings.playback.bluetooth_a2dp">Somente dispositivos de áudio (A2DP)</string>
+    <string name="settings.playback.bluetooth_disabled">Desativado</string>
     <string name="settings.debug.title">Opções de Depuração</string>
     <string name="settings.debug.log_to_file">Log de Depuração em Arquivo</string>
     <string name="settings.debug.log_path">Os arquivos com log estão disponíveis em %1$s/%2$s</string>

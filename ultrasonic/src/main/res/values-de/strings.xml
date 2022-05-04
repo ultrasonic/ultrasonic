@@ -260,6 +260,8 @@
     <string name="settings.preload_3">3 Titel</string>
     <string name="settings.preload_5">5 Titel</string>
     <string name="settings.preload_unlimited">Unbegrenzt</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Fortsetzen mit Kopfhörer</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">Die App setzt eine pausierte Wiedergabe beim Anschließen der Kopfhörer fort.</string>
     <string name="settings.scrobble_summary">Benutzername und Passwort des Scrobble Service(s) müssen im Server gesetzt sein</string>
     <string name="settings.scrobble_title">Gespielte Musik scrobbeln</string>
     <string name="settings.search_1">1</string>
@@ -360,6 +362,11 @@
     <string name="download.menu_show_artist">Künstler*in anzeigen</string>
     <string name="albumArt">Album Cover</string>
     <string name="common_multiple_years">Mehrere Jahre</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Wiedergabe fortsetzen, wenn ein Bluetooth Gerät verbunden wurde</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Wiedergabe pausieren, wenn ein Bluetooth Gerät getrennt wurde</string>
+    <string name="settings.playback.bluetooth_all">Alle Bluetooth Geräte</string>
+    <string name="settings.playback.bluetooth_a2dp">Nur Audio (A2DP) Geräte</string>
+    <string name="settings.playback.bluetooth_disabled">Deaktiviert</string>
     <string name="settings.debug.title">Debug Optionen</string>
     <string name="settings.debug.log_to_file">Schreibe Debug Log in Datei</string>
     <string name="settings.debug.log_path">Die Log Dateien sind unter %1$s/%2$s verfügbar</string>

@@ -228,6 +228,8 @@
     <string name="settings.preload_3">3 dal</string>
     <string name="settings.preload_5">5 dal</string>
     <string name="settings.preload_unlimited">Korlátlan</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Folytatás a fejhallgató behelyezésekor</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">Az alkalmazás folytatja a szüneteltetett lejátszást a fejhallgató behelyezésekor a készülékbe.</string>
     <string name="settings.scrobble_summary">Ne felejtsd el beállítani a Scrobble szolgáltatónál használt felhasználóneved és jelszavad a szervereden</string>
     <string name="settings.scrobble_title">Scrobble engedélyezése</string>
     <string name="settings.search_1">1</string>
@@ -318,6 +320,11 @@
     <string name="download.menu_show_artist">Ugrás az előadóhoz</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Több év</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Folytatás Bluetooth eszköz csatlakozásakor</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Szünet Bluetooth eszköz kikapcsolásakor</string>
+    <string name="settings.playback.bluetooth_all">Minden Bluetooth eszköz</string>
+    <string name="settings.playback.bluetooth_a2dp">Csak audio (A2DP) eszközök</string>
+    <string name="settings.playback.bluetooth_disabled">Kikapcsolva</string>
     <string name="settings.debug.title">Hibakeresési lehetőségek</string>
     <string name="settings.debug.log_to_file">Hibakeresési napló írása fájlba</string>
     <string name="settings.debug.log_path">A naplófájlok elérhetőek a következő helyen: %1$s/%2$s</string>

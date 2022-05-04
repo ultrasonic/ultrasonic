@@ -92,6 +92,20 @@
             app:iconSpaceReserved="false"/>
         <CheckBoxPreference
             a:defaultValue="false"
+            a:key="@string/setting_keys.resume_play_on_headphones_plug"
+            a:title="@string/settings.playback.resume_play_on_headphones_plug.title"
+            a:summary="@string/settings.playback.resume_play_on_headphones_plug.summary"
+            app:iconSpaceReserved="false"/>
+        <Preference
+            a:key="resumeOnBluetoothDevice"
+            a:title="@string/settings.playback.resume_on_bluetooth_device"
+            app:iconSpaceReserved="false"/>
+        <Preference
+            a:key="pauseOnBluetoothDevice"
+            a:title="@string/settings.playback.pause_on_bluetooth_device"
+            app:iconSpaceReserved="false"/>
+        <CheckBoxPreference
+            a:defaultValue="false"
             a:key="use_five_star_rating"
             a:summary="@string/settings.five_star_rating_description"
             a:title="@string/settings.five_star_rating_title"

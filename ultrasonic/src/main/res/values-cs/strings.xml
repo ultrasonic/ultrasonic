@@ -222,6 +222,8 @@
     <string name="settings.preload_3">3 skladby</string>
     <string name="settings.preload_5">5 skladeb</string>
     <string name="settings.preload_unlimited">Neomezeně</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Pokračovat po připojení sluchátek</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">Aplikace spustí pozastavené přehrávání po připojení kabelu sluchátek do přístroje.</string>
     <string name="settings.search_1">1</string>
     <string name="settings.search_10">10</string>
     <string name="settings.search_100">100</string>
@@ -310,6 +312,11 @@
     <string name="download.menu_show_artist">Zobrazit umělce</string>
     <string name="albumArt">albumArt</string>
     <string name="common_multiple_years">Vícenásobné roky</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Pokračovat v přehrávání po připojení bluetooth přístroje</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Pozastavení přehrávání při odpojení bluetooth přístroje</string>
+    <string name="settings.playback.bluetooth_all">Všechny bluetooth přístroje</string>
+    <string name="settings.playback.bluetooth_a2dp">Pouze audio (A2DP) přístroje</string>
+    <string name="settings.playback.bluetooth_disabled">Vypnuto</string>
     <string name="settings.debug.title">Možnosti ladění aplikace</string>
     <string name="settings.debug.log_to_file">Zapisovat logy ladění do souboru</string>
     <string name="settings.debug.log_path">Soubory logů jsou dostupné v %1$s/%2$s</string>

@@ -240,6 +240,8 @@
     <string name="settings.preload_3">3 morceaux</string>
     <string name="settings.preload_5">5 morceaux</string>
     <string name="settings.preload_unlimited">Illimité</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.title">Reprise à l\'insertion des écouteurs</string>
+    <string name="settings.playback.resume_play_on_headphones_plug.summary">L\'application reprendra la lecture lors de l\'insertion du casque dans l\'appareil.</string>
     <string name="settings.scrobble_summary">Pensez à configurer votre nom d’utilisateur et votre mot de passe dans le(s) service(s) Scrobble sur le serveur.</string>
     <string name="settings.scrobble_title">Scrobbler mes lectures</string>
     <string name="settings.search_1">1</string>
@@ -337,6 +339,11 @@
     <string name="download.menu_show_artist">Afficher l\'artiste</string>
     <string name="albumArt">Pochette d\'album</string>
     <string name="common_multiple_years">Années multiples</string>
+    <string name="settings.playback.resume_on_bluetooth_device">Reprendre lorsqu’un appareil Bluetooth se connecte</string>
+    <string name="settings.playback.pause_on_bluetooth_device">Mettre en pause lorsqu’un appareil Bluetooth se déconnecte</string>
+    <string name="settings.playback.bluetooth_all">Tous les appareils Bluetooth</string>
+    <string name="settings.playback.bluetooth_a2dp">Seulement les appareils audio (A2DP)</string>
+    <string name="settings.playback.bluetooth_disabled">Désactivé</string>
     <string name="settings.debug.title">Paramètres de debug</string>
     <string name="settings.debug.log_to_file">Enregistrer les logs de debug dans des fichiers</string>
     <string name="settings.debug.log_path">Les fichiers de log sont disponibles dans %1$s/%2$s</string>
