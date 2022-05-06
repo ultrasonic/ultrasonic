@@ -27,7 +27,7 @@ import timber.log.Timber
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class CachedDataSource(
     private var upstreamDataSource: DataSource
-) : BaseDataSource(false) {
+) : BaseDataSource(true) {
 
     class Factory(
         private var upstreamDataSourceFactory: DataSource.Factory
@@ -186,6 +186,8 @@ class CachedDataSource(
             transferEnded()
             responseByteStream?.close()
             responseByteStream = null
+        } else {
+            upstreamDataSource.close()
         }
     }
 
