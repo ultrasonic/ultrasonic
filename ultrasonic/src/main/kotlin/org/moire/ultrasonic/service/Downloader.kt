@@ -353,7 +353,7 @@ class Downloader(
     }
 
     companion object {
-        const val PARALLEL_DOWNLOADS = 3
+        const val PARALLEL_DOWNLOADS = 2
         const val CHECK_INTERVAL = 5000L
     }
 
