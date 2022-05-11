@@ -12,8 +12,8 @@ contributions or active developers are always welcomed.
 
 ## Screenshots
 
-| <img src="/ultrasonic/src/main/res/readme/1.png" alt="Screenshot-1" /> | <img src="/ultrasonic/src/main/res/readme/2.png" alt="Screenshot-2"/> | <img src="/ultrasonic/src/main/res/readme/3.png" alt="Screenshot-3"/> | <img src="/ultrasonic/src/main/res/readme/4.png" alt="Screenshot-4" /> |
-| --- | ---- | ---- | --- |
+| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png" alt="Screenshot-1" /> | <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png" alt="Screenshot-2"/> | <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png" alt="Screenshot-3"/> | <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.png" alt="Screenshot-4" /> |
+|------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------| ---- |-----------------------------------|
 
 ## Download
 
