@@ -40,6 +40,7 @@ import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.service.plusAssign
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
+import timber.log.Timber
 
 class PlaybackService : MediaLibraryService(), KoinComponent {
     private lateinit var player: ExoPlayer
@@ -49,6 +50,8 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     private lateinit var librarySessionCallback: MediaLibrarySession.MediaLibrarySessionCallback
 
     private var rxBusSubscription = CompositeDisposable()
+
+    private var isStarted = false
 
     /*
      * For some reason the LocalConfiguration of MediaItem are stripped somewhere in ExoPlayer,
@@ -70,15 +73,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
         initializeSessionAndPlayer()
-
-        rxBusSubscription += RxBus.activeServerChangeObservable.subscribe {
-            // Update the API endpoint when the active server has changed
-            val newClient: SubsonicAPIClient by inject()
-            apiDataSource.setAPIClient(newClient)
-
-            // Set the player wake mode
-            player.setWakeMode(getWakeModeFlag())
-        }
     }
 
     private fun getWakeModeFlag(): Int {
@@ -86,9 +80,8 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     }
 
     override fun onDestroy() {
-        player.release()
-        mediaLibrarySession.release()
-        rxBusSubscription.dispose()
+        Timber.i("onDestroy called")
+        releasePlayerAndSession()
         super.onDestroy()
     }
 
@@ -96,8 +89,22 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         return mediaLibrarySession
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        Timber.i("Pausing the playback because we were swiped away")
+        player.pause()
+    }
+
+    private fun releasePlayerAndSession() {
+        player.release()
+        mediaLibrarySession.release()
+        rxBusSubscription.dispose()
+        isStarted = false
+        stopSelf()
+    }
+
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun initializeSessionAndPlayer() {
+        if (isStarted) return
 
         setMediaNotificationProvider(MediaNotificationProvider(UApp.applicationContext()))
 
@@ -134,6 +141,17 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             .setMediaItemFiller(CustomMediaItemFiller())
             .setSessionActivity(getPendingIntentForContent())
             .build()
+
+        // Set a listener to update the API client when the active server has changed
+        rxBusSubscription += RxBus.activeServerChangeObservable.subscribe {
+            val newClient: SubsonicAPIClient by inject()
+            apiDataSource.setAPIClient(newClient)
+
+            // Set the player wake mode
+            player.setWakeMode(getWakeModeFlag())
+        }
+
+        isStarted = true
     }
 
     private fun getPendingIntentForContent(): PendingIntent {
