@@ -283,6 +283,7 @@ class MediaPlayerController(
         if (jukeboxMediaPlayer.isEnabled) {
             jukeboxMediaPlayer.start()
         } else {
+            controller?.prepare()
             controller?.play()
         }
     }
