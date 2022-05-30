@@ -8,6 +8,7 @@ import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
+import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
@@ -73,7 +74,19 @@ class SubsonicAPIClient(
                 .addQueryParameter("c", config.clientID)
                 .addQueryParameter("f", "json")
                 .build()
-            chain.proceed(originalRequest.newBuilder().url(newUrl).build())
+            val newRequestBuilder = originalRequest.newBuilder().url(newUrl)
+            if (originalRequest.url.username.isNotEmpty() &&
+                originalRequest.url.password.isNotEmpty()
+            ) {
+                newRequestBuilder.addHeader(
+                    "Authorization",
+                    Credentials.basic(
+                        originalRequest.url.username,
+                        originalRequest.url.password
+                    )
+                )
+            }
+            chain.proceed(newRequestBuilder.build())
         }
         .addInterceptor(versionInterceptor)
         .addInterceptor(proxyPasswordInterceptor)

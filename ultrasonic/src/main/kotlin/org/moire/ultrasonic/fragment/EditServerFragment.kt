@@ -298,7 +298,6 @@ class EditServerFragment : Fragment(), OnBackPressedHandler {
                 url = URL(urlString)
                 if (
                     urlString != urlString.trim(' ') ||
-                    urlString.contains("@") ||
                     url.host.isNullOrBlank()
                 ) {
                     throw MalformedURLException()
