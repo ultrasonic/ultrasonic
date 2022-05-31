@@ -1,6 +1,6 @@
 /*
  * NavigationActivity.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -42,6 +42,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import kotlin.system.exitProcess
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
@@ -66,7 +67,7 @@ import org.moire.ultrasonic.util.Util
 import timber.log.Timber
 
 /**
- * The main Activity of Ultrasonic which loads all other screens as Fragments
+ * The main (and only) Activity of Ultrasonic which loads all other screens as Fragments
  */
 @Suppress("TooManyFunctions")
 class NavigationActivity : AppCompatActivity() {
@@ -366,7 +367,8 @@ class NavigationActivity : AppCompatActivity() {
 
     private fun exit() {
         lifecycleSupport.onDestroy()
-        finish()
+        finishAndRemoveTask()
+        exitProcess(0)
     }
 
     private fun showWelcomeDialog() {

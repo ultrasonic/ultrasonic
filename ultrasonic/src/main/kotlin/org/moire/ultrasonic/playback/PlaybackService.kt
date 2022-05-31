@@ -143,6 +143,12 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             player.setWakeMode(getWakeModeFlag())
         }
 
+        // Listen to the shutdown command
+        rxBusSubscription += RxBus.shutdownCommandObservable.subscribe {
+            Timber.i("Received destroy command via Rx")
+            onDestroy()
+        }
+
         isStarted = true
     }
 

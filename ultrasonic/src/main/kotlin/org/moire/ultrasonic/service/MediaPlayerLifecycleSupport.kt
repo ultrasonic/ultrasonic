@@ -82,6 +82,8 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         )
 
         mediaPlayerController.clear(false)
+        RxBus.shutdownCommandPublisher.onNext(Unit)
+
         applicationContext().unregisterReceiver(headsetEventReceiver)
         mediaPlayerController.onDestroy()
 
