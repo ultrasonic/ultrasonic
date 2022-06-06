@@ -42,10 +42,10 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import kotlin.system.exitProcess
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ServerSettingDao
 import org.moire.ultrasonic.fragment.OnBackPressedHandler
@@ -99,6 +99,17 @@ class NavigationActivity : AppCompatActivity() {
     private var cachedServerCount: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.d("onCreate called")
+
+        // First check if Koin has been started
+
+        if (UApp.instance != null && !UApp.instance!!.initiated) {
+            Timber.d("Starting Koin")
+            UApp.instance!!.startKoin()
+        } else {
+            Timber.d("No need to start Koin")
+        }
+
         setUncaughtExceptionHandler()
         Util.applyTheme(this)
 
@@ -226,6 +237,7 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        Timber.d("onResume called")
         super.onResume()
 
         Storage.reset()
@@ -239,9 +251,11 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        Timber.d("onDestroy called")
         rxBusSubscription.dispose()
         imageLoaderProvider.clearImageLoader()
+        UApp.instance!!.shutdownKoin()
+        super.onDestroy()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -366,9 +380,9 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun exit() {
+        Timber.d("User choose to exit the app")
         lifecycleSupport.onDestroy()
         finishAndRemoveTask()
-        exitProcess(0)
     }
 
     private fun showWelcomeDialog() {

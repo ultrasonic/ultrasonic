@@ -1,13 +1,13 @@
 package org.moire.ultrasonic.app
 
 import android.content.Context
-import android.os.StrictMode
 import androidx.multidex.MultiDexApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 import org.moire.ultrasonic.BuildConfig
 import org.moire.ultrasonic.di.appPermanentStorage
@@ -31,16 +31,21 @@ class UApp : MultiDexApplication() {
 
     init {
         instance = this
-        if (BuildConfig.DEBUG)
-            StrictMode.enableDefaults()
+//        if (BuildConfig.DEBUG)
+//            StrictMode.enableDefaults()
     }
 
+    var initiated = false
+
     override fun onCreate() {
+        initiated = true
         super.onCreate()
 
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
+
+        Timber.d("onCreate called")
 
         // In general we should not access the settings from the main thread to avoid blocking...
         ioScope.launch {
@@ -49,8 +54,12 @@ class UApp : MultiDexApplication() {
             }
         }
 
+        startKoin()
+    }
+
+    internal fun startKoin() {
         startKoin {
-            // TODO Currently there is a bug in Koin which makes necessary to set the loglevel to ERROR
+            // TODO Currently there is a bug in Koin which makes necessary to set the log level to ERROR
             logger(TimberKoinLogger(Level.ERROR))
             // logger(TimberKoinLogger(Level.INFO))
 
@@ -67,8 +76,13 @@ class UApp : MultiDexApplication() {
         }
     }
 
+    internal fun shutdownKoin() {
+        stopKoin()
+        initiated = false
+    }
+
     companion object {
-        private var instance: UApp? = null
+        var instance: UApp? = null
 
         fun applicationContext(): Context {
             return instance!!.applicationContext

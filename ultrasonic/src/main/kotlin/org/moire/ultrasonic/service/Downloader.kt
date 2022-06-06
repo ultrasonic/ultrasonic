@@ -66,6 +66,7 @@ class Downloader(
     private val rxBusSubscription: CompositeDisposable = CompositeDisposable()
 
     init {
+        Timber.i("Init called")
         // Check downloads if the playlist changed
         rxBusSubscription += RxBus.playlistObservable.subscribe {
             Timber.v("Playlist has changed, checking Downloads...")

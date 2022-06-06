@@ -76,6 +76,8 @@ class MediaPlayerController(
 
     var controller: MediaController? = null
 
+    private lateinit var listeners: Player.Listener
+
     fun onCreate(onCreated: () -> Unit) {
         if (created) return
         externalStorageMonitor.onCreate { reset() }
@@ -86,7 +88,7 @@ class MediaPlayerController(
 
             Timber.i("MediaController Instance received")
 
-            controller?.addListener(object : Player.Listener {
+            listeners = object : Player.Listener {
 
                 /*
                  * Log all events
@@ -134,7 +136,9 @@ class MediaPlayerController(
                     playerStateChangedHandler()
                     publishPlaybackState()
                 }
-            })
+            }
+
+            controller?.addListener(listeners)
 
             onCreated()
 
@@ -224,6 +228,12 @@ class MediaPlayerController(
 
     fun onDestroy() {
         if (!created) return
+
+        // First stop listening to events
+        rxBusSubscription.dispose()
+        controller?.removeListener(listeners)
+
+        // Shutdown the rest
         val context = UApp.applicationContext()
         externalStorageMonitor.onDestroy()
         context.stopService(Intent(context, DownloadService::class.java))
@@ -457,6 +467,9 @@ class MediaPlayerController(
 
     @Synchronized
     private fun serializeCurrentSession() {
+        // Don't serialize invalid sessions
+        if (currentMediaItemIndex == -1) return
+
         playbackStateSerializer.serialize(
             legacyPlaylistManager.playlist,
             currentMediaItemIndex,
