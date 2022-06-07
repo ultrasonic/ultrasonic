@@ -100,19 +100,9 @@ internal class MediaNotificationProvider(context: Context) :
             builder.setLargeIcon(artworkBitmap)
         }
         val mediaStyle = androidx.media.app.NotificationCompat.MediaStyle()
-            .setCancelButtonIntent(
-                actionFactory.createMediaActionPendingIntent(
-                    ActionFactory.COMMAND_STOP
-                )
-            )
             .setShowActionsInCompactView(0, 1, 2)
         val notification: Notification = builder
             .setContentIntent(mediaController.sessionActivity)
-            .setDeleteIntent(
-                actionFactory.createMediaActionPendingIntent(
-                    ActionFactory.COMMAND_STOP
-                )
-            )
             .setOnlyAlertOnce(true)
             .setSmallIcon(getSmallIconResId())
             .setStyle(mediaStyle)
