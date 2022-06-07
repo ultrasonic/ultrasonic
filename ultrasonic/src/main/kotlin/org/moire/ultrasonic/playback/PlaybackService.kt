@@ -82,8 +82,8 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        Timber.i("Pausing the playback because we were swiped away")
-        player.pause()
+        Timber.i("Stopping the playback because we were swiped away")
+        releasePlayerAndSession()
     }
 
     private fun releasePlayerAndSession() {
