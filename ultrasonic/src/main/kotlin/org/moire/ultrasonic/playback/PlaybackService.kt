@@ -91,6 +91,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         mediaLibrarySession.release()
         rxBusSubscription.dispose()
         isStarted = false
+        stopForeground(true)
         stopSelf()
     }
 
