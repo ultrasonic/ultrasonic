@@ -87,6 +87,9 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     }
 
     private fun releasePlayerAndSession() {
+        // Broadcast that the service is being shutdown
+        RxBus.stopCommandPublisher.onNext(Unit)
+
         player.release()
         mediaLibrarySession.release()
         rxBusSubscription.dispose()

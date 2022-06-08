@@ -102,7 +102,6 @@ class NavigationActivity : AppCompatActivity() {
         Timber.d("onCreate called")
 
         // First check if Koin has been started
-
         if (UApp.instance != null && !UApp.instance!!.initiated) {
             Timber.d("Starting Koin")
             UApp.instance!!.startKoin()

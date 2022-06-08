@@ -166,6 +166,11 @@ class MediaPlayerController(
             }
         }
 
+        rxBusSubscription += RxBus.stopCommandObservable.subscribe {
+            // Clear the widget when we stop the service
+            updateWidget(null)
+        }
+
         created = true
         Timber.i("MediaPlayerController started")
     }

@@ -97,6 +97,7 @@ open class UltrasonicAppWidgetProvider : AppWidgetProvider() {
         playing: Boolean,
         setAlbum: Boolean
     ) {
+        Timber.d("Updating Widget")
         val res = context.resources
         val views = RemoteViews(context.packageName, layoutId)
         val title = currentSong?.title
