@@ -380,6 +380,10 @@ class NavigationActivity : AppCompatActivity() {
 
     private fun exit() {
         Timber.d("User choose to exit the app")
+
+        // Broadcast that the service is being shutdown
+        RxBus.stopCommandPublisher.onNext(Unit)
+
         lifecycleSupport.onDestroy()
         finishAndRemoveTask()
     }

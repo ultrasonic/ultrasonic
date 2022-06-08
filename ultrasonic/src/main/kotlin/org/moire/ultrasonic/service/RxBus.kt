@@ -68,7 +68,6 @@ class RxBus {
             PublishSubject.create()
         val stopCommandObservable: Observable<Unit> =
             stopCommandPublisher.observeOn(mainThread())
-
     }
 
     data class StateWithTrack(
