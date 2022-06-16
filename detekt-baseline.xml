@@ -2,41 +2,24 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ComplexCondition:DownloadHandler.kt$DownloadHandler.&lt;no name provided>$!append &amp;&amp; !playNext &amp;&amp; !unpin &amp;&amp; !background</ID>
-    <ID>ComplexMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>ImplicitDefaultLocale:EditServerFragment.kt$EditServerFragment.&lt;no name provided>$String.format( "%s %s", resources.getString(R.string.settings_connection_failure), getErrorMessage(error) )</ID>
     <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Failed to write log to %s", file)</ID>
     <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Log file rotated, logging into file %s", file?.name)</ID>
     <ID>ImplicitDefaultLocale:FileLoggerTree.kt$FileLoggerTree$String.format("Logging into file %s", file?.name)</ID>
-    <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$String.format("BufferTask (%s)", downloadFile)</ID>
-    <ID>ImplicitDefaultLocale:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$String.format("CheckCompletionTask (%s)", downloadFile)</ID>
     <ID>ImplicitDefaultLocale:ShareHandler.kt$ShareHandler$String.format("%d:%s", timeSpanAmount, timeSpanType)</ID>
-    <ID>LongMethod:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>LongMethod:EditServerFragment.kt$EditServerFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
-    <ID>LongMethod:LocalMediaPlayer.kt$LocalMediaPlayer$@Synchronized private fun doPlay(downloadFile: DownloadFile, position: Int, start: Boolean)</ID>
     <ID>LongMethod:NavigationActivity.kt$NavigationActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>LongMethod:ShareHandler.kt$ShareHandler$private fun showDialog( fragment: Fragment, shareDetails: ShareDetails, swipe: SwipeRefreshLayout?, cancellationToken: CancellationToken )</ID>
-    <ID>LongParameterList:ServerRowAdapter.kt$ServerRowAdapter$( private var context: Context, private var data: Array&lt;ServerSetting>, private val model: ServerSettingsModel, private val activeServerProvider: ActiveServerProvider, private val manageMode: Boolean, private val serverDeletedCallback: ((Int) -> Unit), private val serverEditRequestedCallback: ((Int) -> Unit) )</ID>
+    <ID>LongParameterList:ServerRowAdapter.kt$ServerRowAdapter$( private var context: Context, passedData: Array&lt;ServerSetting>, private val model: ServerSettingsModel, private val activeServerProvider: ActiveServerProvider, private val manageMode: Boolean, private val serverDeletedCallback: ((Int) -> Unit), private val serverEditRequestedCallback: ((Int) -> Unit) )</ID>
     <ID>MagicNumber:ActiveServerProvider.kt$ActiveServerProvider$8192</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.&lt;no name provided>$60000</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$100000</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$8</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$86400L</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.BufferTask$8L</ID>
-    <ID>MagicNumber:LocalMediaPlayer.kt$LocalMediaPlayer.CheckCompletionTask$5000L</ID>
-    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$3</ID>
-    <ID>MagicNumber:MediaPlayerService.kt$MediaPlayerService$4</ID>
+    <ID>MagicNumber:JukeboxMediaPlayer.kt$JukeboxMediaPlayer$0.05f</ID>
+    <ID>MagicNumber:JukeboxMediaPlayer.kt$JukeboxMediaPlayer$50</ID>
     <ID>MagicNumber:RESTMusicService.kt$RESTMusicService$206</ID>
-    <ID>NestedBlockDepth:DownloadFile.kt$DownloadFile.DownloadTask$override fun execute()</ID>
     <ID>NestedBlockDepth:DownloadHandler.kt$DownloadHandler$private fun downloadRecursively( fragment: Fragment, id: String, name: String?, isShare: Boolean, isDirectory: Boolean, save: Boolean, append: Boolean, autoPlay: Boolean, shuffle: Boolean, background: Boolean, playNext: Boolean, unpin: Boolean, isArtist: Boolean )</ID>
-    <ID>NestedBlockDepth:MediaPlayerService.kt$MediaPlayerService$private fun setupOnSongCompletedHandler()</ID>
     <ID>TooGenericExceptionCaught:FileLoggerTree.kt$FileLoggerTree$x: Throwable</ID>
-    <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$ex: Exception</ID>
-    <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$exception: Throwable</ID>
-    <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer$x: Exception</ID>
-    <ID>TooGenericExceptionCaught:LocalMediaPlayer.kt$LocalMediaPlayer.PositionCache$e: Exception</ID>
-    <ID>TooGenericExceptionThrown:DownloadFile.kt$DownloadFile.DownloadTask$throw RuntimeException( String.format(Locale.ROOT, "Download of '%s' was cancelled", track) )</ID>
-    <ID>TooManyFunctions:MediaPlayerService.kt$MediaPlayerService : Service</ID>
+    <ID>TooGenericExceptionCaught:JukeboxMediaPlayer.kt$JukeboxMediaPlayer$x: Throwable</ID>
+    <ID>TooGenericExceptionCaught:JukeboxMediaPlayer.kt$JukeboxMediaPlayer.TaskQueue$x: Throwable</ID>
+    <ID>TooGenericExceptionThrown:Downloader.kt$Downloader.DownloadTask$throw RuntimeException( String.format( Locale.ROOT, "Download of '%s' was cancelled", downloadFile.track ) )</ID>
     <ID>TooManyFunctions:RESTMusicService.kt$RESTMusicService : MusicService</ID>
     <ID>UtilityClassWithPublicConstructor:FragmentTitle.kt$FragmentTitle</ID>
   </CurrentIssues>

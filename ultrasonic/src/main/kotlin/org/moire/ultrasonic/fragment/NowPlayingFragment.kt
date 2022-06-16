@@ -22,7 +22,6 @@ import java.lang.Exception
 import kotlin.math.abs
 import org.koin.android.ext.android.inject
 import org.moire.ultrasonic.R
-import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.RxBus
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
@@ -47,7 +46,7 @@ class NowPlayingFragment : Fragment() {
     private var nowPlayingTrack: TextView? = null
     private var nowPlayingArtist: TextView? = null
 
-    private var playerStateSubscription: Disposable? = null
+    private var rxBusSubscription: Disposable? = null
     private val mediaPlayerController: MediaPlayerController by inject()
     private val imageLoader: ImageLoaderProvider by inject()
 
@@ -69,8 +68,7 @@ class NowPlayingFragment : Fragment() {
         nowPlayingAlbumArtImage = view.findViewById(R.id.now_playing_image)
         nowPlayingTrack = view.findViewById(R.id.now_playing_trackname)
         nowPlayingArtist = view.findViewById(R.id.now_playing_artist)
-        playerStateSubscription =
-            RxBus.playerStateObservable.subscribe { update() }
+        rxBusSubscription = RxBus.playerStateObservable.subscribe { update() }
     }
 
     override fun onResume() {
@@ -80,29 +78,27 @@ class NowPlayingFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        playerStateSubscription!!.dispose()
+        rxBusSubscription!!.dispose()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun update() {
         try {
-            val playerState = mediaPlayerController.playerState
-
-            if (playerState === PlayerState.PAUSED) {
-                playButton!!.setImageDrawable(
-                    getDrawableFromAttribute(
-                        requireContext(), R.attr.media_play
-                    )
-                )
-            } else if (playerState === PlayerState.STARTED) {
+            if (mediaPlayerController.isPlaying) {
                 playButton!!.setImageDrawable(
                     getDrawableFromAttribute(
                         requireContext(), R.attr.media_pause
                     )
                 )
+            } else {
+                playButton!!.setImageDrawable(
+                    getDrawableFromAttribute(
+                        requireContext(), R.attr.media_play
+                    )
+                )
             }
 
-            val file = mediaPlayerController.currentPlaying
+            val file = mediaPlayerController.currentPlayingLegacy
 
             if (file != null) {
                 val song = file.track
@@ -137,6 +133,7 @@ class NowPlayingFragment : Fragment() {
                         .navigate(R.id.trackCollectionFragment, bundle)
                 }
             }
+
             requireView().setOnTouchListener { _: View?, event: MotionEvent ->
                 handleOnTouch(event)
             }

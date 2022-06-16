@@ -61,10 +61,7 @@
     <string name="download.menu_screen_on">Ekran włączony</string>
     <string name="download.menu_show_album">Wyświetl album</string>
     <string name="download.menu_shuffle">Wymieszaj</string>
-    <string name="download.menu_shuffle_notification">Playlista została wymieszana</string>
     <string name="download.menu_visualizer">Efekt wizualny</string>
-    <string name="download.playerstate_buffering">Buforowanie</string>
-    <string name="download.playerstate_downloading">Pobieranie - %s</string>
     <string name="download.playerstate_playing_shuffle">Odtwarzanie losowe</string>
     <string name="download.playlist_done">Playlista została zapisana.</string>
     <string name="download.playlist_error">Błąd zapisu playlisty. Proszę spróbować później.</string>
@@ -95,7 +92,6 @@
     <string name="main.genres_title">Gatunki</string>
     <string name="main.music">Muzyka</string>
     <string name="main.offline">Offline</string>
-    <string name="main.shuffle">Losowo</string>
     <string name="main.songs_random">Losowe</string>
     <string name="main.songs_starred">Ulubione</string>
     <string name="main.songs_title">Utwory</string>
@@ -106,26 +102,19 @@
     <string name="menu.deleted_playlist">Usunięto playlistę %s</string>
     <string name="menu.deleted_playlist_error">Usunięcie playlisty %s nie powiodło się</string>
     <string name="menu.exit">Zakończ</string>
-    <string name="menu.navigation">Nawigacja</string>
     <string name="menu.settings">Ustawienia</string>
     <string name="menu.refresh">Refresh</string>
     <string name="music_library.label">Biblioteka mediów</string>
     <string name="music_library.label_offline">Media offline</string>
-    <string name="music_service.retry">Wystąpił błąd sieci. Ponawiam %1$d z %2$d.</string>
-    <string name="parser.artist_count">Znaleziono %d artystów.</string>
-    <string name="parser.reading">Trwa odczyt z serwera.</string>
-    <string name="parser.reading_done">Odczyt z serwera zakończony!</string>
     <string name="playlist.label">Playlisty</string>
     <string name="playlist.update_info">Aktualizacja informacji</string>
     <string name="playlist.updated_info">Zaktualizowano informacje dla playlisty %s</string>
     <string name="playlist.updated_info_error">Błąc podczas aktualizacji playlisty %s</string>
-    <string name="progress.wait">Proszę czekać&#8230;</string>
     <string name="search.albums">Albumy</string>
     <string name="search.artists">Artyści</string>
     <string name="search.label">Wyszukaj</string>
     <string name="search.more">Wyświetl więcej</string>
     <string name="search.no_match">Brak wyników, proszę spróbować ponownie</string>
-    <string name="search.search">Kliknij, aby wyszukać</string>
     <string name="search.songs">Utwory</string>
     <string name="search.title">Wyszukiwanie</string>
     <string name="select_album.empty">Brak mediów</string>
@@ -135,7 +124,6 @@
     <string name="select_artist.folder">Wybierz folder</string>
     <string name="select_genre.empty">Brak gatunków</string>
     <string name="select_playlist.empty">Brak zapisanych playlist na serwerze</string>
-    <string name="service.connecting">Trwa łączenie z serwerem, proszę czekać.</string>
     <string name="settings.appearance_title">Wygląd</string>
     <string name="settings.buffer_length">Wielkość bufora</string>
     <string name="settings.buffer_length_0">Wyłączone</string>
@@ -175,8 +163,6 @@
     <string name="settings.chat_refresh">Okres odświeżania czatu</string>
     <string name="settings.clear_bookmark">Czyszczenie zakładek</string>
     <string name="settings.clear_bookmark_summary">Czyść zakładkę po zakończeniu odtwarzania utworu</string>
-    <string name="settings.clear_playlist">Czyszczenie playlist</string>
-    <string name="settings.clear_playlist_summary">Czyść playlistę po zakończeniu odtwarzania wszystkich utworów</string>
     <string name="settings.clear_search_history">Wyczyść historię wyszukiwania</string>
     <string name="settings.connection_failure">Błąd połączenia.</string>
     <string name="settings.default_albums">Domyślna ilość wyników - albumy</string>
@@ -193,14 +179,11 @@
     <string name="settings.disc_sort">Sortuj utwory wg dysku</string>
     <string name="settings.disc_sort_summary">Sortuje listę utworów wg numeru dysku i numeru utworu</string>
     <string name="settings.display_bitrate_summary">Dołącza bitrate i typ pliku do nazwy artysty</string>
-    <string name="settings.gapless_playback">Odtwarzanie bez przerw</string>
-    <string name="settings.gapless_playback_summary">Włącz odtwarzanie bez przerw między utworami</string>
     <string name="settings.hide_media_summary">Ukrywa pliki muzyczne przed innymi aplikacjami.</string>
     <string name="settings.hide_media_title">Ukryj pliki</string>
     <string name="settings.hide_media_toast">Efekt widoczny będzie po następnym skanowaniu muzyki przez system Android</string>
     <string name="settings.increment_time">Skok przewijania</string>
     <string name="settings.invalid_url">Proszę wprowadzić prawidłowy URL</string>
-    <string name="settings.invalid_username">Proszę wprowadzić prawidłową nazwę użytkownika (bez spacji na końcu)</string>
     <string name="settings.max_albums">Maksymalna ilość wyników - albumy</string>
     <string name="settings.max_artists">Maksymalna ilość wyników - artyści</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
@@ -257,25 +240,13 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Wyczyść historię wyszukiwania</string>
     <string name="settings.search_title">Ustawienia wyszukiwania</string>
-    <string name="settings.send_bluetooth_notification_summary">Wysyła powiadomienia o odtwarzaniu przez Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Wysyłaj powiadomienia Bluetooth</string>
-    <string name="settings.send_bluetooth_album_art_summary">Wysyła okładki przez Bluetooth (może powodować problemy z powiadomieniami)</string>
-    <string name="settings.send_bluetooth_album_art">Okładki przez Bluetooth</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Adres serwera</string>
     <string name="settings.server_name">Nazwa</string>
     <string name="settings.server_password">Hasło</string>
-    <string name="settings.server_remove_server">Usuń serwer</string>
     <string name="settings.server_scaling_summary">Pobiera przeskalowane obrazy z serwera zamiast pełnego rozmiaru (oszczędza ilość przesyłanych danych)</string>
     <string name="settings.server_scaling_title">Skalowanie okładek po stronie serwera</string>
-    <string name="settings.server_unused">Bez nazwy</string>
     <string name="settings.server_username">Nazwa użytkownika</string>
-    <string name="settings.show_lockscreen_controls">Wyświetlaj na ekranie blokady</string>
-    <string name="settings.show_lockscreen_controls_summary">Wyświetla widżet odtwarzacza na ekranie blokady</string>
-    <string name="settings.show_notification">Wyświetlaj powiadomienia</string>
-    <string name="settings.show_notification_always">Zawsze wyświetlaj powiadomienia</string>
-    <string name="settings.show_notification_always_summary">Zawsze wyświetla powiadomienia o odtwarzanych utworach, gdy playlista jest wypełniona</string>
-    <string name="settings.show_notification_summary">Wyświetla powiadomienia o odtwarzanym utworze na pasku statusu</string>
     <string name="settings.show_now_playing">Wyświetlaj powiadomienia o utworach</string>
     <string name="settings.show_now_playing_summary">Wyświetla bieżący utwór we wszystkich aktywnościach</string>
     <string name="settings.show_track_number">Wyświetlaj numer utworu</string>
@@ -360,12 +331,6 @@
         <item quantity="few">%d utwory</item>
         <item quantity="many">%d utworów</item>
         <item quantity="other">%d utworów</item>
-    </plurals>
-    <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">%d dzień pozostał do zakończenia okresu próbnego</item>
-        <item quantity="few">%d dni pozostały do zakończenia okresu próbnego</item>
-        <item quantity="many">%d dni pozostało do zakończenia okresu próbnego</item>
-        <item quantity="other">%d dni pozostało do zakończenia okresu próbnego</item>
     </plurals>
 
     <!-- Subsonic api errors -->

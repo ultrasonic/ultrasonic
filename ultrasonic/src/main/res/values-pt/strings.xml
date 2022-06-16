@@ -61,10 +61,7 @@
     <string name="download.menu_screen_on">Ecrã Ligado</string>
     <string name="download.menu_show_album">Mostrar Álbum</string>
     <string name="download.menu_shuffle">Misturar</string>
-    <string name="download.menu_shuffle_notification">Playlist foi misturada</string>
     <string name="download.menu_visualizer">Visualizador</string>
-    <string name="download.playerstate_buffering">Armazenando</string>
-    <string name="download.playerstate_downloading">Descarregando - %s</string>
     <string name="download.playerstate_playing_shuffle">Tocando misturado</string>
     <string name="download.playlist_done">Playlist salva com sucesso.</string>
     <string name="download.playlist_error">Falha ao salvar a playlist, Tente mais tarde.</string>
@@ -95,7 +92,6 @@
     <string name="main.genres_title">Gêneros</string>
     <string name="main.music">Música</string>
     <string name="main.offline">Offline</string>
-    <string name="main.shuffle">Misturar Músicas</string>
     <string name="main.songs_random">Aleatórias</string>
     <string name="main.songs_starred">Favoritas</string>
     <string name="main.songs_title">Músicas</string>
@@ -106,26 +102,19 @@
     <string name="menu.deleted_playlist">Playlist apagada %s</string>
     <string name="menu.deleted_playlist_error">Falha ao apagar a playlist %s</string>
     <string name="menu.exit">Sair</string>
-    <string name="menu.navigation">Navegação</string>
     <string name="menu.settings">Configurações</string>
     <string name="menu.refresh">Refresh</string>
     <string name="music_library.label">Biblioteca de Mídia</string>
     <string name="music_library.label_offline">Mídia Offline</string>
-    <string name="music_service.retry">Ocorreu um erro de rede. Tentativa %1$d de %2$d.</string>
-    <string name="parser.artist_count">Obtive %d Artistas.</string>
-    <string name="parser.reading">Lendo do servidor.</string>
-    <string name="parser.reading_done">Lendo do servidor. Pronto!</string>
     <string name="playlist.label">Playlists</string>
     <string name="playlist.update_info">Atualizar Informação</string>
     <string name="playlist.updated_info">Informação da playlist atualizada para %s</string>
     <string name="playlist.updated_info_error">Falha ao atualizar a informação da playlist para %s</string>
-    <string name="progress.wait">Por favor aguarde&#8230;</string>
     <string name="search.albums">Álbuns</string>
     <string name="search.artists">Artistas</string>
     <string name="search.label">Pesquisar</string>
     <string name="search.more">Mostrar Mais</string>
     <string name="search.no_match">Nada coincide, tente novamente</string>
-    <string name="search.search">Clique para pesquisar</string>
     <string name="search.songs">Músicas</string>
     <string name="search.title">Pesquisar</string>
     <string name="select_album.empty">Nenhuma mídia encontrada</string>
@@ -135,7 +124,6 @@
     <string name="select_artist.folder">Selecionar Pasta</string>
     <string name="select_genre.empty">Nenhum gênero encontrado</string>
     <string name="select_playlist.empty">Não existe nenhuma playlist no servidor</string>
-    <string name="service.connecting">Contactando o servidor, por favor aguarde.</string>
     <string name="settings.appearance_title">Aparência</string>
     <string name="settings.buffer_length">Tamanho do Buffer</string>
     <string name="settings.buffer_length_0">Disabilitando</string>
@@ -175,8 +163,6 @@
     <string name="settings.chat_refresh">Intervalo de Atualização do Chat</string>
     <string name="settings.clear_bookmark">Limpar Favoritos</string>
     <string name="settings.clear_bookmark_summary">Limpar favoritos após terminar de tocar a música</string>
-    <string name="settings.clear_playlist">Limpar Playlist</string>
-    <string name="settings.clear_playlist_summary">Limpar a playlist após terminar de tocar todas as músicas</string>
     <string name="settings.clear_search_history">Limpar Histórico de Pesquisas</string>
     <string name="settings.connection_failure">Falha na conexão.</string>
     <string name="settings.default_albums">Álbuns Padrões</string>
@@ -193,14 +179,11 @@
     <string name="settings.disc_sort">Classificar Músicas por Álbum</string>
     <string name="settings.disc_sort_summary">Classificar músicas pelo número do álbum e faixas.</string>
     <string name="settings.display_bitrate_summary">Adiciona o nome do artista com a taxa de bits e sufixo do ficheiro</string>
-    <string name="settings.gapless_playback">Reprodução sem Interrupção</string>
-    <string name="settings.gapless_playback_summary">Habilita reprodução sem interrupção</string>
     <string name="settings.hide_media_summary">Esconder músicas de outros aplicativos.</string>
     <string name="settings.hide_media_title">Esconder de Outros</string>
     <string name="settings.hide_media_toast">Será realizado na próxima vez que o Android procurar por músicas em seu telemóvel.</string>
     <string name="settings.increment_time">Intervalo de Salto</string>
     <string name="settings.invalid_url">Especifique uma URL válida.</string>
-    <string name="settings.invalid_username">Especifique um nome de usuário válido (sem espaços).</string>
     <string name="settings.max_albums">Máximo de Álbuns</string>
     <string name="settings.max_artists">Máximo de Artistas</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
@@ -257,25 +240,13 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Histórico de pesquisas apagado</string>
     <string name="settings.search_title">Configurações de Pesquisa</string>
-    <string name="settings.send_bluetooth_notification_summary">Envia notificações de reprodução via Bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Notificações via Bluetooth</string>
-    <string name="settings.send_bluetooth_album_art_summary">Envia a arte do álbum via Bluetooth (Pode causar falhas nas notificações do Bluetooth)</string>
-    <string name="settings.send_bluetooth_album_art">Arte do Álbum via Bluetooth</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Endereço do Servidor</string>
     <string name="settings.server_name">Nome</string>
     <string name="settings.server_password">Senha</string>
-    <string name="settings.server_remove_server">Apagar Servidor</string>
     <string name="settings.server_scaling_summary">Descarrega imagens reduzidas do servidor ao invés do tamanho completo (economiza banda)</string>
     <string name="settings.server_scaling_title">Reduzir Arte dos Álbuns</string>
-    <string name="settings.server_unused">Não usado</string>
     <string name="settings.server_username">Login</string>
-    <string name="settings.show_lockscreen_controls">Controles no Ecrã de Bloqueio</string>
-    <string name="settings.show_lockscreen_controls_summary">Mostra controles de reprodução no ecrã de bloqueio</string>
-    <string name="settings.show_notification">Mostrar Notificações</string>
-    <string name="settings.show_notification_always">Sempre Mostrar Notificações</string>
-    <string name="settings.show_notification_always_summary">Sempre mostrar a reprodução atual quando uma playlist é preenchida</string>
-    <string name="settings.show_notification_summary">Mostra a notificação de reprodução atual na barra de estado</string>
     <string name="settings.show_now_playing">Mostrar Reprodução Atual</string>
     <string name="settings.show_now_playing_summary">Mostrar a faixa tocada atualmente em todas as atividades</string>
     <string name="settings.show_track_number">Mostrar o Número da Faixa</string>
@@ -358,10 +329,6 @@
     <plurals name="select_album_n_songs">
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>
-    </plurals>
-    <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">%d dia restante do período de teste</item>
-        <item quantity="other">%d dias restantes do período de teste</item>
     </plurals>
 
     <!-- Subsonic api errors -->

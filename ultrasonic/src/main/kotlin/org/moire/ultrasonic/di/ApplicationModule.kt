@@ -4,7 +4,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.subsonic.ImageLoaderProvider
-import org.moire.ultrasonic.util.MediaSessionHandler
 
 /**
  * This Koin module contains the registration of general classes needed for Ultrasonic
@@ -12,5 +11,4 @@ import org.moire.ultrasonic.util.MediaSessionHandler
 val applicationModule = module {
     single { ActiveServerProvider(get()) }
     single { ImageLoaderProvider(androidContext()) }
-    single { MediaSessionHandler() }
 }

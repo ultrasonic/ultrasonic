@@ -13,12 +13,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.view.KeyEvent
-import io.reactivex.rxjava3.disposables.Disposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp.Companion.applicationContext
-import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.Settings
@@ -27,60 +24,51 @@ import timber.log.Timber
 
 /**
  * This class is responsible for handling received events for the Media Player implementation
- *
- * @author Sindre Mehus
  */
 class MediaPlayerLifecycleSupport : KoinComponent {
     private val playbackStateSerializer by inject<PlaybackStateSerializer>()
     private val mediaPlayerController by inject<MediaPlayerController>()
-    private val downloader by inject<Downloader>()
 
     private var created = false
     private var headsetEventReceiver: BroadcastReceiver? = null
-    private var mediaButtonEventSubscription: Disposable? = null
 
     fun onCreate() {
         onCreate(false, null)
     }
 
-    private fun onCreate(autoPlay: Boolean, afterCreated: Runnable?) {
+    private fun onCreate(autoPlay: Boolean, afterRestore: Runnable?) {
 
         if (created) {
-            afterCreated?.run()
+            afterRestore?.run()
             return
         }
 
-        mediaButtonEventSubscription = RxBus.mediaButtonEventObservable.subscribe {
-            handleKeyEvent(it)
+        mediaPlayerController.onCreate {
+            restoreLastSession(autoPlay, afterRestore)
         }
 
         registerHeadsetReceiver()
-        mediaPlayerController.onCreate()
-        if (autoPlay) mediaPlayerController.preload()
 
+        CacheCleaner().clean()
+        created = true
+        Timber.i("LifecycleSupport created")
+    }
+
+    private fun restoreLastSession(autoPlay: Boolean, afterRestore: Runnable?) {
         playbackStateSerializer.deserialize {
 
+            Timber.i("Restoring %s songs", it!!.songs.size)
+
             mediaPlayerController.restore(
-                it!!.songs,
+                it.songs,
                 it.currentPlayingIndex,
                 it.currentPlayingPosition,
                 autoPlay,
                 false
             )
 
-            // Work-around: Serialize again, as the restore() method creates a
-            // serialization without current playing info.
-            playbackStateSerializer.serialize(
-                downloader.getPlaylist(),
-                downloader.currentPlayingIndex,
-                mediaPlayerController.playerPosition
-            )
-            afterCreated?.run()
+            afterRestore?.run()
         }
-
-        CacheCleaner().clean()
-        created = true
-        Timber.i("LifecycleSupport created")
     }
 
     fun onDestroy() {
@@ -88,13 +76,14 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         if (!created) return
 
         playbackStateSerializer.serializeNow(
-            downloader.getPlaylist(),
-            downloader.currentPlayingIndex,
+            mediaPlayerController.playList,
+            mediaPlayerController.currentMediaItemIndex,
             mediaPlayerController.playerPosition
         )
 
         mediaPlayerController.clear(false)
-        mediaButtonEventSubscription?.dispose()
+        RxBus.shutdownCommandPublisher.onNext(Unit)
+
         applicationContext().unregisterReceiver(headsetEventReceiver)
         mediaPlayerController.onDestroy()
 
@@ -129,11 +118,6 @@ class MediaPlayerLifecycleSupport : KoinComponent {
      */
     private fun registerHeadsetReceiver() {
 
-        val sp = Settings.preferences
-        val context = applicationContext()
-        val spKey = context
-            .getString(R.string.settings_playback_resume_play_on_headphones_plug)
-
         headsetEventReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val extras = intent.extras ?: return
@@ -148,12 +132,10 @@ class MediaPlayerLifecycleSupport : KoinComponent {
                     }
                 } else if (state == 1) {
                     if (!mediaPlayerController.isJukeboxEnabled &&
-                        sp.getBoolean(
-                                spKey,
-                                false
-                            ) && mediaPlayerController.playerState === PlayerState.PAUSED
+                        Settings.resumePlayOnHeadphonePlug && !mediaPlayerController.isPlaying
                     ) {
-                        mediaPlayerController.start()
+                        mediaPlayerController.prepare()
+                        mediaPlayerController.play()
                     }
                 }
             }
@@ -169,18 +151,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
 
         if (event.action != KeyEvent.ACTION_DOWN || event.repeatCount > 0) return
 
-        val keyCode: Int
-        val receivedKeyCode = event.keyCode
-
-        // Translate PLAY and PAUSE codes to PLAY_PAUSE to improve compatibility with old Bluetooth devices
-        keyCode = if (Settings.singleButtonPlayPause && (
-            receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PLAY ||
-                receivedKeyCode == KeyEvent.KEYCODE_MEDIA_PAUSE
-            )
-        ) {
-            Timber.i("Single button Play/Pause is set, rewriting keyCode to PLAY_PAUSE")
-            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
-        } else receivedKeyCode
+        val keyCode: Int = event.keyCode
 
         val autoStart =
             keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ||
@@ -197,14 +168,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
                 KeyEvent.KEYCODE_MEDIA_PREVIOUS -> mediaPlayerController.previous()
                 KeyEvent.KEYCODE_MEDIA_NEXT -> mediaPlayerController.next()
                 KeyEvent.KEYCODE_MEDIA_STOP -> mediaPlayerController.stop()
-
-                KeyEvent.KEYCODE_MEDIA_PLAY ->
-                    if (mediaPlayerController.playerState === PlayerState.IDLE) {
-                        mediaPlayerController.play()
-                    } else if (mediaPlayerController.playerState !== PlayerState.STARTED) {
-                        mediaPlayerController.start()
-                    }
-
+                KeyEvent.KEYCODE_MEDIA_PLAY -> mediaPlayerController.play()
                 KeyEvent.KEYCODE_MEDIA_PAUSE -> mediaPlayerController.pause()
                 KeyEvent.KEYCODE_1 -> mediaPlayerController.setSongRating(1)
                 KeyEvent.KEYCODE_2 -> mediaPlayerController.setSongRating(2)
@@ -222,28 +186,23 @@ class MediaPlayerLifecycleSupport : KoinComponent {
      * This function processes the intent that could come from other applications.
      */
     @Suppress("ComplexMethod")
-    private fun handleUltrasonicIntent(intentAction: String) {
+    private fun handleUltrasonicIntent(action: String) {
 
         val isRunning = created
 
         // If Ultrasonic is not running, do nothing to stop or pause
-        if (
-            !isRunning && (
-                intentAction == Constants.CMD_PAUSE ||
-                    intentAction == Constants.CMD_STOP
-                )
-        ) return
+        if (!isRunning && (action == Constants.CMD_PAUSE || action == Constants.CMD_STOP))
+            return
 
-        val autoStart =
-            intentAction == Constants.CMD_PLAY ||
-                intentAction == Constants.CMD_RESUME_OR_PLAY ||
-                intentAction == Constants.CMD_TOGGLEPAUSE ||
-                intentAction == Constants.CMD_PREVIOUS ||
-                intentAction == Constants.CMD_NEXT
+        val autoStart = action == Constants.CMD_PLAY ||
+            action == Constants.CMD_RESUME_OR_PLAY ||
+            action == Constants.CMD_TOGGLEPAUSE ||
+            action == Constants.CMD_PREVIOUS ||
+            action == Constants.CMD_NEXT
 
         // We can receive intents when everything is stopped, so we need to start
         onCreate(autoStart) {
-            when (intentAction) {
+            when (action) {
                 Constants.CMD_PLAY -> mediaPlayerController.play()
                 Constants.CMD_RESUME_OR_PLAY ->
                     // If Ultrasonic wasn't running, the autoStart is enough to resume,
@@ -253,12 +212,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
                 Constants.CMD_NEXT -> mediaPlayerController.next()
                 Constants.CMD_PREVIOUS -> mediaPlayerController.previous()
                 Constants.CMD_TOGGLEPAUSE -> mediaPlayerController.togglePlayPause()
-
-                Constants.CMD_STOP -> {
-                    // TODO: There is a stop() function, shouldn't we use that?
-                    mediaPlayerController.pause()
-                    mediaPlayerController.seekTo(0)
-                }
+                Constants.CMD_STOP -> mediaPlayerController.stop()
                 Constants.CMD_PAUSE -> mediaPlayerController.pause()
             }
         }

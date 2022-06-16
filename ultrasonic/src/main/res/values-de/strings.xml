@@ -41,11 +41,8 @@
     <string name="common.name">Name</string>
     <string name="common.ok">OK</string>
     <string name="common.pin">Anheften</string>
-    <string name="common.pause">Pause</string>
-    <string name="common.play">Abspielen</string>
     <string name="common.play_last">Zuletzt spielen</string>
     <string name="common.play_next">Als nächstes spielen</string>
-    <string name="common.play_previous">Vorheriges abspielen</string>
     <string name="common.play_now">Jetzt spielen</string>
     <string name="common.play_shuffled">Zufällig spielen</string>
     <string name="common.public">Öffentlich</string>
@@ -75,10 +72,7 @@
     <string name="download.menu_screen_on">Bildschirm an</string>
     <string name="download.menu_show_album">Album anzeigen</string>
     <string name="download.menu_shuffle">Mischen</string>
-    <string name="download.menu_shuffle_notification">Die Wiedergabeliste wurde gemischt</string>
     <string name="download.menu_visualizer">Grafik</string>
-    <string name="download.playerstate_buffering">Zwischenspeichern</string>
-    <string name="download.playerstate_downloading">Herunterladen - %s</string>
     <string name="download.playerstate_playing_shuffle">Wiedergabeliste mischen</string>
     <string name="download.playlist_done">Die Wiedergabeliste wurde gespeichert</string>
     <string name="download.playlist_error">Konnte die Wiedergabeliste nicht speichern, bitte später erneut versuchen.</string>
@@ -125,7 +119,6 @@
     <string name="main.music">Musik</string>
     <string name="main.offline">Offline</string>
     <string name="main.setup_server">%s - Server einrichten</string>
-    <string name="main.shuffle">Gemischte Wiedergabe</string>
     <string name="main.songs_random">Zufällig</string>
     <string name="main.songs_starred">Mit Stern</string>
     <string name="main.songs_title">Titel</string>
@@ -139,26 +132,19 @@
     <string name="menu.deleted_playlist_error">Löschen der Wiedergabeliste %s ist fehlgeschlagen</string>
     <string name="menu.downloads">Downloads</string>
     <string name="menu.exit">Beenden</string>
-    <string name="menu.navigation">Navigation</string>
     <string name="menu.settings">Einstellungen</string>
     <string name="menu.refresh">Aktualisierung</string>
     <string name="music_library.label">Medienbibliothek</string>
     <string name="music_library.label_offline">Offline Medien</string>
-    <string name="music_service.retry">Netzwerkfehler. Neuer Versuch %1$d von %2$d.</string>
-    <string name="parser.artist_count">%d Künstler*innen gefunden</string>
-    <string name="parser.reading">Lese vom Server.</string>
-    <string name="parser.reading_done">Lese vom Server. Fertig!</string>
     <string name="playlist.label">Wiedergabelisten</string>
     <string name="playlist.update_info">Aktualisierungs-Informationen</string>
     <string name="playlist.updated_info">Wiedergabeliste für %s aktualisiert</string>
     <string name="playlist.updated_info_error">Aktualisierung der Wiedergabeliste %s ist fehlgeschlagen</string>
-    <string name="progress.wait">Bitte warten&#8230;</string>
     <string name="search.albums">Alben</string>
     <string name="search.artists">Künstler*innen</string>
     <string name="search.label">Suche</string>
     <string name="search.more">Zeige mehr</string>
     <string name="search.no_match">Keine Treffer, bitte erneut versuchen</string>
-    <string name="search.search">Neue Suche</string>
     <string name="search.songs">Titel</string>
     <string name="search.title">Suche</string>
     <string name="select_album.empty">Keine Medien gefunden</string>
@@ -170,7 +156,6 @@
     <string name="select_artist.folder">Ordner wählen</string>
     <string name="select_genre.empty">Keine Genres gefunden</string>
     <string name="select_playlist.empty">Keine Wiedergabelisten auf dem Server</string>
-    <string name="service.connecting">Kontaktiere Server, bitte warten.</string>
     <string name="settings.appearance_title">Aussehen</string>
     <string name="settings.buffer_length">Puffer-Länge</string>
     <string name="settings.buffer_length_0">Deaktiviert</string>
@@ -211,8 +196,6 @@
     <string name="settings.chat_refresh">Chat Aktualisierungsintervall</string>
     <string name="settings.clear_bookmark">Lesezeichen löschen</string>
     <string name="settings.clear_bookmark_summary">Lesezeichen nach Wiedergabe löschen</string>
-    <string name="settings.clear_playlist">Wiedergabeliste löschen</string>
-    <string name="settings.clear_playlist_summary">Wiedergableliste nach Wiedergabe aller Titel löschen</string>
     <string name="settings.clear_search_history">Suchverlauf löschen</string>
     <string name="settings.connection_failure">Verbindungsfehler</string>
     <string name="settings.default_albums">Anzahl der Alben</string>
@@ -232,14 +215,11 @@
     <string name="settings.display_bitrate_summary">Bitrate und Dateityp hinter der Künstler*in anzeigen</string>
     <string name="settings.download_transition">Zeige Aktuelle Wiedergabe bei Play</string>
     <string name="settings.download_transition_summary">Zeige Aktuelle Wiedergabe nach dem Start der Wiedergabe in der Medienansicht</string>
-    <string name="settings.gapless_playback">Lückenlose Wiedergabe</string>
-    <string name="settings.gapless_playback_summary">Lückenlose Wiedergabe aktivieren</string>
     <string name="settings.hide_media_summary">Musikdateien vor anderen Apps verbergen</string>
     <string name="settings.hide_media_title">Vor anderen verbergen</string>
     <string name="settings.hide_media_toast">Wird beim nächsten Durchsuchen nach Musik durch Android wirksam.</string>
     <string name="settings.increment_time">Sprunglänge</string>
     <string name="settings.invalid_url">Bitte eine gültige URL angeben.</string>
-    <string name="settings.invalid_username">Bitte einen gültigen Benutzernamen eingeben (ohne führende Leerzeichen).</string>
     <string name="settings.max_albums">Max. Anzahl der Alben</string>
     <string name="settings.max_artists">Max. Anzahl der Künstler*innen</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
@@ -300,28 +280,14 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Suchhistorie gelöscht</string>
     <string name="settings.search_title">Sucheinstellungen</string>
-    <string name="settings.send_bluetooth_notification_summary">Wiedergabe-Benachrichtigungen über Bluetooth senden</string>
-    <string name="settings.send_bluetooth_notification">Bluetooth-Benachrichtigung</string>
-    <string name="settings.send_bluetooth_album_art_summary">Albumcover über Bluetooth versenden (kann dazu führen, dass Bluetooth-Benachrichtigungen fehlschlagen)</string>
-    <string name="settings.send_bluetooth_album_art">Album Cover über Bluetooth</string>
-    <string name="settings.disable_send_now_playing_list_summary">Die aktuellen Wiedergabeliste wird nicht an verbundene Geräte gesendet. Das kann die Kompatibilität mit AVRCP 1.3 Geräten herstellen, wenn die aktuelle Titelanzeige nicht dargestellt wird</string>
-    <string name="settings.disable_send_now_playing_list">Deaktiviere senden der aktuellen Wiedergabeliste</string>
     <string name="settings.server_manage_servers">Server verwalten</string>
     <string name="settings.server_address">Server Adresse</string>
     <string name="settings.server_name">Name</string>
     <string name="settings.server_password">Kennwort</string>
-    <string name="settings.server_remove_server">Server entfernen</string>
     <string name="settings.server_scaling_summary">Skalierte Cover vom Server laden (spart Bandbreite)</string>
     <string name="settings.server_scaling_title">Serverseitige Skalierung der Cover</string>
-    <string name="settings.server_unused">Unbenutzt</string>
     <string name="settings.server_username">Benutzername</string>
     <string name="settings.server_color">Server Farbe</string>
-    <string name="settings.show_lockscreen_controls">Steuerelemente auf Sperrbildschirm</string>
-    <string name="settings.show_lockscreen_controls_summary">Wiedergabeelemente auf dem Sperrbildschirm anzeigen</string>
-    <string name="settings.show_notification">Benachrichtigungen anzeigen</string>
-    <string name="settings.show_notification_always">Immer Benachrichtigungen zeigen</string>
-    <string name="settings.show_notification_always_summary">Benachrichtigung beim Abspielen immer anzeigen, wenn Einträge in der Wiedergabeliste sind</string>
-    <string name="settings.show_notification_summary">Abspielbenachrichtigung in der Statusleiste anzeigen</string>
     <string name="settings.show_now_playing">Aktuellen Titel anzeigen</string>
     <string name="settings.show_now_playing_summary">Aktuellen Titel in allen Aktivitäten anzeigen</string>
     <string name="settings.show_track_number">Titelnummer anzeigen</string>
@@ -401,8 +367,6 @@
     <string name="settings.playback.bluetooth_all">Alle Bluetooth Geräte</string>
     <string name="settings.playback.bluetooth_a2dp">Nur Audio (A2DP) Geräte</string>
     <string name="settings.playback.bluetooth_disabled">Deaktiviert</string>
-    <string name="settings.playback.single_button_bluetooth_device">Bluetooth Gerät mit einer Play/Pause Taste</string>
-    <string name="settings.playback.single_button_bluetooth_device_summary">Dies kann bei älteren Bluetooth Geräten helfen, wenn Play/Pause nicht richtig funktioniert</string>
     <string name="settings.debug.title">Debug Optionen</string>
     <string name="settings.debug.log_to_file">Schreibe Debug Log in Datei</string>
     <string name="settings.debug.log_path">Die Log Dateien sind unter %1$s/%2$s verfügbar</string>
@@ -454,10 +418,6 @@
     <plurals name="select_album_n_songs_play_next">
         <item quantity="one">%d Titel nach aktuellen Titel hinzugefügt</item>
         <item quantity="other">%d Titel nach aktuellen Titel hinzugefügt</item>
-    </plurals>
-    <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">%d Tag Testphase übrig</item>
-        <item quantity="other">%d Tage Testphase übrig</item>
     </plurals>
 
     <!-- Subsonic api errors -->

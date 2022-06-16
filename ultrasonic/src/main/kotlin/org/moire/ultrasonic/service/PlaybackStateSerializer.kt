@@ -9,8 +9,6 @@ package org.moire.ultrasonic.service
 
 import android.content.Context
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantLock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,35 +28,32 @@ class PlaybackStateSerializer : KoinComponent {
 
     private val context by inject<Context>()
 
-    private val lock: Lock = ReentrantLock()
-    private val setup = AtomicBoolean(false)
-
-    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     fun serialize(
         songs: Iterable<DownloadFile>,
         currentPlayingIndex: Int,
         currentPlayingPosition: Int
     ) {
-        if (!setup.get()) return
+        if (isSerializing.get() || !isSetup.get()) return
 
-        appScope.launch {
-            if (lock.tryLock()) {
-                try {
-                    serializeNow(songs, currentPlayingIndex, currentPlayingPosition)
-                } finally {
-                    lock.unlock()
-                }
-            }
+        isSerializing.set(true)
+
+        ioScope.launch {
+            serializeNow(songs, currentPlayingIndex, currentPlayingPosition)
+        }.invokeOnCompletion {
+            isSerializing.set(false)
         }
     }
 
     fun serializeNow(
-        songs: Iterable<DownloadFile>,
+        referencedList: Iterable<DownloadFile>,
         currentPlayingIndex: Int,
         currentPlayingPosition: Int
     ) {
         val state = State()
+        val songs = referencedList.toList()
 
         for (downloadFile in songs) {
             state.songs.add(downloadFile.track)
@@ -77,16 +72,15 @@ class PlaybackStateSerializer : KoinComponent {
     }
 
     fun deserialize(afterDeserialized: (State?) -> Unit?) {
-
-        appScope.launch {
+        if (isDeserializing.get()) return
+        ioScope.launch {
             try {
-                lock.lock()
                 deserializeNow(afterDeserialized)
-                setup.set(true)
+                isSetup.set(true)
             } catch (all: Exception) {
                 Timber.e(all, "Had a problem deserializing:")
             } finally {
-                lock.unlock()
+                isDeserializing.set(false)
             }
         }
     }
@@ -103,6 +97,14 @@ class PlaybackStateSerializer : KoinComponent {
             state.currentPlayingPosition
         )
 
-        afterDeserialized(state)
+        mainScope.launch {
+            afterDeserialized(state)
+        }
+    }
+
+    companion object {
+        private val isSetup = AtomicBoolean(false)
+        private val isSerializing = AtomicBoolean(false)
+        private val isDeserializing = AtomicBoolean(false)
     }
 }

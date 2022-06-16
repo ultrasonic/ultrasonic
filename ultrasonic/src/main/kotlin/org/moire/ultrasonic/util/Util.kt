@@ -9,10 +9,8 @@ package org.moire.ultrasonic.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -28,18 +26,13 @@ import android.net.Uri
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.WifiLock
 import android.os.Build
-import android.os.Bundle
 import android.os.Environment
-import android.os.Parcelable
-import android.support.v4.media.MediaDescriptionCompat
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.AnyRes
-import androidx.media.utils.MediaConstants
 import java.io.Closeable
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
@@ -53,10 +46,8 @@ import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp.Companion.applicationContext
 import org.moire.ultrasonic.domain.Bookmark
 import org.moire.ultrasonic.domain.MusicDirectory
-import org.moire.ultrasonic.domain.PlayerState
 import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Track
-import org.moire.ultrasonic.service.DownloadFile
 import timber.log.Timber
 
 private const val LINE_LENGTH = 60
@@ -77,11 +68,6 @@ object Util {
     private var MEGA_BYTE_LOCALIZED_FORMAT: DecimalFormat? = null
     private var KILO_BYTE_LOCALIZED_FORMAT: DecimalFormat? = null
     private var BYTE_LOCALIZED_FORMAT: DecimalFormat? = null
-    private const val EVENT_META_CHANGED = "org.moire.ultrasonic.EVENT_META_CHANGED"
-    private const val EVENT_PLAYSTATE_CHANGED = "org.moire.ultrasonic.EVENT_PLAYSTATE_CHANGED"
-    private const val CM_AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged"
-    private const val CM_AVRCP_PLAYBACK_COMPLETE = "com.android.music.playbackcomplete"
-    private const val CM_AVRCP_METADATA_CHANGED = "com.android.music.metachanged"
 
     // Used by hexEncode()
     private val HEX_DIGITS =
@@ -448,150 +434,6 @@ object Util {
         return musicDirectory
     }
 
-    /**
-     * Broadcasts the given song info as the new song being played.
-     */
-    fun broadcastNewTrackInfo(context: Context, song: Track?) {
-        val intent = Intent(EVENT_META_CHANGED)
-        if (song != null) {
-            intent.putExtra("title", song.title)
-            intent.putExtra("artist", song.artist)
-            intent.putExtra("album", song.album)
-            val albumArtFile = FileUtil.getAlbumArtFile(song)
-            intent.putExtra("coverart", albumArtFile)
-        } else {
-            intent.putExtra("title", "")
-            intent.putExtra("artist", "")
-            intent.putExtra("album", "")
-            intent.putExtra("coverart", "")
-        }
-        context.sendBroadcast(intent)
-    }
-
-    fun broadcastA2dpMetaDataChange(
-        context: Context,
-        playerPosition: Int,
-        currentPlaying: DownloadFile?,
-        listSize: Int,
-        id: Int
-    ) {
-        if (!Settings.shouldSendBluetoothNotifications) return
-
-        var song: Track? = null
-        val avrcpIntent = Intent(CM_AVRCP_METADATA_CHANGED)
-        if (currentPlaying != null) song = currentPlaying.track
-
-        fillIntent(avrcpIntent, song, playerPosition, id, listSize)
-
-        context.sendBroadcast(avrcpIntent)
-    }
-
-    @Suppress("LongParameterList")
-    fun broadcastA2dpPlayStatusChange(
-        context: Context,
-        state: PlayerState?,
-        newSong: Track?,
-        listSize: Int,
-        id: Int,
-        playerPosition: Int
-    ) {
-        if (!Settings.shouldSendBluetoothNotifications) return
-
-        if (newSong != null) {
-
-            val avrcpIntent = Intent(
-                if (state == PlayerState.COMPLETED) CM_AVRCP_PLAYBACK_COMPLETE
-                else CM_AVRCP_PLAYSTATE_CHANGED
-            )
-
-            fillIntent(avrcpIntent, newSong, playerPosition, id, listSize)
-
-            if (state != PlayerState.COMPLETED) {
-                when (state) {
-                    PlayerState.STARTED -> avrcpIntent.putExtra("playing", true)
-                    PlayerState.STOPPED,
-                    PlayerState.PAUSED -> avrcpIntent.putExtra("playing", false)
-                    else -> return // No need to broadcast.
-                }
-            }
-
-            context.sendBroadcast(avrcpIntent)
-        }
-    }
-
-    private fun fillIntent(
-        intent: Intent,
-        song: Track?,
-        playerPosition: Int,
-        id: Int,
-        listSize: Int
-    ) {
-        if (song == null) {
-            intent.putExtra("track", "")
-            intent.putExtra("track_name", "")
-            intent.putExtra("artist", "")
-            intent.putExtra("artist_name", "")
-            intent.putExtra("album", "")
-            intent.putExtra("album_name", "")
-            intent.putExtra("album_artist", "")
-            intent.putExtra("album_artist_name", "")
-
-            if (Settings.shouldSendBluetoothAlbumArt) {
-                intent.putExtra("coverart", null as Parcelable?)
-                intent.putExtra("cover", null as Parcelable?)
-            }
-
-            intent.putExtra("ListSize", 0.toLong())
-            intent.putExtra("id", 0.toLong())
-            intent.putExtra("duration", 0.toLong())
-            intent.putExtra("position", 0.toLong())
-        } else {
-            val title = song.title
-            val artist = song.artist
-            val album = song.album
-            val duration = song.duration
-
-            intent.putExtra("track", title)
-            intent.putExtra("track_name", title)
-            intent.putExtra("artist", artist)
-            intent.putExtra("artist_name", artist)
-            intent.putExtra("album", album)
-            intent.putExtra("album_name", album)
-            intent.putExtra("album_artist", artist)
-            intent.putExtra("album_artist_name", artist)
-
-            if (Settings.shouldSendBluetoothAlbumArt) {
-                val albumArtFile = FileUtil.getAlbumArtFile(song)
-                intent.putExtra("coverart", albumArtFile)
-                intent.putExtra("cover", albumArtFile)
-            }
-
-            intent.putExtra("position", playerPosition.toLong())
-            intent.putExtra("id", id.toLong())
-            intent.putExtra("ListSize", listSize.toLong())
-
-            if (duration != null) {
-                intent.putExtra("duration", duration.toLong())
-            }
-        }
-    }
-
-    /**
-     *
-     * Broadcasts the given player state as the one being set.
-     */
-    fun broadcastPlaybackStatusChange(context: Context, state: PlayerState?) {
-        val intent = Intent(EVENT_PLAYSTATE_CHANGED)
-        when (state) {
-            PlayerState.STARTED -> intent.putExtra("state", "play")
-            PlayerState.STOPPED -> intent.putExtra("state", "stop")
-            PlayerState.PAUSED -> intent.putExtra("state", "pause")
-            PlayerState.COMPLETED -> intent.putExtra("state", "complete")
-            else -> return // No need to broadcast.
-        }
-        context.sendBroadcast(intent)
-    }
-
     @JvmStatic
     @Suppress("MagicNumber")
     fun getNotificationImageSize(context: Context): Int {
@@ -776,39 +618,6 @@ object Util {
         var fileFormat: String?,
     )
 
-    fun getMediaDescriptionForEntry(
-        song: Track,
-        mediaId: String? = null,
-        groupNameId: Int? = null
-    ): MediaDescriptionCompat {
-
-        val descriptionBuilder = MediaDescriptionCompat.Builder()
-        val desc = readableEntryDescription(song)
-        val title: String
-
-        if (groupNameId != null)
-            descriptionBuilder.setExtras(
-                Bundle().apply {
-                    putString(
-                        MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE,
-                        appContext().getString(groupNameId)
-                    )
-                }
-            )
-
-        if (desc.trackNumber.isNotEmpty()) {
-            title = "${desc.trackNumber} - ${desc.title}"
-        } else {
-            title = desc.title
-        }
-
-        descriptionBuilder.setTitle(title)
-        descriptionBuilder.setSubtitle(desc.artist)
-        descriptionBuilder.setMediaId(mediaId)
-
-        return descriptionBuilder.build()
-    }
-
     @Suppress("ComplexMethod", "LongMethod")
     fun readableEntryDescription(song: Track): ReadableEntryDescription {
         val artist = StringBuilder(LINE_LENGTH)
@@ -878,18 +687,6 @@ object Util {
             bitrate = bitRate,
             fileFormat = fileFormat,
         )
-    }
-
-    fun getPendingIntentForMediaAction(
-        context: Context,
-        keycode: Int,
-        requestCode: Int
-    ): PendingIntent {
-        val intent = Intent(Constants.CMD_PROCESS_KEYCODE)
-        val flags = PendingIntent.FLAG_UPDATE_CURRENT
-        intent.setPackage(context.packageName)
-        intent.putExtra(Intent.EXTRA_KEY_EVENT, KeyEvent(KeyEvent.ACTION_DOWN, keycode))
-        return PendingIntent.getBroadcast(context, requestCode, intent, flags)
     }
 
     fun getConnectivityManager(): ConnectivityManager {

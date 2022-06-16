@@ -9,56 +9,17 @@ package org.moire.ultrasonic.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import androidx.preference.PreferenceManager
 import java.util.regex.Pattern
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp
 import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.domain.RepeatMode
 
 /**
  * Contains convenience functions for reading and writing preferences
  */
 object Settings {
     private val PATTERN = Pattern.compile(":")
-
-    var repeatMode: RepeatMode
-        get() {
-            val preferences = preferences
-            return RepeatMode.valueOf(
-                preferences.getString(
-                    Constants.PREFERENCES_KEY_REPEAT_MODE,
-                    RepeatMode.OFF.name
-                )!!
-            )
-        }
-        set(repeatMode) {
-            val preferences = preferences
-            val editor = preferences.edit()
-            editor.putString(Constants.PREFERENCES_KEY_REPEAT_MODE, repeatMode.name)
-            editor.apply()
-        }
-
-    // After API26 foreground services must be used for music playback,
-    // and they must have a notification
-    val isNotificationEnabled: Boolean
-        get() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_NOTIFICATION, false)
-        }
-
-    // After API26 foreground services must be used for music playback,
-    // and they must have a notification
-    val isNotificationAlwaysEnabled: Boolean
-        get() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) return true
-            val preferences = preferences
-            return preferences.getBoolean(Constants.PREFERENCES_KEY_ALWAYS_SHOW_NOTIFICATION, false)
-        }
-
-    var isLockScreenEnabled by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_LOCK_SCREEN_CONTROLS)
 
     @JvmStatic
     var theme by StringSetting(
@@ -164,24 +125,30 @@ object Settings {
         by StringIntSetting(Constants.PREFERENCES_KEY_DEFAULT_ARTISTS, "3")
 
     @JvmStatic
-    var bufferLength
-        by StringIntSetting(Constants.PREFERENCES_KEY_BUFFER_LENGTH, "5")
-
-    @JvmStatic
     var incrementTime
         by StringIntSetting(Constants.PREFERENCES_KEY_INCREMENT_TIME, "5")
 
     @JvmStatic
     var mediaButtonsEnabled
         by BooleanSetting(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true)
+    var resumePlayOnHeadphonePlug
+        by BooleanSetting(R.string.setting_keys_resume_play_on_headphones_plug, true)
+
+    @JvmStatic
+    var resumeOnBluetoothDevice by IntSetting(
+        Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE,
+        Constants.PREFERENCE_VALUE_DISABLED
+    )
+
+    @JvmStatic
+    var pauseOnBluetoothDevice by IntSetting(
+        Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE,
+        Constants.PREFERENCE_VALUE_A2DP
+    )
 
     @JvmStatic
     var showNowPlaying
         by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING, true)
-
-    @JvmStatic
-    var gaplessPlayback
-        by BooleanSetting(Constants.PREFERENCES_KEY_GAPLESS_PLAYBACK, false)
 
     @JvmStatic
     var shouldTransitionOnPlayback by BooleanSetting(
@@ -196,9 +163,6 @@ object Settings {
     @JvmStatic
     var shouldUseId3Tags
         by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
-
-    @JvmStatic
-    var tempLoss by StringIntSetting(Constants.PREFERENCES_KEY_TEMP_LOSS, "1")
 
     var activeServer by IntSetting(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1)
 
@@ -227,36 +191,11 @@ object Settings {
         "300"
     )
 
-    var shouldClearPlaylist
-        by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_PLAYLIST, false)
-
     var shouldSortByDisc
         by BooleanSetting(Constants.PREFERENCES_KEY_DISC_SORT, false)
 
     var shouldClearBookmark
         by BooleanSetting(Constants.PREFERENCES_KEY_CLEAR_BOOKMARK, false)
-
-    var singleButtonPlayPause
-        by BooleanSetting(
-            Constants.PREFERENCES_KEY_SINGLE_BUTTON_PLAY_PAUSE,
-            false
-        )
-
-    // Inverted for readability
-    var shouldSendBluetoothNotifications by BooleanSetting(
-        Constants.PREFERENCES_KEY_SEND_BLUETOOTH_NOTIFICATIONS,
-        true
-    )
-
-    var shouldSendBluetoothAlbumArt
-        by BooleanSetting(Constants.PREFERENCES_KEY_SEND_BLUETOOTH_ALBUM_ART, true)
-
-    var shouldDisableNowPlayingListSending
-        by BooleanSetting(Constants.PREFERENCES_KEY_DISABLE_SEND_NOW_PLAYING_LIST, false)
-
-    @JvmStatic
-    var viewRefreshInterval
-        by StringIntSetting(Constants.PREFERENCES_KEY_VIEW_REFRESH, "1000")
 
     var shouldAskForShareDetails
         by BooleanSetting(Constants.PREFERENCES_KEY_ASK_FOR_SHARE_DETAILS, true)
@@ -301,18 +240,6 @@ object Settings {
         }
 
     @JvmStatic
-    var resumeOnBluetoothDevice by IntSetting(
-        Constants.PREFERENCES_KEY_RESUME_ON_BLUETOOTH_DEVICE,
-        Constants.PREFERENCE_VALUE_DISABLED
-    )
-
-    @JvmStatic
-    var pauseOnBluetoothDevice by IntSetting(
-        Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE,
-        Constants.PREFERENCE_VALUE_A2DP
-    )
-
-    @JvmStatic
     var debugLogToFile by BooleanSetting(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE, false)
 
     @JvmStatic
@@ -323,6 +250,8 @@ object Settings {
     val overrideLanguage by StringSetting(Constants.PREFERENCES_KEY_OVERRIDE_LANGUAGE, "")
 
     var useFiveStarRating by BooleanSetting(Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING, false)
+
+    var useHwOffload by BooleanSetting(Constants.PREFERENCES_KEY_HARDWARE_OFFLOAD, false)
 
     // TODO: Remove in December 2022
     fun migrateFeatureStorage() {

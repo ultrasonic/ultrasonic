@@ -76,4 +76,8 @@ class BooleanSetting(private val key: String, private val defaultValue: Boolean 
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: Boolean) =
         sharedPreferences.edit { putBoolean(key, value) }
+
+    constructor(stringId: Int, defaultValue: Boolean = false) : this(
+        Util.appContext().getString(stringId), defaultValue
+    )
 }

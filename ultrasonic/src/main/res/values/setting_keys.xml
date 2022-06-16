@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="setting_keys.resume_play_on_headphones_plug" translatable="false">playback.resume_play_on_headphones_plug</string>
+</resources>

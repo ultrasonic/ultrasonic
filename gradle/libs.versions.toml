@@ -11,6 +11,7 @@ detekt                 = "1.19.0"
 jacoco                 = "0.8.7"
 preferences            = "1.1.1"
 media                  = "1.3.1"
+media3                 = "1.0.0-alpha03"
 
 androidSupport         = "28.0.0"
 androidLegacySupport   = "1.0.0"
@@ -20,6 +21,7 @@ multidex               = "2.0.1"
 room                   = "2.4.0"
 kotlin                 = "1.6.10"
 kotlinxCoroutines      = "1.6.0-native-mt"
+kotlinxGuava           = "1.6.0"
 viewModelKtx           = "2.3.0"
 
 retrofit               = "2.9.0"
@@ -66,10 +68,14 @@ navigationUiKtx         = { module = "androidx.navigation:navigation-ui-ktx", ve
 navigationFeature       = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigation" }
 preferences             = { module = "androidx.preference:preference", version.ref = "preferences" }
 media                   = { module = "androidx.media:media", version.ref = "media" }
+media3exoplayer         = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+media3okhttp            = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "media3" }
+media3session           = { module = "androidx.media3:media3-session", version.ref = "media3" }
 
 kotlinStdlib            = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinReflect           = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinxCoroutines       = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinxGuava            = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "kotlinxGuava"}
 retrofit                = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 gsonConverter           = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 jacksonConverter        = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit" }

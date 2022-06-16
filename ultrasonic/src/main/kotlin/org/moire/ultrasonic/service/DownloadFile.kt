@@ -7,27 +7,18 @@
 
 package org.moire.ultrasonic.service
 
-import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
+import androidx.media3.common.MediaItem
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 import java.util.Locale
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.moire.ultrasonic.data.ActiveServerProvider
-import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.Track
-import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
-import org.moire.ultrasonic.subsonic.ImageLoaderProvider
-import org.moire.ultrasonic.util.CacheCleaner
 import org.moire.ultrasonic.util.CancellableTask
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.Util
-import org.moire.ultrasonic.util.Util.safeClose
 import timber.log.Timber
 
 /**
@@ -44,29 +35,22 @@ class DownloadFile(
 ) : KoinComponent, Identifiable {
     val partialFile: String
     lateinit var completeFile: String
-    val saveFile: String = FileUtil.getSongFile(track)
+    val pinnedFile: String = FileUtil.getSongFile(track)
     var shouldSave = save
-    private var downloadTask: CancellableTask? = null
+    internal var downloadTask: CancellableTask? = null
     var isFailed = false
-    private var retryCount = MAX_RETRIES
+    internal var retryCount = MAX_RETRIES
 
-    private val desiredBitRate: Int = Settings.maxBitRate
+    val desiredBitRate: Int = Settings.maxBitRate
 
     var priority = 100
     var downloadPrepared = false
 
     @Volatile
-    private var isPlaying = false
+    internal var saveWhenDone = false
 
     @Volatile
-    private var saveWhenDone = false
-
-    @Volatile
-    private var completeWhenDone = false
-
-    private val downloader: Downloader by inject()
-    private val imageLoaderProvider: ImageLoaderProvider by inject()
-    private val activeServerProvider: ActiveServerProvider by inject()
+    var completeWhenDone = false
 
     val progress: MutableLiveData<Int> = MutableLiveData(0)
 
@@ -78,7 +62,7 @@ class DownloadFile(
 
     private val lazyInitialStatus: Lazy<DownloadStatus> = lazy {
         when {
-            Storage.isPathExists(saveFile) -> {
+            Storage.isPathExists(pinnedFile) -> {
                 DownloadStatus.PINNED
             }
             Storage.isPathExists(completeFile) -> {
@@ -95,10 +79,10 @@ class DownloadFile(
     }
 
     init {
-        partialFile = FileUtil.getParentPath(saveFile) + "/" +
-            FileUtil.getPartialFile(FileUtil.getNameFromPath(saveFile))
-        completeFile = FileUtil.getParentPath(saveFile) + "/" +
-            FileUtil.getCompleteFile(FileUtil.getNameFromPath(saveFile))
+        partialFile = FileUtil.getParentPath(pinnedFile) + "/" +
+            FileUtil.getPartialFile(FileUtil.getNameFromPath(pinnedFile))
+        completeFile = FileUtil.getParentPath(pinnedFile) + "/" +
+            FileUtil.getCompleteFile(FileUtil.getNameFromPath(pinnedFile))
     }
 
     /**
@@ -116,43 +100,28 @@ class DownloadFile(
     }
 
     @Synchronized
-    fun download() {
-        FileUtil.createDirectoryForParent(saveFile)
-        isFailed = false
-        downloadTask = DownloadTask()
-        downloadTask!!.start()
-    }
-
-    @Synchronized
     fun cancelDownload() {
         downloadTask?.cancel()
     }
 
     val completeOrSaveFile: String
-        get() = if (Storage.isPathExists(saveFile)) {
-            saveFile
+        get() = if (Storage.isPathExists(pinnedFile)) {
+            pinnedFile
         } else {
             completeFile
         }
 
-    val completeOrPartialFile: String
-        get() = if (isCompleteFileAvailable) {
-            completeOrSaveFile
-        } else {
-            partialFile
-        }
-
     val isSaved: Boolean
-        get() = Storage.isPathExists(saveFile)
+        get() = Storage.isPathExists(pinnedFile)
 
     @get:Synchronized
     val isCompleteFileAvailable: Boolean
-        get() = Storage.isPathExists(completeFile) || Storage.isPathExists(saveFile)
+        get() = Storage.isPathExists(completeFile) || Storage.isPathExists(pinnedFile)
 
     @get:Synchronized
     val isWorkDone: Boolean
         get() = Storage.isPathExists(completeFile) && !shouldSave ||
-            Storage.isPathExists(saveFile) || saveWhenDone || completeWhenDone
+            Storage.isPathExists(pinnedFile) || saveWhenDone || completeWhenDone
 
     @get:Synchronized
     val isDownloading: Boolean
@@ -170,54 +139,66 @@ class DownloadFile(
         cancelDownload()
         Storage.delete(partialFile)
         Storage.delete(completeFile)
-        Storage.delete(saveFile)
+        Storage.delete(pinnedFile)
 
         status.postValue(DownloadStatus.IDLE)
 
-        Util.scanMedia(saveFile)
+        Util.scanMedia(pinnedFile)
     }
 
     fun unpin() {
-        val file = Storage.getFromPath(saveFile) ?: return
+        Timber.e("CLEANING")
+        val file = Storage.getFromPath(pinnedFile) ?: return
         Storage.rename(file, completeFile)
         status.postValue(DownloadStatus.DONE)
     }
 
     fun cleanup(): Boolean {
+        Timber.e("CLEANING")
         var ok = true
-        if (Storage.isPathExists(completeFile) || Storage.isPathExists(saveFile)) {
+        if (Storage.isPathExists(completeFile) || Storage.isPathExists(pinnedFile)) {
             ok = Storage.delete(partialFile)
         }
 
-        if (Storage.isPathExists(saveFile)) {
+        if (Storage.isPathExists(pinnedFile)) {
             ok = ok and Storage.delete(completeFile)
         }
 
         return ok
     }
 
-    fun setPlaying(isPlaying: Boolean) {
-        if (!isPlaying) doPendingRename()
-        this.isPlaying = isPlaying
+    /**
+     * Create a MediaItem instance representing the data inside this DownloadFile
+     */
+    val mediaItem: MediaItem by lazy {
+        track.toMediaItem()
     }
+
+    var isPlaying: Boolean = false
+        get() = field
+        set(isPlaying) {
+            if (!isPlaying) doPendingRename()
+            field = isPlaying
+        }
 
     // Do a pending rename after the song has stopped playing
     private fun doPendingRename() {
         try {
+            Timber.e("CLEANING")
             if (saveWhenDone) {
-                Storage.rename(completeFile, saveFile)
+                Storage.rename(completeFile, pinnedFile)
                 saveWhenDone = false
             } else if (completeWhenDone) {
                 if (shouldSave) {
-                    Storage.rename(partialFile, saveFile)
-                    Util.scanMedia(saveFile)
+                    Storage.rename(partialFile, pinnedFile)
+                    Util.scanMedia(pinnedFile)
                 } else {
                     Storage.rename(partialFile, completeFile)
                 }
                 completeWhenDone = false
             }
         } catch (e: IOException) {
-            Timber.w(e, "Failed to rename file %s to %s", completeFile, saveFile)
+            Timber.w(e, "Failed to rename file %s to %s", completeFile, pinnedFile)
         }
     }
 
@@ -225,176 +206,7 @@ class DownloadFile(
         return String.format(Locale.ROOT, "DownloadFile (%s)", track)
     }
 
-    private inner class DownloadTask : CancellableTask() {
-        val musicService = getMusicService()
-
-        override fun execute() {
-
-            downloadPrepared = false
-            var inputStream: InputStream? = null
-            var outputStream: OutputStream? = null
-            try {
-                if (Storage.isPathExists(saveFile)) {
-                    Timber.i("%s already exists. Skipping.", saveFile)
-                    status.postValue(DownloadStatus.PINNED)
-                    return
-                }
-
-                if (Storage.isPathExists(completeFile)) {
-                    var newStatus: DownloadStatus = DownloadStatus.DONE
-                    if (shouldSave) {
-                        if (isPlaying) {
-                            saveWhenDone = true
-                        } else {
-                            Storage.rename(completeFile, saveFile)
-                            newStatus = DownloadStatus.PINNED
-                        }
-                    } else {
-                        Timber.i("%s already exists. Skipping.", completeFile)
-                    }
-                    status.postValue(newStatus)
-                    return
-                }
-
-                status.postValue(DownloadStatus.DOWNLOADING)
-
-                // Some devices seem to throw error on partial file which doesn't exist
-                val needsDownloading: Boolean
-                val duration = track.duration
-                val fileLength = Storage.getFromPath(partialFile)?.length ?: 0
-
-                needsDownloading = (
-                    desiredBitRate == 0 || duration == null || duration == 0 || fileLength == 0L
-                    )
-
-                if (needsDownloading) {
-                    // Attempt partial HTTP GET, appending to the file if it exists.
-                    val (inStream, isPartial) = musicService.getDownloadInputStream(
-                        track, fileLength, desiredBitRate, shouldSave
-                    )
-
-                    inputStream = inStream
-
-                    if (isPartial) {
-                        Timber.i("Executed partial HTTP GET, skipping %d bytes", fileLength)
-                    }
-
-                    outputStream = Storage.getOrCreateFileFromPath(partialFile)
-                        .getFileOutputStream(isPartial)
-
-                    val len = inputStream.copyTo(outputStream) { totalBytesCopied ->
-                        setProgress(totalBytesCopied)
-                    }
-
-                    Timber.i("Downloaded %d bytes to %s", len, partialFile)
-
-                    inputStream.close()
-                    outputStream.flush()
-                    outputStream.close()
-
-                    if (isCancelled) {
-                        status.postValue(DownloadStatus.CANCELLED)
-                        throw RuntimeException(
-                            String.format(Locale.ROOT, "Download of '%s' was cancelled", track)
-                        )
-                    }
-
-                    if (track.artistId != null) {
-                        cacheMetadata(track.artistId!!)
-                    }
-
-                    downloadAndSaveCoverArt()
-                }
-
-                if (isPlaying) {
-                    completeWhenDone = true
-                } else {
-                    if (shouldSave) {
-                        Storage.rename(partialFile, saveFile)
-                        status.postValue(DownloadStatus.PINNED)
-                        Util.scanMedia(saveFile)
-                    } else {
-                        Storage.rename(partialFile, completeFile)
-                        status.postValue(DownloadStatus.DONE)
-                    }
-                }
-            } catch (all: Exception) {
-                outputStream.safeClose()
-                Storage.delete(completeFile)
-                Storage.delete(saveFile)
-                if (!isCancelled) {
-                    isFailed = true
-                    if (retryCount > 1) {
-                        status.postValue(DownloadStatus.RETRYING)
-                        --retryCount
-                    } else if (retryCount == 1) {
-                        status.postValue(DownloadStatus.FAILED)
-                        --retryCount
-                    }
-                    Timber.w(all, "Failed to download '%s'.", track)
-                }
-            } finally {
-                inputStream.safeClose()
-                outputStream.safeClose()
-                CacheCleaner().cleanSpace()
-                downloader.checkDownloads()
-            }
-        }
-
-        override fun toString(): String {
-            return String.format(Locale.ROOT, "DownloadTask (%s)", track)
-        }
-
-        private fun cacheMetadata(artistId: String) {
-            // TODO: Right now it's caching the track artist.
-            // Once the albums are cached in db, we should retrieve the album,
-            // and then cache the album artist.
-            if (artistId.isEmpty()) return
-            var artist: Artist? =
-                activeServerProvider.getActiveMetaDatabase().artistsDao().get(artistId)
-
-            // If we are downloading a new album, and the user has not visited the Artists list
-            // recently, then the artist won't be in the database.
-            if (artist == null) {
-                val artists: List<Artist> = musicService.getArtists(true)
-                artist = artists.find {
-                    it.id == artistId
-                }
-            }
-
-            // If we have found an artist, catch it.
-            if (artist != null) {
-                activeServerProvider.offlineMetaDatabase.artistsDao().insert(artist)
-            }
-        }
-
-        private fun downloadAndSaveCoverArt() {
-            try {
-                if (!TextUtils.isEmpty(track.coverArt)) {
-                    // Download the largest size that we can display in the UI
-                    imageLoaderProvider.getImageLoader().cacheCoverArt(track)
-                }
-            } catch (all: Exception) {
-                Timber.e(all, "Failed to get cover art.")
-            }
-        }
-
-        @Throws(IOException::class)
-        fun InputStream.copyTo(out: OutputStream, onCopy: (totalBytesCopied: Long) -> Any): Long {
-            var bytesCopied: Long = 0
-            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-            var bytes = read(buffer)
-            while (!isCancelled && bytes >= 0) {
-                out.write(buffer, 0, bytes)
-                bytesCopied += bytes
-                onCopy(bytesCopied)
-                bytes = read(buffer)
-            }
-            return bytesCopied
-        }
-    }
-
-    private fun setProgress(totalBytesCopied: Long) {
+    internal fun setProgress(totalBytesCopied: Long) {
         if (track.size != null) {
             progress.postValue((totalBytesCopied * 100 / track.size!!).toInt())
         }

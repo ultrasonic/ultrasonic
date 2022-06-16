@@ -41,11 +41,8 @@
     <string name="common.name">Naam</string>
     <string name="common.ok">Oké</string>
     <string name="common.pin">Vastmaken</string>
-    <string name="common.pause">Pauzeren</string>
-    <string name="common.play">Afspelen</string>
     <string name="common.play_last">Laatste afspelen</string>
     <string name="common.play_next">Volgende afspelen</string>
-    <string name="common.play_previous">Vorige afspelen</string>
     <string name="common.play_now">Nu afspelen</string>
     <string name="common.play_shuffled">Willekeurig afspelen</string>
     <string name="common.public">Openbaar</string>
@@ -75,10 +72,7 @@
     <string name="download.menu_screen_on">Scherm aan</string>
     <string name="download.menu_show_album">Album tonen</string>
     <string name="download.menu_shuffle">Willekeurig</string>
-    <string name="download.menu_shuffle_notification">Afspeellijst wordt willekeurig afgespeeld</string>
     <string name="download.menu_visualizer">Visualisatie</string>
-    <string name="download.playerstate_buffering">Bezig met bufferen</string>
-    <string name="download.playerstate_downloading">Bezig met downloaden - %s</string>
     <string name="download.playerstate_playing_shuffle">Bezig met willekeurig afspelen</string>
     <string name="download.playlist_done">Afspeellijst is opgeslagen.</string>
     <string name="download.playlist_error">Afspeellijst kan niet worden opgeslagen. Probeer het later opnieuw.</string>
@@ -125,7 +119,6 @@
     <string name="main.music">Muziek</string>
     <string name="main.offline">Offline</string>
     <string name="main.setup_server">%s - Server instellen</string>
-    <string name="main.shuffle">Willekeurig afspelen</string>
     <string name="main.songs_random">Willekeurig</string>
     <string name="main.songs_starred">Favorieten</string>
     <string name="main.songs_title">Nummers</string>
@@ -139,26 +132,19 @@
     <string name="menu.deleted_playlist_error">Afspeellijst %s kan niet worden verwijderd</string>
     <string name="menu.downloads">Downloads</string>
     <string name="menu.exit">Afsluiten</string>
-    <string name="menu.navigation">Navigatie</string>
     <string name="menu.settings">Instellingen</string>
     <string name="menu.refresh">Verversen</string>
     <string name="music_library.label">Mediabibliotheek</string>
     <string name="music_library.label_offline">Offline media</string>
-    <string name="music_service.retry">Er is een netwerkfout opgetreden. Bezig met opnieuw proberen; poging %1$d van %2$d.</string>
-    <string name="parser.artist_count">%d artiesten opgehaald.</string>
-    <string name="parser.reading">Bezig met uitlezen van server…</string>
-    <string name="parser.reading_done">Klaar!</string>
     <string name="playlist.label">Afspeellijsten</string>
     <string name="playlist.update_info">Informatie bijwerken</string>
     <string name="playlist.updated_info">Afspeellijstinformatie bijgewerkt voor %s</string>
     <string name="playlist.updated_info_error">Kan afspeellijstinformatie voor %s niet bijwerken</string>
-    <string name="progress.wait">Even geduld&#8230;</string>
     <string name="search.albums">Albums</string>
     <string name="search.artists">Artiesten</string>
     <string name="search.label">Zoeken</string>
     <string name="search.more">Meer tonen</string>
     <string name="search.no_match">Geen overeenkomsten; probeer het opnieuw</string>
-    <string name="search.search">Druk om te zoeken</string>
     <string name="search.songs">Nummers</string>
     <string name="search.title">Zoeken</string>
     <string name="select_album.empty">Geen media gevonden</string>
@@ -170,7 +156,6 @@
     <string name="select_artist.folder">Map kiezen</string>
     <string name="select_genre.empty">Geen genres gevonden</string>
     <string name="select_playlist.empty">Geen opgeslagen afspeellijsten op server</string>
-    <string name="service.connecting">Bezig met verbinden met server; even geduld…</string>
     <string name="settings.appearance_title">Uiterlijk</string>
     <string name="settings.buffer_length">Bufferduur</string>
     <string name="settings.buffer_length_0">Uitgeschakeld</string>
@@ -211,8 +196,6 @@
     <string name="settings.chat_refresh">Chat-ververstussenpoos</string>
     <string name="settings.clear_bookmark">Bladwijzer verwijderen</string>
     <string name="settings.clear_bookmark_summary">Bladwijzer verwijderen nadat nummer is afgespeeld</string>
-    <string name="settings.clear_playlist">Afspeellijst wissen</string>
-    <string name="settings.clear_playlist_summary">Afspeellijst wissen nadat alle nummers zijn afgespeeld</string>
     <string name="settings.clear_search_history">Zoekgeschiedenis wissen</string>
     <string name="settings.connection_failure">Verbindingsfout.</string>
     <string name="settings.default_albums">Standaardalbums</string>
@@ -232,14 +215,11 @@
     <string name="settings.display_bitrate_summary">Bitsnelheid en bestandsextensie toevoegen aan artiestennaam</string>
     <string name="settings.download_transition">Nu aan het afspelen tonen op afspeelscherm</string>
     <string name="settings.download_transition_summary">Toon ‘Nu aan het afspelen’ in de mediaweergave</string>
-    <string name="settings.gapless_playback">Naadloze overgang</string>
-    <string name="settings.gapless_playback_summary">Naadloze overgang tussen nummers inschakelen</string>
     <string name="settings.hide_media_summary">Muziekbestanden verbergen voor andere apps.</string>
     <string name="settings.hide_media_title">Verbergen voor andere apps</string>
     <string name="settings.hide_media_toast">Dit wordt toegepast bij de volgende keer dat Android je muziek doorzoekt.</string>
     <string name="settings.increment_time">Overslaantussenpoos</string>
     <string name="settings.invalid_url">Geef een geldige URL op.</string>
-    <string name="settings.invalid_username">Geef een geldige gebruikersnaam op (geen spaties erachter).</string>
     <string name="settings.max_albums">Max. aantal albums</string>
     <string name="settings.max_artists">Max. aantal artiesten</string>
     <string name="settings.max_bitrate_112">112 Kbps</string>
@@ -300,28 +280,14 @@
     <string name="settings.search_75">75</string>
     <string name="settings.search_history_cleared">Zoekgeschiedenis gewist</string>
     <string name="settings.search_title">Zoekinstellingen</string>
-    <string name="settings.send_bluetooth_notification_summary">Afspeelmeldingen sturen via bluetooth</string>
-    <string name="settings.send_bluetooth_notification">Bluetoothmelding sturen</string>
-    <string name="settings.send_bluetooth_album_art_summary">Albumhoezen versturen via bluetooth (dit kan leiden tot mislukte bluetoothmeldingen)</string>
-    <string name="settings.send_bluetooth_album_art">Albumhoezen versturen via bluetooth</string>
-    <string name="settings.disable_send_now_playing_list_summary">De lijst ‘Nu aan het afspelen’ wordt niet gedeeld met verbonden apparaten. Hierdoor wordt de comptabiliteit met AVCRP 1.3-apparaten hersteld als het huidige nummer niet wordt bijgewerkt.</string>
-    <string name="settings.disable_send_now_playing_list">‘Nu aan het afspelen’-lijst niet delen</string>
     <string name="settings.server_manage_servers">Manage Servers</string>
     <string name="settings.server_address">Serveradres</string>
     <string name="settings.server_name">Naam</string>
     <string name="settings.server_password">Wachtwoord</string>
-    <string name="settings.server_remove_server">Server verwijderen</string>
     <string name="settings.server_scaling_summary">Verkleinde afbeeldingen ophalen van server in plaats van volledige (bespaart bandbreedte)</string>
     <string name="settings.server_scaling_title">Verkleinde afbeeldingen ophalen van server</string>
-    <string name="settings.server_unused">Ongebruikt</string>
     <string name="settings.server_username">Gebruikersnaam</string>
     <string name="settings.server_color">Serverkleur</string>
-    <string name="settings.show_lockscreen_controls">Vergrendelschermbediening tonen</string>
-    <string name="settings.show_lockscreen_controls_summary">Toont afspeelbediening op het vergrendelscherm</string>
-    <string name="settings.show_notification">Melding tonen</string>
-    <string name="settings.show_notification_always">Altijd melding tonen</string>
-    <string name="settings.show_notification_always_summary">Altijd een \"nu aan het afspelen\"-melding tonen tijdens het samenstellen van een afspeellijst</string>
-    <string name="settings.show_notification_summary">\"Nu aan het afspelen\"-melding tonen op de statusbalk</string>
     <string name="settings.show_now_playing">\"Nu aan het afspelen\"-melding tonen</string>
     <string name="settings.show_now_playing_summary">Toont het momenteel afspelende nummer in alle activiteiten</string>
     <string name="settings.show_track_number">Itemnummer tonen</string>
@@ -401,8 +367,6 @@
     <string name="settings.playback.bluetooth_all">Alle bluetoothapparaten</string>
     <string name="settings.playback.bluetooth_a2dp">Alleen audio-apparaten (AD2P)</string>
     <string name="settings.playback.bluetooth_disabled">Uitgeschakeld</string>
-    <string name="settings.playback.single_button_bluetooth_device">Bluetoothapparaat met één afspeel- en pauzeknop</string>
-    <string name="settings.playback.single_button_bluetooth_device_summary">Schakel dit in bij gebruik van oudere bluetoothapparaten om de afspeel- en pauzeerknop goed te laten werken</string>
     <string name="settings.debug.title">Foutopsporingsopties</string>
     <string name="settings.debug.log_to_file">Foutopsporingslogboek bijhouden</string>
     <string name="settings.debug.log_path">De logboeken worden opgeslagen in %1$s/%2$s</string>
@@ -457,10 +421,6 @@
     <plurals name="select_album_n_songs_play_next">
         <item quantity="one">%d nummer ingevoegd na het huidige nummer</item>
         <item quantity="other">%d nummers ingevoegd na het huidige nummer</item>
-    </plurals>
-    <plurals name="select_album_donate_dialog_n_trial_days_left">
-        <item quantity="one">Nog %d dag over van de proefperiode</item>
-        <item quantity="other">Nog %d dagen over van de proefperiode</item>
     </plurals>
 
     <!-- Subsonic api errors -->

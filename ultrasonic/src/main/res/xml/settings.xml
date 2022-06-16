@@ -79,18 +79,6 @@
             app:iconSpaceReserved="false"/>
         <CheckBoxPreference
             a:defaultValue="false"
-            a:key="gaplessPlayback"
-            a:summary="@string/settings.gapless_playback_summary"
-            a:title="@string/settings.gapless_playback"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="clearPlaylist"
-            a:summary="@string/settings.clear_playlist_summary"
-            a:title="@string/settings.clear_playlist"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="false"
             a:key="clearBookmark"
             a:summary="@string/settings.clear_bookmark_summary"
             a:title="@string/settings.clear_bookmark"
@@ -104,7 +92,7 @@
             app:iconSpaceReserved="false"/>
         <CheckBoxPreference
             a:defaultValue="false"
-            a:key="@string/settings.playback.resume_play_on_headphones_plug"
+            a:key="@string/setting_keys.resume_play_on_headphones_plug"
             a:title="@string/settings.playback.resume_play_on_headphones_plug.title"
             a:summary="@string/settings.playback.resume_play_on_headphones_plug.summary"
             app:iconSpaceReserved="false"/>
@@ -118,15 +106,15 @@
             app:iconSpaceReserved="false"/>
         <CheckBoxPreference
             a:defaultValue="false"
-            a:key="singleButtonPlayPause"
-            a:summary="@string/settings.playback.single_button_bluetooth_device_summary"
-            a:title="@string/settings.playback.single_button_bluetooth_device"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="false"
             a:key="use_five_star_rating"
             a:summary="@string/settings.five_star_rating_description"
             a:title="@string/settings.five_star_rating_title"
+            app:iconSpaceReserved="false" />
+        <CheckBoxPreference
+            a:defaultValue="false"
+            a:key="use_hw_offload"
+            a:summary="@string/settings.use_hw_offload_description"
+            a:title="@string/settings.use_hw_offload_title"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
     <PreferenceCategory
@@ -138,42 +126,6 @@
             a:key="showNowPlaying"
             a:summary="@string/settings.show_now_playing_summary"
             a:title="@string/settings.show_now_playing"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="showNotification"
-            a:summary="@string/settings.show_notification_summary"
-            a:title="@string/settings.show_notification"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="alwaysShowNotification"
-            a:summary="@string/settings.show_notification_always_summary"
-            a:title="@string/settings.show_notification_always"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="showLockScreen"
-            a:summary="@string/settings.show_lockscreen_controls_summary"
-            a:title="@string/settings.show_lockscreen_controls"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="true"
-            a:key="sendBluetoothNotifications"
-            a:summary="@string/settings.send_bluetooth_notification_summary"
-            a:title="@string/settings.send_bluetooth_notification"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="sendBluetoothAlbumArt"
-            a:summary="@string/settings.send_bluetooth_album_art_summary"
-            a:title="@string/settings.send_bluetooth_album_art"
-            app:iconSpaceReserved="false"/>
-        <CheckBoxPreference
-            a:defaultValue="false"
-            a:key="disableNowPlayingListSending"
-            a:summary="@string/settings.disable_send_now_playing_list_summary"
-            a:title="@string/settings.disable_send_now_playing_list"
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory

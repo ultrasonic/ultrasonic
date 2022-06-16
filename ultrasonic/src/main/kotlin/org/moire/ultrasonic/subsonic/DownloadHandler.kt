@@ -34,20 +34,23 @@ class DownloadHandler(
         autoPlay: Boolean,
         playNext: Boolean,
         shuffle: Boolean,
-        songs: List<Track?>
+        songs: List<Track>,
     ) {
         val onValid = Runnable {
-            if (!append && !playNext) {
-                mediaPlayerController.clear()
+            // TODO: The logic here is different than in the controller...
+            val insertionMode = when {
+                playNext -> MediaPlayerController.InsertionMode.AFTER_CURRENT
+                append -> MediaPlayerController.InsertionMode.APPEND
+                else -> MediaPlayerController.InsertionMode.CLEAR
             }
+
             networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
             mediaPlayerController.addToPlaylist(
                 songs,
                 save,
                 autoPlay,
-                playNext,
                 shuffle,
-                false
+                insertionMode
             )
             val playlistName: String? = fragment.arguments?.getString(
                 Constants.INTENT_PLAYLIST_NAME
@@ -281,26 +284,28 @@ class DownloadHandler(
                 }
             }
 
+            // Called when we have collected the tracks
             override fun done(songs: List<Track>) {
                 if (Settings.shouldSortByDisc) {
                     Collections.sort(songs, EntryByDiscAndTrackComparator())
                 }
                 if (songs.isNotEmpty()) {
-                    if (!append && !playNext && !unpin && !background) {
-                        mediaPlayerController.clear()
-                    }
                     networkAndStorageChecker.warnIfNetworkOrStorageUnavailable()
                     if (!background) {
                         if (unpin) {
                             mediaPlayerController.unpin(songs)
                         } else {
+                            val insertionMode = when {
+                                append -> MediaPlayerController.InsertionMode.APPEND
+                                playNext -> MediaPlayerController.InsertionMode.AFTER_CURRENT
+                                else -> MediaPlayerController.InsertionMode.CLEAR
+                            }
                             mediaPlayerController.addToPlaylist(
                                 songs,
                                 save,
                                 autoPlay,
-                                playNext,
                                 shuffle,
-                                false
+                                insertionMode
                             )
                             if (
                                 !append &&

@@ -9,14 +9,12 @@ import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.adapters.ServerRowAdapter
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.data.ServerSetting
 import org.moire.ultrasonic.fragment.EditServerFragment.Companion.EDIT_SERVER_INTENT_INDEX
 import org.moire.ultrasonic.model.ServerSettingsModel
 import org.moire.ultrasonic.service.MediaPlayerController
@@ -26,6 +24,8 @@ import timber.log.Timber
 
 /**
  * Displays the list of configured servers, they can be selected or edited
+ *
+ * TODO: Manage mode is unused. Remove it...
  */
 class ServerSelectorFragment : Fragment() {
     companion object {
@@ -34,7 +34,7 @@ class ServerSelectorFragment : Fragment() {
 
     private var listView: ListView? = null
     private val serverSettingsModel: ServerSettingsModel by viewModel()
-    private val service: MediaPlayerController by inject()
+    private val controller: MediaPlayerController by inject()
     private val activeServerProvider: ActiveServerProvider by inject()
     private var serverRowAdapter: ServerRowAdapter? = null
 
@@ -59,6 +59,7 @@ class ServerSelectorFragment : Fragment() {
             SERVER_SELECTOR_MANAGE_MODE,
             false
         ) ?: false
+
         if (manageMode) {
             FragmentTitle.setTitle(this, R.string.settings_server_manage_servers)
         } else {
@@ -72,31 +73,26 @@ class ServerSelectorFragment : Fragment() {
             serverSettingsModel,
             activeServerProvider,
             manageMode,
-            {
-                i ->
-                onServerDeleted(i)
-            },
-            {
-                i ->
-                editServer(i)
-            }
+            ::deleteServerById,
+            ::editServerByIndex
         )
 
         listView?.adapter = serverRowAdapter
 
-        listView?.onItemClickListener = AdapterView.OnItemClickListener {
-            _, _, position, _ ->
+        listView?.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
+
+            val server = parent.getItemAtPosition(position) as ServerSetting
             if (manageMode) {
-                editServer(position + 1)
+                editServerByIndex(position + 1)
             } else {
-                setActiveServer(position)
+                setActiveServerById(server.id)
                 findNavController().popBackStack(R.id.mainFragment, false)
             }
         }
 
         val fab = view.findViewById<FloatingActionButton>(R.id.server_add_fab)
         fab.setOnClickListener {
-            editServer(-1)
+            editServerByIndex(-1)
         }
     }
 
@@ -113,44 +109,37 @@ class ServerSelectorFragment : Fragment() {
     /**
      * Sets the active server when a list item is clicked
      */
-    private fun setActiveServer(index: Int) {
-        // TODO this is still a blocking call - we shouldn't leave this activity before the active server is updated.
-        // Maybe this can be refactored by using LiveData, or this can be made more user friendly with a ProgressDialog
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                if (activeServerProvider.getActiveServer().index != index) {
-                    service.clearIncomplete()
-                    activeServerProvider.setActiveServerByIndex(index)
-                    service.isJukeboxEnabled =
-                        activeServerProvider.getActiveServer().jukeboxByDefault
-                }
-            }
+    private fun setActiveServerById(id: Int) {
+
+        controller.clearIncomplete()
+
+        if (activeServerProvider.getActiveServer().id != id) {
+            ActiveServerProvider.setActiveServerById(id)
         }
-        Timber.i("Active server was set to: $index")
     }
 
     /**
      * This Callback handles the deletion of a Server Setting
      */
-    private fun onServerDeleted(index: Int) {
+    private fun deleteServerById(id: Int) {
         ErrorDialog.Builder(context)
             .setTitle(R.string.server_menu_delete)
             .setMessage(R.string.server_selector_delete_confirmation)
             .setPositiveButton(R.string.common_delete) { dialog, _ ->
                 dialog.dismiss()
 
-                val activeServerIndex = activeServerProvider.getActiveServer().index
-                val id = ActiveServerProvider.getActiveServerId()
+                // Get the id of the current active server
+                val activeServerId = ActiveServerProvider.getActiveServerId()
 
                 // If the currently active server is deleted, go offline
-                if (index == activeServerIndex) setActiveServer(-1)
+                if (id == activeServerId) setActiveServerById(ActiveServerProvider.OFFLINE_DB_ID)
 
-                serverSettingsModel.deleteItem(index)
+                serverSettingsModel.deleteItemById(id)
 
                 // Clear the metadata cache
-                activeServerProvider.deleteMetaDatabase(id)
+                activeServerProvider.deleteMetaDatabase(activeServerId)
 
-                Timber.i("Server deleted: $index")
+                Timber.i("Server deleted, id: $id")
             }
             .setNegativeButton(R.string.common_cancel) { dialog, _ ->
                 dialog.dismiss()
@@ -161,7 +150,7 @@ class ServerSelectorFragment : Fragment() {
     /**
      * Starts the Edit Server Fragment to edit the details of a server
      */
-    private fun editServer(index: Int) {
+    private fun editServerByIndex(index: Int) {
         val bundle = Bundle()
         bundle.putInt(EDIT_SERVER_INTENT_INDEX, index)
         findNavController().navigate(R.id.serverSelectorToEditServer, bundle)

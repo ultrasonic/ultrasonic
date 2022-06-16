@@ -1,37 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 7.0.4" type="baseline" client="gradle" name="AGP (7.0.4)" variant="all" version="7.0.4">
+<issues format="6" by="lint 7.1.1" type="baseline" client="gradle" dependencies="false" name="AGP (7.1.1)" variant="all" version="7.1.1">
 
     <issue
         id="InflateParams"
         message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
-        errorLine1="   View view = inflater.inflate(R.layout.jukebox_volume, null);"
-        errorLine2="                                                         ~~~~">
+        errorLine1="            val view = inflater.inflate(R.layout.jukebox_volume, null)"
+        errorLine2="                                                                 ~~~~">
         <location
-            file="src/main/java/org/moire/ultrasonic/service/JukeboxMediaPlayer.java"
-            line="477"
-            column="58"/>
-    </issue>
-
-    <issue
-        id="Typos"
-        message="&quot;lizensiert&quot; is a common misspelling; did you mean &quot;lizenziert&quot; ?"
-        errorLine1="    &lt;string name=&quot;settings.testing_unlicensed&quot;>Verbindung OK, Server nicht lizensiert.&lt;/string>"
-        errorLine2="                                                                           ^">
-        <location
-            file="src/main/res/values-de/strings.xml"
-            line="289"
-            column="76"/>
-    </issue>
-
-    <issue
-        id="PluralsCandidate"
-        message="Formatting %d followed by words (&quot;Artists&quot;): This should probably be a plural rather than a string"
-        errorLine1="    &lt;string name=&quot;parser.artist_count&quot;>Got %d Artists.&lt;/string>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="134"
-            column="5"/>
+            file="src/main/kotlin/org/moire/ultrasonic/service/JukeboxMediaPlayer.kt"
+            line="331"
+            column="66"/>
     </issue>
 
     <issue
@@ -41,7 +19,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="151"
+            line="154"
             column="5"/>
     </issue>
 
@@ -54,17 +32,6 @@
             file="src/main/java/org/moire/ultrasonic/service/ssl/SSLSocketFactory.java"
             line="142"
             column="73"/>
-    </issue>
-
-    <issue
-        id="SetJavaScriptEnabled"
-        message="Using `setJavaScriptEnabled` can introduce XSS vulnerabilities into your application, review carefully"
-        errorLine1="        webView.getSettings().setJavaScriptEnabled(true);"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/fragment/AboutFragment.java"
-            line="51"
-            column="9"/>
     </issue>
 
     <issue
@@ -88,18 +55,29 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="146"
+            line="151"
             column="10"/>
     </issue>
 
     <issue
         id="ExportedReceiver"
         message="Exported receiver does not require permission"
-        errorLine1="        &lt;receiver android:name=&quot;.receiver.UltrasonicIntentReceiver&quot;>"
+        errorLine1="        &lt;receiver android:name=&quot;.receiver.UltrasonicIntentReceiver&quot;"
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="81"
+            line="75"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ExportedService"
+        message="Exported service does not require permission"
+        errorLine1="        &lt;service android:name=&quot;.playback.PlaybackService&quot;"
+        errorLine2="         ~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="65"
             column="10"/>
     </issue>
 
@@ -112,171 +90,6 @@
             file="src/main/AndroidManifest.xml"
             line="41"
             column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver android:name=&quot;.receiver.MediaButtonIntentReceiver&quot;>"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="76"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver android:name=&quot;.receiver.UltrasonicIntentReceiver&quot;>"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="81"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver android:name=&quot;.receiver.BluetoothIntentReceiver&quot;>"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="93"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="101"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="112"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="123"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise."
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="134"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="UnspecifiedImmutableFlag"
-        message="Missing `PendingIntent` mutability flag"
-        errorLine1="        return PendingIntent.getActivity(this, 0, intent, flags)"
-        errorLine2="                                                          ~~~~~">
-        <location
-            file="src/main/kotlin/org/moire/ultrasonic/service/MediaPlayerService.kt"
-            line="708"
-            column="59"/>
-    </issue>
-
-    <issue
-        id="UnspecifiedImmutableFlag"
-        message="Missing `PendingIntent` mutability flag"
-        errorLine1="            PendingIntent.FLAG_CANCEL_CURRENT"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/org/moire/ultrasonic/util/MediaSessionHandler.kt"
-            line="323"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnspecifiedImmutableFlag"
-        message="Missing `PendingIntent` mutability flag"
-        errorLine1="  PendingIntent pendingIntent = PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);"
-        errorLine2="                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/provider/UltrasonicAppWidgetProvider.java"
-            line="198"
-            column="80"/>
-    </issue>
-
-    <issue
-        id="UnspecifiedImmutableFlag"
-        message="Missing `PendingIntent` mutability flag"
-        errorLine1="  pendingIntent = PendingIntent.getBroadcast(context, 11, intent, 0);"
-        errorLine2="                                                                  ~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/provider/UltrasonicAppWidgetProvider.java"
-            line="206"
-            column="67"/>
-    </issue>
-
-    <issue
-        id="UnspecifiedImmutableFlag"
-        message="Missing `PendingIntent` mutability flag"
-        errorLine1="  pendingIntent = PendingIntent.getBroadcast(context, 12, intent, 0);"
-        errorLine2="                                                                  ~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/provider/UltrasonicAppWidgetProvider.java"
-            line="212"
-            column="67"/>
-    </issue>
-
-    <issue
-        id="UnspecifiedImmutableFlag"
-        message="Missing `PendingIntent` mutability flag"
-        errorLine1="  pendingIntent = PendingIntent.getBroadcast(context, 13, intent, 0);"
-        errorLine2="                                                                  ~">
-        <location
-            file="src/main/java/org/moire/ultrasonic/provider/UltrasonicAppWidgetProvider.java"
-            line="218"
-            column="67"/>
-    </issue>
-
-    <issue
-        id="UnspecifiedImmutableFlag"
-        message="Missing `PendingIntent` mutability flag"
-        errorLine1="        return PendingIntent.getBroadcast(context, requestCode, intent, flags)"
-        errorLine2="                                                                        ~~~~~">
-        <location
-            file="src/main/kotlin/org/moire/ultrasonic/util/Util.kt"
-            line="891"
-            column="73"/>
-    </issue>
-
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="                    viewAdapter.notifyDataSetChanged()"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/org/moire/ultrasonic/fragment/PlayerFragment.kt"
-            line="908"
-            column="21"/>
     </issue>
 
     <issue
@@ -347,6 +160,17 @@
 
     <issue
         id="UnusedResources"
+        message="The resource `R.drawable.ic_baseline_close` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_baseline_close.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
         message="The resource `R.drawable.ic_menu_arrow` appears to be unused"
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
@@ -354,193 +178,6 @@
             file="src/main/res/drawable/ic_menu_arrow.xml"
             line="1"
             column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.menu_arrow` appears to be unused"
-        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/menu_arrow.xml"
-            line="1"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.main_shuffle` appears to be unused"
-        errorLine1="    &lt;string name=&quot;main.shuffle&quot;>Shuffle Play&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="114"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.menu_navigation` appears to be unused"
-        errorLine1="    &lt;string name=&quot;menu.navigation&quot;>Navigation&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="128"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.music_service_retry` appears to be unused"
-        errorLine1="    &lt;string name=&quot;music_service.retry&quot;>A network error occurred. Retrying %1$d of %2$d.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="133"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.parser_artist_count` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.artist_count&quot;>Got %d Artists.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="134"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.parser_reading` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.reading&quot;>Reading from server.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="135"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.parser_reading_done` appears to be unused"
-        errorLine1="    &lt;string name=&quot;parser.reading_done&quot;>Reading from server. Done!&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="136"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.progress_wait` appears to be unused"
-        errorLine1="    &lt;string name=&quot;progress.wait&quot;>Please wait&amp;#8230;&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="141"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.search_search` appears to be unused"
-        errorLine1="    &lt;string name=&quot;search.search&quot;>Click to search&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="147"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.service_connecting` appears to be unused"
-        errorLine1="    &lt;string name=&quot;service.connecting&quot;>Contacting server, please wait.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="159"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.settings_allow_self_signed_certificate` appears to be unused"
-        errorLine1="    &lt;string name=&quot;settings.allow_self_signed_certificate&quot; translatable=&quot;false&quot;>allowSelfSignedCertificate&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="160"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.settings_enable_ldap_user_support` appears to be unused"
-        errorLine1="    &lt;string name=&quot;settings.enable_ldap_user_support&quot; translatable=&quot;false&quot;>enableLdapUserSupport&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="161"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.settings_invalid_username` appears to be unused"
-        errorLine1="    &lt;string name=&quot;settings.invalid_username&quot;>Please specify a valid username (no trailing spaces).&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="230"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.settings_server_remove_server` appears to be unused"
-        errorLine1="    &lt;string name=&quot;settings.server_remove_server&quot;>Remove Server&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="299"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.settings_server_unused` appears to be unused"
-        errorLine1="    &lt;string name=&quot;settings.server_unused&quot;>Unused&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="302"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.settings_server_address_unset` appears to be unused"
-        errorLine1="    &lt;string name=&quot;settings.server_address_unset&quot; translatable=&quot;false&quot;>http://example.com&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="387"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.plurals.select_album_donate_dialog_n_trial_days_left` appears to be unused"
-        errorLine1="    &lt;plurals name=&quot;select_album_donate_dialog_n_trial_days_left&quot;>"
-        errorLine2="             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="447"
-            column="14"/>
     </issue>
 
     <issue
@@ -839,39 +476,6 @@
     </issue>
 
     <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView a:id=&quot;@+id/help_back&quot;"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/help.xml"
-            line="12"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView a:id=&quot;@+id/help_stop&quot;"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/help.xml"
-            line="18"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView a:id=&quot;@+id/help_forward&quot;"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/help.xml"
-            line="24"
-            column="10"/>
-    </issue>
-
-    <issue
         id="LabelFor"
         message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
         errorLine1="    &lt;EditText"
@@ -1023,17 +627,6 @@
             file="src/main/res/layout/server_edit.xml"
             line="43"
             column="13"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`LinearLayout-3` can overlap `LinearLayout-1` if LinearLayout-1, LinearLayout-3 grow due to localized text expansion"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/player_media_info.xml"
-            line="52"
-            column="6"/>
     </issue>
 
     <issue
