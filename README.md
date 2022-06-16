@@ -22,7 +22,7 @@ App is available to download at following stores:
 compatible (not signed by the same key)! You must uninstall one to install
 the other, which will delete all your data.  
 
-If you want to use the version downloaded from F-Droid or form Github with **Android Auto**, you must enable Unknown Sources as it is described in [this wiki page](https://github.com/ultrasonic/ultrasonic/wiki/Using-Ultrasonic-with-Android-Auto).
+If you want to use the version downloaded from F-Droid or from Github with **Android Auto**, you must enable Unknown Sources as it is described in [this wiki page](https://github.com/ultrasonic/ultrasonic/wiki/Using-Ultrasonic-with-Android-Auto).
 
 ## Bugs and issues
 
