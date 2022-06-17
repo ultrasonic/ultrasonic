@@ -9,7 +9,6 @@
         <include domain="database" path="."/>
     </cloud-backup>
     <device-transfer>
-        <include domain="root"/>
-        <!--exclude domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/-->
+        <!-- Specifying nothing here means: Include all: https://developer.android.com/guide/topics/data/autobackup#include-exclude-android-11 -->
     </device-transfer>
 </data-extraction-rules>
