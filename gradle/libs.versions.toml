@@ -1,9 +1,9 @@
 [versions]
 # You need to run ./gradlew wrapper after updating the version
-gradle                 = "7.3.2"
+gradle                 = "7.3.3"
 
 navigation             = "2.3.5"
-gradlePlugin           = "7.1.1"
+gradlePlugin           = "7.2.1"
 androidxcore           = "1.6.0"
 ktlint                 = "0.43.2"
 ktlintGradle           = "10.2.0"
