@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Targeting Android 12 or higher -->
+<data-extraction-rules>
+    <cloud-backup disableIfNoEncryptionCapabilities="true">
+        <!--include domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/-->
+        <!--exclude domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/-->
+        <exclude domain="root"/>
+        <include domain="sharedpref" path="."/>
+        <include domain="database" path="."/>
+    </cloud-backup>
+    <device-transfer>
+        <!-- Specifying nothing here means: Include all: https://developer.android.com/guide/topics/data/autobackup#include-exclude-android-11 -->
+    </device-transfer>
+</data-extraction-rules>
