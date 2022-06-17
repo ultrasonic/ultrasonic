@@ -140,7 +140,7 @@ workflows:
       - generate_signed_apk:
           filters:
             tags:
-              only: /^[0-9]+(\.[0-9]+)*/
+              only: /^[0-9]+(\.[0-9]+)*(-beta\.[0-9]+)?/
             branches:
               ignore: /.*/
       - publish_github_signed_apk:
@@ -148,7 +148,7 @@ workflows:
             - generate_signed_apk
           filters:
             tags:
-              only: /^[0-9]+(\.[0-9]+)*/
+              only: /^[0-9]+(\.[0-9]+)*(-beta\.[0-9]+)?/
             branches:
               ignore: /.*/
 
