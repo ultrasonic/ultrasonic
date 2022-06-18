@@ -21,6 +21,8 @@
 
     <application
         android:allowBackup="false"
+        android:fullBackupContent="@xml/backup_descriptor"
+        android:dataExtractionRules="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/NoActionBar"
@@ -40,7 +42,8 @@
 
         <activity android:name=".activity.NavigationActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH"/>
@@ -61,7 +64,7 @@
             android:exported="false">
         </service>
 
-        <!-- TODO: Check if it works with exported=false as well -->
+        <!-- Needs to be exported: https://android.googlesource.com/platform/developers/build/+/4de32d4/prebuilts/gradle/MediaBrowserService/README.md -->
         <service android:name=".playback.PlaybackService"
             android:label="@string/common.appname"
             android:exported="true">
@@ -150,7 +153,8 @@
         </receiver>
         <provider
             android:name=".provider.SearchSuggestionProvider"
-            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"/>
+            android:authorities="org.moire.ultrasonic.provider.SearchSuggestionProvider"
+            android:exported="true" />
 
     </application>
 
