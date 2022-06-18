@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'jacoco'
 apply from: "../gradle_scripts/code_quality.gradle"
 
 android {
@@ -134,37 +133,4 @@ dependencies {
     testImplementation libs.robolectric
 
     implementation libs.timber
-}
-
-jacoco {
-    toolVersion(libs.versions.jacoco.get())
-}
-
-// Excluding all java classes and stuff that should not be covered
-ext {
-    jacocoExclude = [
-            '**/activity/**',
-            '**/audiofx/**',
-            '**/fragment/**',
-            '**/provider/**',
-            '**/receiver/**',
-            '**/service/**',
-            '**/Test/**',
-            '**/util/**',
-            '**/view/**',
-            '**/R$*.class',
-            '**/R.class',
-            '**/BuildConfig.class',
-            '**/di/**',
-            'jdk.internal.*'
-    ]
-}
-
-jacoco {
-    toolVersion(libs.versions.jacoco.get())
-}
-
-tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-    jacoco.excludes += jacocoExclude
 }

@@ -3,7 +3,6 @@
  */
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'jacoco'
 apply from: "${project.rootDir}/gradle_scripts/code_quality.gradle"
 
 sourceSets {
@@ -21,36 +20,8 @@ dependencies {
     testRuntimeOnly libs.junitVintage
 }
 
-jacoco {
-    toolVersion(libs.versions.jacoco.get())
-}
-
-ext {
-    // override it in the module
-    jacocoExclude = ['jdk.internal.*']
-}
-
-jacocoTestReport {
-    reports {
-        html.required = true
-        xml.required = false
-        csv.required = false
-    }
-
-    afterEvaluate {
-        getClassDirectories().setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, excludes: jacocoExclude)
-        }))
-    }
-}
-
 tasks.named("test").configure {
     useJUnitPlatform()
-    jacoco {
-        excludes += jacocoExclude
-        includeNoLocationClasses = true
-    }
-    finalizedBy jacocoTestReport
 }
 
 tasks.register("ciTest") {

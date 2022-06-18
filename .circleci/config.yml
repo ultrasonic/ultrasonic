@@ -41,7 +41,6 @@ jobs:
           name: unit-tests
           command: |
             ./gradlew ciTest testDebugUnitTest
-            ./gradlew jacocoFullReport
       - run:
           name: lint
           command: ./gradlew :ultrasonic:lintRelease
@@ -61,8 +60,6 @@ jobs:
       - store_artifacts:
           path: subsonic-api/build/reports
           destination: reports
-      - store_artifacts:
-          path: build/reports/jacoco/jacocoFullReport/
   push_translations:
     docker:
       - image: cimg/python:3.6
