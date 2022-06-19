@@ -157,7 +157,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     private fun getAudioAttributes(): AudioAttributes {
         return AudioAttributes.Builder()
             .setUsage(USAGE_MEDIA)
-            .setContentType(CONTENT_TYPE_MUSIC)
+            .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
             .build()
     }
 }
