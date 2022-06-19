@@ -60,8 +60,6 @@ class OfflineMusicService : MusicService, KoinComponent {
     private var cachedArtists = metaDatabase.artistDao()
     private var cachedAlbums = metaDatabase.albumDao()
     private var cachedTracks = metaDatabase.trackDao()
-    private var cachedIndexes = metaDatabase.indexDao()
-    private val cachedMusicFolders = metaDatabase.musicFoldersDao()
 
     override fun getIndexes(musicFolderId: String?, refresh: Boolean): List<Index> {
         val indexes: MutableList<Index> = ArrayList()
@@ -474,20 +472,22 @@ class OfflineMusicService : MusicService, KoinComponent {
     @Throws(Exception::class)
     override fun getAlbumsOfArtist(id: String, name: String?, refresh: Boolean):
         List<Album> {
-        // FIXME: Add fallback?
         return cachedAlbums.byArtist(id)
     }
 
     @Throws(OfflineException::class)
     override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {
 
+        Timber.i("Starting album query...")
+
         val list = cachedTracks
             .byAlbum(id)
             .sortedWith(EntryByDiscAndTrackComparator())
 
-        var dir = MusicDirectory()
+        val dir = MusicDirectory()
         dir.addAll(list)
 
+        Timber.i("Returning query.")
         return dir
     }
 

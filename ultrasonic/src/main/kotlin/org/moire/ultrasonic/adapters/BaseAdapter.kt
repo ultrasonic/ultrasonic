@@ -59,7 +59,7 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter(), FastScrollRecyclerView
             throw IllegalAccessException("You must use submitList() to add data to the Adapter")
         }
 
-    var mDiffer: AsyncListDiffer<T> = AsyncListDiffer(
+    private var mDiffer: AsyncListDiffer<T> = AsyncListDiffer(
         AdapterListUpdateCallback(this),
         AsyncDifferConfig.Builder(diffCallback).build()
     )
@@ -182,12 +182,11 @@ class BaseAdapter<T : Identifiable> : MultiTypeAdapter(), FastScrollRecyclerView
 
         // Select them all
         getCurrentList().mapNotNullTo(
-            selectedSet,
-            { entry ->
-                // Exclude any -1 ids, eg. headers and other UI elements
-                entry.longId.takeIf { it != -1L }
-            }
-        )
+            selectedSet
+        ) { entry ->
+            // Exclude any -1 ids, eg. headers and other UI elements
+            entry.longId.takeIf { it != -1L }
+        }
 
         return selectedSet.count()
     }

@@ -536,6 +536,7 @@ class Downloader(
 
             // Now cache the album
             if (albumId?.isNotEmpty() == true) {
+                // This is a cached call
                 val albums = musicService.getAlbumsOfArtist(artistId!!, null, false)
                 val album = albums.find { it.id == albumId }
 

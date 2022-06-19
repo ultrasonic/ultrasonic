@@ -54,7 +54,6 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     // New Room Database
     private var cachedArtists = metaDatabase.artistDao()
     private var cachedAlbums = metaDatabase.albumDao()
-    private var cachedTracks = metaDatabase.trackDao()
     private var cachedIndexes = metaDatabase.indexDao()
     private val cachedMusicFolders = metaDatabase.musicFoldersDao()
 
@@ -118,40 +117,18 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         return indexes
     }
 
-// FIXME why commented?
-//    @Throws(Exception::class)
-//    override fun getArtist(id: String, refresh: Boolean): Artist? {
-//
-//        // Check if we have a cache hit
-//        var result = cachedArtists.get(id)
-//
-//        if (result == null || refresh) {
-//            musicService.getArtists(refresh = true)
-//        }
-//        //var result = cachedArtists.get()
-//
-//        if (result.isEmpty()) {
-//            result = getArtists(refresh)
-//            // FIXME
-//            // cachedAlbums.clear()
-//            cachedArtists.set(result)
-//        }
-//        return result
-//    }
-//
     @Throws(Exception::class)
     override fun getArtists(refresh: Boolean): List<Artist> {
         checkSettingsChanged()
+
         if (refresh) {
             cachedArtists.clear()
         }
-        // FIXME unnecessary check
+
         var result = cachedArtists.get()
 
         if (result.isEmpty()) {
             result = musicService.getArtists(refresh)
-            // FIXME
-            // cachedAlbums.clear()
             cachedArtists.set(result)
         }
         return result
@@ -173,6 +150,10 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         return dir
     }
 
+    /*
+     * Retrieves all albums of the provided artist.
+     * Cached in the RoomDB
+     */
     @Throws(Exception::class)
     override fun getAlbumsOfArtist(id: String, name: String?, refresh: Boolean):
         List<Album> {

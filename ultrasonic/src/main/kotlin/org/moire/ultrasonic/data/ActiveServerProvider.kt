@@ -24,7 +24,6 @@ class ActiveServerProvider(
     private val repository: ServerSettingDao
 ) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
     private var cachedServer: ServerSetting? = null
-    // FIXME cach never set
     private var cachedDatabase: MetaDatabase? = null
     private var cachedServerId: Int? = null
 
