@@ -17,7 +17,6 @@ import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -90,7 +89,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     private fun initializeSessionAndPlayer() {
         if (isStarted) return
 
-        setMediaNotificationProvider(DefaultMediaNotificationProvider(UApp.applicationContext()))
+        setMediaNotificationProvider(MediaNotificationProvider(UApp.applicationContext()))
 
         val subsonicAPIClient: SubsonicAPIClient by inject()
 

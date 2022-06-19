@@ -659,7 +659,6 @@ fun Track.toMediaItem(): MediaItem {
     val bitrate = Settings.maxBitRate
     val uri = "$id|$bitrate|$filePath"
 
-
     val rmd = MediaItem.RequestMetadata.Builder()
         .setMediaUri(uri.toUri())
         .build()
