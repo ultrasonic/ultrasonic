@@ -7,6 +7,7 @@
 
 package org.moire.ultrasonic.playback
 
+/*
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -24,14 +25,17 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.MediaNotification
 import androidx.media3.session.MediaNotification.ActionFactory
 import org.moire.ultrasonic.R
+*/
 
 /*
 * This is a copy of DefaultMediaNotificationProvider.java with some small changes
 * I have opened a bug https://github.com/androidx/media/issues/65 to make it easier to customize
 * the icons and actions without creating our own copy of this class..
  */
-@UnstableApi
+//@UnstableApi
 /* package */
+// Disabled while getting updated
+/*
 internal class MediaNotificationProvider(context: Context) :
     MediaNotification.Provider {
     private val context: Context = context.applicationContext
@@ -148,3 +152,4 @@ internal class MediaNotificationProvider(context: Context) :
         }
     }
 }
+*/

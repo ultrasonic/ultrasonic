@@ -13,11 +13,11 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.C.CONTENT_TYPE_MUSIC
 import androidx.media3.common.C.USAGE_MEDIA
-import androidx.media3.common.MediaItem
 import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -38,7 +38,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     private lateinit var mediaLibrarySession: MediaLibrarySession
     private lateinit var apiDataSource: APIDataSource.Factory
 
-    private lateinit var librarySessionCallback: MediaLibrarySession.MediaLibrarySessionCallback
+    private lateinit var librarySessionCallback: MediaLibrarySession.Callback
 
     private var rxBusSubscription = CompositeDisposable()
 
@@ -48,18 +48,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
      * For some reason the LocalConfiguration of MediaItem are stripped somewhere in ExoPlayer,
      * and thereby customarily it is required to rebuild it..
      */
-    private class CustomMediaItemFiller : MediaSession.MediaItemFiller {
-        override fun fillInLocalConfiguration(
-            session: MediaSession,
-            controller: MediaSession.ControllerInfo,
-            mediaItem: MediaItem
-        ): MediaItem {
-            // Again, set the Uri, so that it will get a LocalConfiguration
-            return mediaItem.buildUpon()
-                .setUri(mediaItem.mediaMetadata.mediaUri)
-                .build()
-        }
-    }
 
     override fun onCreate() {
         Timber.i("onCreate called")
@@ -102,7 +90,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     private fun initializeSessionAndPlayer() {
         if (isStarted) return
 
-        setMediaNotificationProvider(MediaNotificationProvider(UApp.applicationContext()))
+        setMediaNotificationProvider(DefaultMediaNotificationProvider(UApp.applicationContext()))
 
         val subsonicAPIClient: SubsonicAPIClient by inject()
 
@@ -134,7 +122,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         // This will need to use the AutoCalls
         mediaLibrarySession = MediaLibrarySession.Builder(this, player, librarySessionCallback)
-            .setMediaItemFiller(CustomMediaItemFiller())
             .setSessionActivity(getPendingIntentForContent())
             .build()
 
