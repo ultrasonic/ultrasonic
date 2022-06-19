@@ -124,7 +124,7 @@ class ActiveServerProvider(
             UApp.applicationContext(),
             MetaDatabase::class.java,
             METADATA_DB + serverId
-        ).fallbackToDestructiveMigration()
+        ).fallbackToDestructiveMigrationOnDowngrade()
             .build()
     }
 
