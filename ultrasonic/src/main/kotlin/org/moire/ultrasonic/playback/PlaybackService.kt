@@ -11,7 +11,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
-import androidx.media3.common.C.CONTENT_TYPE_MUSIC
 import androidx.media3.common.C.USAGE_MEDIA
 import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
