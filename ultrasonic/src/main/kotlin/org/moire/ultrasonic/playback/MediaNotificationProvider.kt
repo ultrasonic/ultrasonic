@@ -11,13 +11,10 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.common.util.Util.getAvailableCommands
 import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
-import androidx.media3.session.MediaController
 import androidx.media3.session.MediaNotification
 import androidx.media3.session.MediaSession
-
 
 @UnstableApi
 class MediaNotificationProvider(context: Context) : DefaultMediaNotificationProvider(context) {
@@ -45,4 +42,3 @@ class MediaNotificationProvider(context: Context) : DefaultMediaNotificationProv
         return commands
     }
 }
-
