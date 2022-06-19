@@ -80,9 +80,6 @@ private const val MEDIA_SEARCH_SONG_ITEM = "MEDIA_SEARCH_SONG_ITEM"
 private const val DISPLAY_LIMIT = 100
 private const val SEARCH_LIMIT = 10
 
-private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
-private const val SEARCH_QUERY_PREFIX = "androidx://media3-session/setMediaUri"
-
 /**
  * MediaBrowserService implementation for e.g. Android Auto
  */
