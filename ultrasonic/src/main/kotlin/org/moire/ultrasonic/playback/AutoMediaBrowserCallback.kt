@@ -177,7 +177,6 @@ class AutoMediaBrowserCallback(var player: Player) :
         return onLoadChildren(parentId)
     }
 
-    
     /*
      * For some reason the LocalConfiguration of MediaItem are stripped somewhere in ExoPlayer,
      * and thereby customarily it is required to rebuild it..
