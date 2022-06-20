@@ -42,11 +42,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
     private var isStarted = false
 
-    /*
-     * For some reason the LocalConfiguration of MediaItem are stripped somewhere in ExoPlayer,
-     * and thereby customarily it is required to rebuild it..
-     */
-
     override fun onCreate() {
         Timber.i("onCreate called")
         super.onCreate()
