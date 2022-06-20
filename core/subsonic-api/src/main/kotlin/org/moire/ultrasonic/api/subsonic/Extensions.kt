@@ -44,7 +44,7 @@ fun <T : SubsonicResponse> Response<T>.throwOnFailure(): Response<T> {
     val response = this
 
     if (response.isSuccessful && response.body()!!.status === SubsonicResponse.Status.OK) {
-        return this as Response<T>
+        return this
     }
     if (!response.isSuccessful) {
         throw IOException("Server error, code: " + response.code())
