@@ -21,7 +21,6 @@ import androidx.media3.common.Player
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
-import androidx.media3.session.SessionResult
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
@@ -81,15 +80,12 @@ private const val MEDIA_SEARCH_SONG_ITEM = "MEDIA_SEARCH_SONG_ITEM"
 private const val DISPLAY_LIMIT = 100
 private const val SEARCH_LIMIT = 10
 
-private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
-private const val SEARCH_QUERY_PREFIX = "androidx://media3-session/setMediaUri"
-
 /**
  * MediaBrowserService implementation for e.g. Android Auto
  */
 @Suppress("TooManyFunctions", "LargeClass", "UnusedPrivateMember")
 class AutoMediaBrowserCallback(var player: Player) :
-    MediaLibraryService.MediaLibrarySession.MediaLibrarySessionCallback, KoinComponent {
+    MediaLibraryService.MediaLibrarySession.Callback, KoinComponent {
 
     private val mediaPlayerController by inject<MediaPlayerController>()
     private val activeServerProvider: ActiveServerProvider by inject()
@@ -181,39 +177,23 @@ class AutoMediaBrowserCallback(var player: Player) :
         return onLoadChildren(parentId)
     }
 
-    private fun setMediaItemFromSearchQuery(query: String) {
-        // Only accept query with pattern "play [Title]" or "[Title]"
-        // Where [Title]: must be exactly matched
-        // If no media with exact name found, play a random media instead
-        val mediaTitle =
-            if (query.startsWith("play ", ignoreCase = true)) {
-                query.drop(5)
-            } else {
-                query
-            }
-
-        playFromMediaId(mediaTitle)
-    }
-
-    override fun onSetMediaUri(
-        session: MediaSession,
+    /*
+     * For some reason the LocalConfiguration of MediaItem are stripped somewhere in ExoPlayer,
+     * and thereby customarily it is required to rebuild it..
+     * See also: https://stackoverflow.com/questions/70096715/adding-mediaitem-when-using-the-media3-library-caused-an-error
+     */
+    override fun onAddMediaItems(
+        mediaSession: MediaSession,
         controller: MediaSession.ControllerInfo,
-        uri: Uri,
-        extras: Bundle
-    ): Int {
+        mediaItems: MutableList<MediaItem>
+    ): ListenableFuture<MutableList<MediaItem>> {
 
-        if (uri.toString().startsWith(SEARCH_QUERY_PREFIX) ||
-            uri.toString().startsWith(SEARCH_QUERY_PREFIX_COMPAT)
-        ) {
-            val searchQuery =
-                uri.getQueryParameter("query")
-                    ?: return SessionResult.RESULT_ERROR_NOT_SUPPORTED
-            setMediaItemFromSearchQuery(searchQuery)
-
-            return SessionResult.RESULT_SUCCESS
-        } else {
-            return SessionResult.RESULT_ERROR_NOT_SUPPORTED
+        val updatedMediaItems = mediaItems.map { mediaItem ->
+            mediaItem.buildUpon()
+                .setUri(mediaItem.requestMetadata.mediaUri)
+                .build()
         }
+        return Futures.immediateFuture(updatedMediaItems.toMutableList())
     }
 
     @Suppress("ReturnCount", "ComplexMethod")
