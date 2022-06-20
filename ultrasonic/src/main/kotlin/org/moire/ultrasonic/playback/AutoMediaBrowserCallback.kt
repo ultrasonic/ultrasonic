@@ -177,7 +177,12 @@ class AutoMediaBrowserCallback(var player: Player) :
         return onLoadChildren(parentId)
     }
 
-    // https://stackoverflow.com/questions/70096715/adding-mediaitem-when-using-the-media3-library-caused-an-error
+    
+    /*
+     * For some reason the LocalConfiguration of MediaItem are stripped somewhere in ExoPlayer,
+     * and thereby customarily it is required to rebuild it..
+     * See also: https://stackoverflow.com/questions/70096715/adding-mediaitem-when-using-the-media3-library-caused-an-error
+     */
     override fun onAddMediaItems(
         mediaSession: MediaSession,
         controller: MediaSession.ControllerInfo,
