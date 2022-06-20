@@ -50,7 +50,7 @@ class LegacyPlaylistManager : KoinComponent {
 
         for (i in 0 until n) {
             val item = controller.getMediaItemAt(i)
-            val file = mediaItemCache[item.mediaMetadata.mediaUri.toString()]
+            val file = mediaItemCache[item.requestMetadata.toString()]
             if (file != null)
                 _playlist.add(file)
         }
@@ -59,11 +59,11 @@ class LegacyPlaylistManager : KoinComponent {
     }
 
     fun addToCache(item: MediaItem, file: DownloadFile) {
-        mediaItemCache.put(item.mediaMetadata.mediaUri.toString(), file)
+        mediaItemCache.put(item.requestMetadata.toString(), file)
     }
 
     fun updateCurrentPlaying(item: MediaItem?) {
-        currentPlaying = mediaItemCache[item?.mediaMetadata?.mediaUri.toString()]
+        currentPlaying = mediaItemCache[item?.requestMetadata.toString()]
     }
 
     @Synchronized

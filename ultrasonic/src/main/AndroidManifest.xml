@@ -67,6 +67,7 @@
         <!-- Needs to be exported: https://android.googlesource.com/platform/developers/build/+/4de32d4/prebuilts/gradle/MediaBrowserService/README.md -->
         <service android:name=".playback.PlaybackService"
             android:label="@string/common.appname"
+            android:foregroundServiceType="mediaPlayback"
             android:exported="true">
 
             <intent-filter>

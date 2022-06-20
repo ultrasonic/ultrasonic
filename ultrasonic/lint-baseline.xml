@@ -55,7 +55,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="151"
+            line="155"
             column="10"/>
     </issue>
 
@@ -66,7 +66,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="75"
+            line="79"
             column="10"/>
     </issue>
 
@@ -77,18 +77,7 @@
         errorLine2="         ~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="65"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="IntentFilterExportedReceiver"
-        message="As of Android 12, `android:exported` must be set; use `true` to make the activity \&#xA;available to other apps, and `false` otherwise. For launcher activities, this should be set to `true`."
-        errorLine1="        &lt;activity android:name=&quot;.activity.NavigationActivity&quot;"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="41"
+            line="68"
             column="10"/>
     </issue>
 
@@ -176,6 +165,61 @@
         errorLine2="^">
         <location
             file="src/main/res/drawable/ic_menu_arrow.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_pause` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;48dp&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_pause.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_play` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;48dp&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_play.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_seek_to_next` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;32dp&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_seek_to_next.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_seek_to_previous` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;32dp&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_seek_to_previous.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_small_icon` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_small_icon.xml"
             line="1"
             column="1"/>
     </issue>
