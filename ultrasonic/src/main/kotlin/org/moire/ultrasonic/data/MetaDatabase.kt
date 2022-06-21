@@ -12,7 +12,8 @@ import org.moire.ultrasonic.domain.MusicFolder
 
 @Database(
     entities = [Artist::class, Index::class, MusicFolder::class],
-    version = 1
+    version = 1,
+    exportSchema = true
 )
 abstract class MetaDatabase : RoomDatabase() {
     abstract fun artistsDao(): ArtistsDao

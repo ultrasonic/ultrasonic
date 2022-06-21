@@ -1,0 +1,124 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 5,
+    "identityHash": "4cea788a99b9bc28500948b1cd92e537",
+    "entities": [
+      {
+        "tableName": "ServerSetting",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `index` INTEGER NOT NULL, `name` TEXT NOT NULL, `url` TEXT NOT NULL, `color` INTEGER, `userName` TEXT NOT NULL, `password` TEXT NOT NULL, `jukeboxByDefault` INTEGER NOT NULL, `allowSelfSignedCertificate` INTEGER NOT NULL, `ldapSupport` INTEGER NOT NULL, `musicFolderId` TEXT, `minimumApiVersion` TEXT, `chatSupport` INTEGER, `bookmarkSupport` INTEGER, `shareSupport` INTEGER, `podcastSupport` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "index",
+            "columnName": "index",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userName",
+            "columnName": "userName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "jukeboxByDefault",
+            "columnName": "jukeboxByDefault",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "allowSelfSignedCertificate",
+            "columnName": "allowSelfSignedCertificate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ldapSupport",
+            "columnName": "ldapSupport",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "musicFolderId",
+            "columnName": "musicFolderId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minimumApiVersion",
+            "columnName": "minimumApiVersion",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "chatSupport",
+            "columnName": "chatSupport",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bookmarkSupport",
+            "columnName": "bookmarkSupport",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "shareSupport",
+            "columnName": "shareSupport",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "podcastSupport",
+            "columnName": "podcastSupport",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4cea788a99b9bc28500948b1cd92e537')"
+    ]
+  }
+}
