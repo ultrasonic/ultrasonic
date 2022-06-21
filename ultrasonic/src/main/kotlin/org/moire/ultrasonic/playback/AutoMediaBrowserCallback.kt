@@ -534,8 +534,8 @@ class AutoMediaBrowserCallback(var player: Player) :
             val songs = listSongsInMusicService(id, name)
 
             if (songs != null) {
-                if (songs.getChildren(includeDirs = true, includeFiles = false).count() == 0 &&
-                    songs.getChildren(includeDirs = false, includeFiles = true).count() > 0
+                if (songs.getChildren(includeDirs = true, includeFiles = false).isEmpty() &&
+                    songs.getChildren(includeDirs = false, includeFiles = true).isNotEmpty()
                 )
                     mediaItems.addPlayAllItem(listOf(MEDIA_ALBUM_ITEM, id, name).joinToString("|"))
 
