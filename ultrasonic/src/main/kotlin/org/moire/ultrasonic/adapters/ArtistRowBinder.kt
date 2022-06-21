@@ -102,8 +102,9 @@ class ArtistRowBinder(
     }
 
     private fun getSectionFromName(name: String): String {
-        var section = name.first().uppercaseChar()
-        if (!section.isLetter()) section = '#'
+        if (name.isEmpty()) return SECTION_KEY_DEFAULT
+        val section = name.first().uppercaseChar()
+        if (!section.isLetter()) return SECTION_KEY_DEFAULT
         return section.toString()
     }
 
@@ -122,5 +123,9 @@ class ArtistRowBinder(
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
         return ViewHolder(inflater.inflate(layout, parent, false))
+    }
+
+    companion object {
+        const val SECTION_KEY_DEFAULT = "#"
     }
 }
