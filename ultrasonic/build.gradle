@@ -73,6 +73,7 @@ android {
         disable 'IconMissingDensityFolder', 'VectorPath'
         ignore 'MissingTranslation', 'UnusedQuantity', 'MissingQuantity'
         warning 'ImpliedQuantity'
+        disable 'ObsoleteLintCustomCheck'
     }
 
 }
