@@ -9,6 +9,7 @@ Ultrasonic is free and open-source music streaming Android client for [Subsonic]
 
 We currently don't have that much time to spend developing Subsonic, so any
 contributions or active developers are always welcomed.
+Have a look at [CONTRIBUTING.md](https://github.com/ultrasonic/ultrasonic/blob/develop/CONTRIBUTING.md) to get started.
 
 ## Download
 
