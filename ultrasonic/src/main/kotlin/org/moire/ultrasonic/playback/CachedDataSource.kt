@@ -101,8 +101,8 @@ class CachedDataSource(
     }
 
     private fun readInternal(buffer: ByteArray, offset: Int, readLength: Int): Int {
-        var readLength = readLength
-        if (readLength == 0) {
+        var readLengthCpy = readLength
+        if (readLengthCpy == 0) {
             return 0
         }
         if (bytesToRead != C.LENGTH_UNSET.toLong()) {
@@ -110,9 +110,9 @@ class CachedDataSource(
             if (bytesRemaining == 0L) {
                 return C.RESULT_END_OF_INPUT
             }
-            readLength = readLength.toLong().coerceAtMost(bytesRemaining).toInt()
+            readLengthCpy = readLengthCpy.toLong().coerceAtMost(bytesRemaining).toInt()
         }
-        val read = Util.castNonNull(responseByteStream).read(buffer, offset, readLength)
+        val read = Util.castNonNull(responseByteStream).read(buffer, offset, readLengthCpy)
         if (read == -1) {
             Timber.i("CachedDatasource: EndOfInput")
             return C.RESULT_END_OF_INPUT
@@ -134,15 +134,15 @@ class CachedDataSource(
     @Suppress("ThrowsCount")
     @Throws(HttpDataSourceException::class)
     private fun skipFully(bytesToSkip: Long, dataSpec: DataSpec) {
-        var bytesToSkip = bytesToSkip
-        if (bytesToSkip == 0L) {
+        var bytesToSkipCpy = bytesToSkip
+        if (bytesToSkipCpy == 0L) {
             return
         }
         val skipBuffer = ByteArray(4096)
         try {
-            while (bytesToSkip > 0) {
+            while (bytesToSkipCpy > 0) {
                 val readLength =
-                    bytesToSkip.coerceAtMost(skipBuffer.size.toLong()).toInt()
+                    bytesToSkipCpy.coerceAtMost(skipBuffer.size.toLong()).toInt()
                 val read = Util.castNonNull(responseByteStream).read(skipBuffer, 0, readLength)
                 if (Thread.currentThread().isInterrupted) {
                     throw InterruptedIOException()
@@ -154,7 +154,7 @@ class CachedDataSource(
                         HttpDataSourceException.TYPE_OPEN
                     )
                 }
-                bytesToSkip -= read.toLong()
+                bytesToSkipCpy -= read.toLong()
                 bytesTransferred(read)
             }
             return
