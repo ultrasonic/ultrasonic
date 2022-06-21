@@ -63,7 +63,7 @@ android {
 
     kapt {
         arguments {
-            arg("room.schemaLocation", "$buildDir/schemas".toString())
+            arg("room.schemaLocation", "$rootDir/ultrasonic/schemas".toString())
         }
     }
     lint {
