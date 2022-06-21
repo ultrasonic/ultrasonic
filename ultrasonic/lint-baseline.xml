@@ -5,7 +5,7 @@
         id="ObsoleteLintCustomCheck"
         message="Library lint checks out of date.&#xA;&#xA;Lint found an issue registry (`androidx.annotation.experimental.lint.ExperimentalIssueRegistry`)&#xA;which was compiled against an older version of lint&#xA;than this one.&#xA;&#xA;This often works just fine, but some basic verification&#xA;shows that the lint check jar references (for example)&#xA;the following API which is no longer valid in this&#xA;version of lint:&#xA;com.android.tools.lint.client.api.AnnotationLookup: org.jetbrains.uast.UAnnotation findRealAnnotation(com.intellij.psi.PsiAnnotation,com.intellij.psi.PsiClass,org.jetbrains.uast.UElement)&#xA;(Referenced from androidx/annotation/experimental/lint/ExperimentalDetector.class)&#xA;&#xA;Recompile the checks against the latest version, or if&#xA;this is a check bundled with a third-party library, see&#xA;if there is a more recent version available.&#xA;&#xA;Version of Lint API this lint check is using is 11.&#xA;The Lint API version currently running is 12 (7.2).">
         <location
-            file="../../../../.gradle/caches/transforms-3/41c4bb138622423228a0087a50b102c6/transformed/jetified-annotation-experimental-1.2.0/jars/lint.jar"/>
+            file="../../../../.gradle/caches/transforms-3/0939f771fd60f77a6733c1fbba02a5be/transformed/jetified-annotation-experimental-1.2.0/jars/lint.jar"/>
     </issue>
 
     <issue
@@ -62,7 +62,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="154"
+            line="155"
             column="10"/>
     </issue>
 
@@ -73,7 +73,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="78"
+            line="79"
             column="10"/>
     </issue>
 
@@ -205,6 +205,61 @@
         errorLine2="^">
         <location
             file="src/main/res/drawable/ic_menu_arrow.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_pause` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;48dp&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_pause.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_play` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;48dp&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_play.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_seek_to_next` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;32dp&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_seek_to_next.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_seek_to_previous` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;32dp&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_seek_to_previous.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.media3_notification_small_icon` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/media3_notification_small_icon.xml"
             line="1"
             column="1"/>
     </issue>

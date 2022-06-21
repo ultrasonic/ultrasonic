@@ -11,9 +11,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
-import androidx.media3.common.C.CONTENT_TYPE_MUSIC
 import androidx.media3.common.C.USAGE_MEDIA
-import androidx.media3.common.MediaItem
 import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
@@ -38,28 +36,11 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     private lateinit var mediaLibrarySession: MediaLibrarySession
     private lateinit var apiDataSource: APIDataSource.Factory
 
-    private lateinit var librarySessionCallback: MediaLibrarySession.MediaLibrarySessionCallback
+    private lateinit var librarySessionCallback: MediaLibrarySession.Callback
 
     private var rxBusSubscription = CompositeDisposable()
 
     private var isStarted = false
-
-    /*
-     * For some reason the LocalConfiguration of MediaItem are stripped somewhere in ExoPlayer,
-     * and thereby customarily it is required to rebuild it..
-     */
-    private class CustomMediaItemFiller : MediaSession.MediaItemFiller {
-        override fun fillInLocalConfiguration(
-            session: MediaSession,
-            controller: MediaSession.ControllerInfo,
-            mediaItem: MediaItem
-        ): MediaItem {
-            // Again, set the Uri, so that it will get a LocalConfiguration
-            return mediaItem.buildUpon()
-                .setUri(mediaItem.mediaMetadata.mediaUri)
-                .build()
-        }
-    }
 
     override fun onCreate() {
         Timber.i("onCreate called")
@@ -134,7 +115,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         // This will need to use the AutoCalls
         mediaLibrarySession = MediaLibrarySession.Builder(this, player, librarySessionCallback)
-            .setMediaItemFiller(CustomMediaItemFiller())
             .setSessionActivity(getPendingIntentForContent())
             .build()
 
@@ -171,7 +151,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     private fun getAudioAttributes(): AudioAttributes {
         return AudioAttributes.Builder()
             .setUsage(USAGE_MEDIA)
-            .setContentType(CONTENT_TYPE_MUSIC)
+            .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
             .build()
     }
 }

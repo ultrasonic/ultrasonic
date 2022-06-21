@@ -3,7 +3,6 @@
  */
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'jacoco'
 apply from: "${project.rootDir}/gradle_scripts/code_quality.gradle"
 
 android {
@@ -48,10 +47,6 @@ android {
 
 tasks.withType(Test) {
     useJUnitPlatform()
-    jacoco {
-        includeNoLocationClasses = true
-        excludes += jacocoExclude
-    }
 }
 
 dependencies {
@@ -61,11 +56,4 @@ dependencies {
     testRuntimeOnly libs.junitVintage
 }
 
-jacoco {
-    toolVersion(libs.versions.jacoco.get())
-}
-
-ext {
-    jacocoExclude = ['jdk.internal.*']
-}
 
