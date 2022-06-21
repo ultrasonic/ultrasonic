@@ -2,13 +2,6 @@
 <issues format="6" by="lint 7.2.1" type="baseline" client="gradle" dependencies="false" name="AGP (7.2.1)" variant="all" version="7.2.1">
 
     <issue
-        id="ObsoleteLintCustomCheck"
-        message="Library lint checks out of date.&#xA;&#xA;Lint found an issue registry (`androidx.annotation.experimental.lint.ExperimentalIssueRegistry`)&#xA;which was compiled against an older version of lint&#xA;than this one.&#xA;&#xA;This often works just fine, but some basic verification&#xA;shows that the lint check jar references (for example)&#xA;the following API which is no longer valid in this&#xA;version of lint:&#xA;com.android.tools.lint.client.api.AnnotationLookup: org.jetbrains.uast.UAnnotation findRealAnnotation(com.intellij.psi.PsiAnnotation,com.intellij.psi.PsiClass,org.jetbrains.uast.UElement)&#xA;(Referenced from androidx/annotation/experimental/lint/ExperimentalDetector.class)&#xA;&#xA;Recompile the checks against the latest version, or if&#xA;this is a check bundled with a third-party library, see&#xA;if there is a more recent version available.&#xA;&#xA;Version of Lint API this lint check is using is 11.&#xA;The Lint API version currently running is 12 (7.2).">
-        <location
-            file="../../../../.gradle/caches/transforms-3/0939f771fd60f77a6733c1fbba02a5be/transformed/jetified-annotation-experimental-1.2.0/jars/lint.jar"/>
-    </issue>
-
-    <issue
         id="InflateParams"
         message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
         errorLine1="            val view = inflater.inflate(R.layout.jukebox_volume, null)"
@@ -108,39 +101,6 @@
             file="src/main/res/layout/time_span_dialog.xml"
             line="28"
             column="9"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; SDK_INT is always >= 21"
-        errorLine1="    tools:targetApi=&quot;lollipop&quot;>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/drawable/default_ripple.xml"
-            line="6"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; SDK_INT is always >= 21"
-        errorLine1="    tools:targetApi=&quot;lollipop&quot;>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/drawable/select_ripple.xml"
-            line="6"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; SDK_INT is always >= 21"
-        errorLine1="    tools:targetApi=&quot;lollipop&quot;>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/drawable/select_ripple_circle.xml"
-            line="6"
-            column="5"/>
     </issue>
 
     <issue
