@@ -1,9 +1,9 @@
 [versions]
 # You need to run ./gradlew wrapper after updating the version
-gradle                 = "7.3.2"
+gradle                 = "7.3.3"
 
 navigation             = "2.3.5"
-gradlePlugin           = "7.1.1"
+gradlePlugin           = "7.2.1"
 androidxcore           = "1.6.0"
 ktlint                 = "0.43.2"
 ktlintGradle           = "10.2.0"
@@ -12,16 +12,16 @@ preferences            = "1.1.1"
 media                  = "1.3.1"
 media3                 = "1.0.0-beta01"
 
-androidSupport         = "28.0.0"
+androidSupport         = "1.4.0"
 androidLegacySupport   = "1.0.0"
-androidSupportDesign   = "1.4.0"
+androidSupportDesign   = "1.6.1"
 constraintLayout       = "2.1.1"
 multidex               = "2.0.1"
-room                   = "2.4.0"
+room                   = "2.4.2"
 kotlin                 = "1.6.10"
 kotlinxCoroutines      = "1.6.0-native-mt"
 kotlinxGuava           = "1.6.0"
-viewModelKtx           = "2.3.0"
+viewModelKtx           = "2.4.1"
 
 retrofit               = "2.9.0"
 jackson                = "2.10.1"
@@ -52,7 +52,7 @@ detekt                  = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-
 core                    = { module = "androidx.core:core-ktx", version.ref = "androidxcore" }
 support                 = { module = "androidx.legacy:legacy-support-v4", version.ref = "androidLegacySupport" }
 design                  = { module = "com.google.android.material:material", version.ref = "androidSupportDesign" }
-annotations             = { module = "com.android.support:support-annotations", version.ref = "androidSupport" }
+annotations             = { module = "androidx.annotation:annotation", version.ref = "androidSupport" }
 multidex                = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 constraintLayout        = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintLayout" }
 room                    = { module = "androidx.room:room-compiler", version.ref = "room" }
