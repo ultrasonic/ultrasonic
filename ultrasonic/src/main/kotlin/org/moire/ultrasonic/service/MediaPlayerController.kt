@@ -9,13 +9,20 @@ package org.moire.ultrasonic.service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.os.Bundle
 import androidx.core.net.toUri
+import androidx.media3.common.HeartRating
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaItem.RequestMetadata
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.session.MediaController
+import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
+import com.google.common.util.concurrent.FutureCallback
+import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.MoreExecutors
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
@@ -579,23 +586,31 @@ class MediaPlayerController(
         if (legacyPlaylistManager.currentPlaying == null) return
         val song = legacyPlaylistManager.currentPlaying!!.track
 
-        Thread {
-            val musicService = getMusicService()
-            try {
-                if (song.starred) {
-                    musicService.unstar(song.id, null, null)
-                } else {
-                    musicService.star(song.id, null, null)
-                }
-            } catch (all: Exception) {
-                Timber.e(all)
-            }
-        }.start()
+        fun updateStarred() {
+            // Trigger an update
+            // TODO Update Metadata of MediaItem...
+            // localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
+            song.starred = !song.starred
+        }
 
-        // Trigger an update
-        // TODO Update Metadata of MediaItem...
-        // localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
-        song.starred = !song.starred
+        controller?.setRating(
+            song.id,
+            HeartRating(!song.starred)
+        ).let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && it != null) {
+                Futures.addCallback(it, object : FutureCallback<SessionResult> {
+                    override fun onSuccess(result: SessionResult?) {
+                        updateStarred()
+                    }
+
+                    override fun onFailure(t: Throwable) {
+                        TODO("Not yet implemented")
+                    }
+                }, context.mainExecutor)
+            } else {
+                updateStarred()
+            }
+        }
     }
 
     @Suppress("TooGenericExceptionCaught") // The interface throws only generic exceptions
@@ -668,6 +683,7 @@ fun Track.toMediaItem(): MediaItem {
         .setArtist(artist)
         .setAlbumTitle(album)
         .setAlbumArtist(artist)
+        .setUserRating(HeartRating(starred))
         .build()
 
     val mediaItem = MediaItem.Builder()

@@ -153,6 +153,8 @@ class TrackViewHolder(val view: View) : RecyclerView.ViewHolder(view), Checkable
                     star.setImageDrawable(imageHelper.starHollowDrawable)
                     song.starred = false
                 }
+
+                // Should this be done here ?
                 Thread {
                     val musicService = MusicServiceFactory.getMusicService()
                     try {

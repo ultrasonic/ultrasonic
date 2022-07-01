@@ -9,6 +9,7 @@ package org.moire.ultrasonic.playback
 
 import android.net.Uri
 import android.os.Bundle
+import androidx.media3.common.HeartRating
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MediaMetadata.FOLDER_TYPE_ALBUMS
@@ -18,9 +19,15 @@ import androidx.media3.common.MediaMetadata.FOLDER_TYPE_NONE
 import androidx.media3.common.MediaMetadata.FOLDER_TYPE_PLAYLISTS
 import androidx.media3.common.MediaMetadata.FOLDER_TYPE_TITLES
 import androidx.media3.common.Player
+import androidx.media3.common.Rating
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionResult
+import androidx.media3.session.SessionResult.RESULT_ERROR_BAD_VALUE
+import androidx.media3.session.SessionResult.RESULT_ERROR_UNKNOWN
+import androidx.media3.session.SessionResult.RESULT_SUCCESS
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
@@ -150,6 +157,22 @@ class AutoMediaBrowserCallback(var player: Player) :
         )
     }
 
+    override fun onConnect(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo
+    ): MediaSession.ConnectionResult {
+        val connectionResult = super.onConnect(session, controller)
+        val availableSessionCommands = connectionResult.availableSessionCommands.buildUpon()
+
+        // TODO: Make a Const value list of available custom SessionCommands
+        availableSessionCommands.add(SessionCommand("COMMAND_CODE_SESSION_SET_RATING", Bundle()))
+
+        return MediaSession.ConnectionResult.accept(
+            availableSessionCommands.build(),
+            connectionResult.availablePlayerCommands
+        )
+    }
+
     override fun onGetItem(
         session: MediaLibraryService.MediaLibrarySession,
         browser: MediaSession.ControllerInfo,
@@ -175,6 +198,87 @@ class AutoMediaBrowserCallback(var player: Player) :
     ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
         // TODO: params???
         return onLoadChildren(parentId)
+    }
+
+    override fun onCustomCommand(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        customCommand: SessionCommand,
+        args: Bundle
+    ): ListenableFuture<SessionResult> {
+
+        /*
+        * It is currently not possible to edit a MediaItem after creation so the isRated value
+        * is stored in the track.starred value
+        */
+        val rating = mediaPlayerController.currentPlayingLegacy?.track?.starred?.let {
+            HeartRating(
+                it
+            )
+        }
+
+        if (rating is HeartRating) {
+            return when (customCommand.customAction) {
+                "COMMAND_CODE_SESSION_SET_RATING" -> {
+                    onSetRating(
+                        session,
+                        controller,
+                        HeartRating(!rating.isHeart)
+                    )
+                }
+                else -> {
+                    Timber.d(
+                        "CustomCommand not recognized %s with extra %s",
+                        customCommand.customAction,
+                        customCommand.customExtras.toString()
+                    )
+                    super.onCustomCommand(session, controller, customCommand, args)
+                }
+            }
+        }
+        return super.onCustomCommand(session, controller, customCommand, args)
+    }
+
+    override fun onSetRating(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        rating: Rating
+    ): ListenableFuture<SessionResult> {
+        if (session.player.currentMediaItem != null)
+            return onSetRating(
+                session,
+                controller,
+                session.player.currentMediaItem!!.mediaId,
+                rating
+            )
+        return super.onSetRating(session, controller, rating)
+    }
+
+    override fun onSetRating(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        mediaId: String,
+        rating: Rating
+    ): ListenableFuture<SessionResult> {
+        return serviceScope.future {
+            if (rating is HeartRating) {
+                val musicService = MusicServiceFactory.getMusicService()
+                try {
+                    if (rating.isHeart) {
+                        musicService.star(mediaId, null, null)
+                    } else {
+                        musicService.unstar(mediaId, null, null)
+                    }
+                } catch (all: Exception) {
+                    Timber.e(all)
+                    // TODO: Better handle exception
+                    return@future SessionResult(RESULT_ERROR_UNKNOWN)
+                }
+                mediaPlayerController.currentPlayingLegacy?.track?.starred = rating.isHeart
+                return@future SessionResult(RESULT_SUCCESS)
+            }
+            return@future SessionResult(RESULT_ERROR_BAD_VALUE)
+        }
     }
 
     /*
@@ -1076,6 +1180,7 @@ class AutoMediaBrowserCallback(var player: Player) :
             album = track.album,
             artist = track.artist,
             genre = track.genre,
+            starred = track.starred
         )
     }
 
@@ -1090,6 +1195,7 @@ class AutoMediaBrowserCallback(var player: Player) :
         genre: String? = null,
         sourceUri: Uri? = null,
         imageUri: Uri? = null,
+        starred: Boolean = false
     ): MediaItem {
         val metadata =
             MediaMetadata.Builder()
@@ -1097,6 +1203,7 @@ class AutoMediaBrowserCallback(var player: Player) :
                 .setTitle(title)
                 .setArtist(artist)
                 .setGenre(genre)
+                .setUserRating(HeartRating(starred))
                 .setFolderType(folderType)
                 .setIsPlayable(isPlayable)
                 .setArtworkUri(imageUri)

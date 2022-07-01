@@ -33,17 +33,22 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.media3.common.HeartRating
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
+import androidx.media3.session.SessionResult
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_DRAG
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.google.common.util.concurrent.FutureCallback
+import com.google.common.util.concurrent.Futures
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -748,25 +753,28 @@ class PlayerFragment :
 
                 val isStarred = currentSong!!.starred
                 val id = currentSong!!.id
-                if (isStarred) {
-                    starMenuItem.icon = hollowStar
-                    currentSong!!.starred = false
-                } else {
-                    starMenuItem.icon = fullStar
-                    currentSong!!.starred = true
-                }
-                Thread {
-                    val musicService = getMusicService()
-                    try {
-                        if (isStarred) {
-                            musicService.unstar(id, null, null)
-                        } else {
-                            musicService.star(id, null, null)
+
+                mediaPlayerController.controller?.setRating(
+                    id,
+                    HeartRating(!isStarred)
+                )?.let {
+                    Futures.addCallback(it, object : FutureCallback<SessionResult> {
+                        override fun onSuccess(result: SessionResult?) {
+                            if (isStarred) {
+                                starMenuItem.icon = hollowStar
+                                currentSong!!.starred = false
+                            } else {
+                                starMenuItem.icon = fullStar
+                                currentSong!!.starred = true
+                            }
                         }
-                    } catch (all: Exception) {
-                        Timber.e(all)
-                    }
-                }.start()
+
+                        override fun onFailure(t: Throwable) {
+                            Toast.makeText(context, "SetRating failed", Toast.LENGTH_SHORT).show()
+                        }
+                    }, this.executorService)
+                }
+
                 return true
             }
             R.id.menu_item_bookmark_set -> {
