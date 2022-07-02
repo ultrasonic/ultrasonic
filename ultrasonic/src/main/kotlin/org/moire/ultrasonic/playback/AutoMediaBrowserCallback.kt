@@ -213,7 +213,6 @@ class AutoMediaBrowserCallback(var player: Player) :
         args: Bundle
     ): ListenableFuture<SessionResult> {
 
-
         var customCommandFuture: ListenableFuture<SessionResult>? = null
 
         when (customCommand.customAction) {
@@ -245,7 +244,8 @@ class AutoMediaBrowserCallback(var player: Player) :
                                     LENGTH_SHORT
                                 ).show()
                             }
-                        }, MoreExecutors.directExecutor()
+                        },
+                        MoreExecutors.directExecutor()
                     )
                 }
             }

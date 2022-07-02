@@ -595,15 +595,19 @@ class MediaPlayerController(
             HeartRating(!song.starred)
         ).let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && it != null) {
-                Futures.addCallback(it, object : FutureCallback<SessionResult> {
-                    override fun onSuccess(result: SessionResult?) {
-                        updateStarred()
-                    }
+                Futures.addCallback(
+                    it,
+                    object : FutureCallback<SessionResult> {
+                        override fun onSuccess(result: SessionResult?) {
+                            updateStarred()
+                        }
 
-                    override fun onFailure(t: Throwable) {
-                        TODO("Not yet implemented")
-                    }
-                }, context.mainExecutor)
+                        override fun onFailure(t: Throwable) {
+                            TODO("Not yet implemented")
+                        }
+                    },
+                    context.mainExecutor
+                )
             } else {
                 updateStarred()
             }

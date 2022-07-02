@@ -756,21 +756,26 @@ class PlayerFragment :
                 mediaPlayerController.controller?.setRating(
                     HeartRating(!isStarred)
                 )?.let {
-                    Futures.addCallback(it, object : FutureCallback<SessionResult> {
-                        override fun onSuccess(result: SessionResult?) {
-                            if (isStarred) {
-                                starMenuItem.icon = hollowStar
-                                currentSong!!.starred = false
-                            } else {
-                                starMenuItem.icon = fullStar
-                                currentSong!!.starred = true
+                    Futures.addCallback(
+                        it,
+                        object : FutureCallback<SessionResult> {
+                            override fun onSuccess(result: SessionResult?) {
+                                if (isStarred) {
+                                    starMenuItem.icon = hollowStar
+                                    currentSong!!.starred = false
+                                } else {
+                                    starMenuItem.icon = fullStar
+                                    currentSong!!.starred = true
+                                }
                             }
-                        }
 
-                        override fun onFailure(t: Throwable) {
-                            Toast.makeText(context, "SetRating failed", Toast.LENGTH_SHORT).show()
-                        }
-                    }, this.executorService)
+                            override fun onFailure(t: Throwable) {
+                                Toast.makeText(context, "SetRating failed", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        },
+                        this.executorService
+                    )
                 }
 
                 return true
