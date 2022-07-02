@@ -48,7 +48,10 @@ class MediaNotificationProvider(context: Context) :
             tmp.add(
                 CommandButton.Builder()
                     .setDisplayName("Love")
-                    .setIconResId(if (rating.isHeart) R.drawable.ic_star_full_dark else R.drawable.ic_star_hollow_dark)
+                    .setIconResId(
+                        if (rating.isHeart) R.drawable.ic_star_full_dark
+                        else R.drawable.ic_star_hollow_dark
+                    )
                     .setSessionCommand(
                         SessionCommand(
                             SESSION_CUSTOM_SET_RATING,

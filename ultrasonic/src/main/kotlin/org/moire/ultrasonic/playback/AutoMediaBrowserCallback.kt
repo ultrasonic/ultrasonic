@@ -8,9 +8,7 @@
 package org.moire.ultrasonic.playback
 
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.media3.common.HeartRating
@@ -40,11 +38,8 @@ import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.guava.future
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.checkerframework.checker.units.qual.Length
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
@@ -60,7 +55,6 @@ import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
-import kotlin.coroutines.coroutineContext
 
 private const val MEDIA_ROOT_ID = "MEDIA_ROOT_ID"
 private const val MEDIA_ALBUM_ID = "MEDIA_ALBUM_ID"
