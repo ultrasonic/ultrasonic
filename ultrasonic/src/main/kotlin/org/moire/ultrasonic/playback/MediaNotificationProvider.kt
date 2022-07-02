@@ -51,7 +51,7 @@ class MediaNotificationProvider(context: Context) :
                     .setIconResId(if (rating.isHeart) R.drawable.ic_star_full_dark else R.drawable.ic_star_hollow_dark)
                     .setSessionCommand(
                         SessionCommand(
-                            "COMMAND_CODE_SESSION_SET_RATING",
+                            SESSION_CUSTOM_SET_RATING,
                             HeartRating(rating.isHeart).toBundle()
                         )
                     )

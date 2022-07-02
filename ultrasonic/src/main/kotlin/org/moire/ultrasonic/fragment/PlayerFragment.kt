@@ -752,10 +752,8 @@ class PlayerFragment :
                 if (currentSong == null) return true
 
                 val isStarred = currentSong!!.starred
-                val id = currentSong!!.id
 
                 mediaPlayerController.controller?.setRating(
-                    id,
                     HeartRating(!isStarred)
                 )?.let {
                     Futures.addCallback(it, object : FutureCallback<SessionResult> {

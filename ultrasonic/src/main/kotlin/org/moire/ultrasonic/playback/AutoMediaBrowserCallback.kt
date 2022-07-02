@@ -8,7 +8,11 @@
 package org.moire.ultrasonic.playback
 
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Looper
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.media3.common.HeartRating
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -29,13 +33,18 @@ import androidx.media3.session.SessionResult.RESULT_ERROR_BAD_VALUE
 import androidx.media3.session.SessionResult.RESULT_ERROR_UNKNOWN
 import androidx.media3.session.SessionResult.RESULT_SUCCESS
 import com.google.common.collect.ImmutableList
+import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.guava.future
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.checkerframework.checker.units.qual.Length
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
@@ -51,6 +60,7 @@ import org.moire.ultrasonic.service.MusicServiceFactory
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
+import kotlin.coroutines.coroutineContext
 
 private const val MEDIA_ROOT_ID = "MEDIA_ROOT_ID"
 private const val MEDIA_ALBUM_ID = "MEDIA_ALBUM_ID"
@@ -86,6 +96,9 @@ private const val MEDIA_SEARCH_SONG_ITEM = "MEDIA_SEARCH_SONG_ITEM"
 // Currently the display limit for long lists is 100 items
 private const val DISPLAY_LIMIT = 100
 private const val SEARCH_LIMIT = 10
+
+// List of available custom SessionCommands
+const val SESSION_CUSTOM_SET_RATING = "SESSION_CUSTOM_SET_RATING"
 
 /**
  * MediaBrowserService implementation for e.g. Android Auto
@@ -164,8 +177,7 @@ class AutoMediaBrowserCallback(var player: Player) :
         val connectionResult = super.onConnect(session, controller)
         val availableSessionCommands = connectionResult.availableSessionCommands.buildUpon()
 
-        // TODO: Make a Const value list of available custom SessionCommands
-        availableSessionCommands.add(SessionCommand("COMMAND_CODE_SESSION_SET_RATING", Bundle()))
+        availableSessionCommands.add(SessionCommand(SESSION_CUSTOM_SET_RATING, Bundle()))
 
         return MediaSession.ConnectionResult.accept(
             availableSessionCommands.build(),
@@ -207,35 +219,52 @@ class AutoMediaBrowserCallback(var player: Player) :
         args: Bundle
     ): ListenableFuture<SessionResult> {
 
-        /*
-        * It is currently not possible to edit a MediaItem after creation so the isRated value
-        * is stored in the track.starred value
-        */
-        val rating = mediaPlayerController.currentPlayingLegacy?.track?.starred?.let {
-            HeartRating(
-                it
-            )
-        }
 
-        if (rating is HeartRating) {
-            return when (customCommand.customAction) {
-                "COMMAND_CODE_SESSION_SET_RATING" -> {
-                    onSetRating(
+        var customCommandFuture: ListenableFuture<SessionResult>? = null
+
+        when (customCommand.customAction) {
+            SESSION_CUSTOM_SET_RATING -> {
+                /*
+                * It is currently not possible to edit a MediaItem after creation so the isRated value
+                * is stored in the track.starred value
+                * See https://github.com/androidx/media/issues/33
+                */
+                val track = mediaPlayerController.currentPlayingLegacy?.track
+                if (track != null) {
+                    customCommandFuture = onSetRating(
                         session,
                         controller,
-                        HeartRating(!rating.isHeart)
+                        HeartRating(!track.starred)
                     )
-                }
-                else -> {
-                    Timber.d(
-                        "CustomCommand not recognized %s with extra %s",
-                        customCommand.customAction,
-                        customCommand.customExtras.toString()
+                    Futures.addCallback(
+                        customCommandFuture,
+                        object : FutureCallback<SessionResult> {
+                            override fun onSuccess(result: SessionResult) {
+                                track.starred = !track.starred
+                                // Handle notification reload here
+                            }
+
+                            override fun onFailure(t: Throwable) {
+                                Toast.makeText(
+                                    mediaPlayerController.context,
+                                    "There was an error updating the rating",
+                                    LENGTH_SHORT
+                                ).show()
+                            }
+                        }, MoreExecutors.directExecutor()
                     )
-                    super.onCustomCommand(session, controller, customCommand, args)
                 }
             }
+            else -> {
+                Timber.d(
+                    "CustomCommand not recognized %s with extra %s",
+                    customCommand.customAction,
+                    customCommand.customExtras.toString()
+                )
+            }
         }
+        if (customCommandFuture != null)
+            return customCommandFuture
         return super.onCustomCommand(session, controller, customCommand, args)
     }
 
@@ -274,7 +303,6 @@ class AutoMediaBrowserCallback(var player: Player) :
                     // TODO: Better handle exception
                     return@future SessionResult(RESULT_ERROR_UNKNOWN)
                 }
-                mediaPlayerController.currentPlayingLegacy?.track?.starred = rating.isHeart
                 return@future SessionResult(RESULT_SUCCESS)
             }
             return@future SessionResult(RESULT_ERROR_BAD_VALUE)

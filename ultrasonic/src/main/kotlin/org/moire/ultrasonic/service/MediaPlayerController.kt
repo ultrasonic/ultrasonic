@@ -594,7 +594,6 @@ class MediaPlayerController(
         }
 
         controller?.setRating(
-            song.id,
             HeartRating(!song.starred)
         ).let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && it != null) {
