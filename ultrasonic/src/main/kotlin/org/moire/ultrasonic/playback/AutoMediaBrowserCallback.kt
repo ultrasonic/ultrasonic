@@ -34,7 +34,6 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -52,6 +51,7 @@ import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory
+import org.moire.ultrasonic.util.MainThreadExecutor
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -98,7 +98,7 @@ const val SESSION_CUSTOM_SET_RATING = "SESSION_CUSTOM_SET_RATING"
  * MediaBrowserService implementation for e.g. Android Auto
  */
 @Suppress("TooManyFunctions", "LargeClass", "UnusedPrivateMember")
-class AutoMediaBrowserCallback(var player: Player) :
+class AutoMediaBrowserCallback(var player: Player, val libraryService: MediaLibraryService) :
     MediaLibraryService.MediaLibrarySession.Callback, KoinComponent {
 
     private val mediaPlayerController by inject<MediaPlayerController>()
@@ -234,7 +234,8 @@ class AutoMediaBrowserCallback(var player: Player) :
                         object : FutureCallback<SessionResult> {
                             override fun onSuccess(result: SessionResult) {
                                 track.starred = !track.starred
-                                // Handle notification reload here
+                                // This needs to be called on the main Thread
+                                libraryService.onUpdateNotification(session)
                             }
 
                             override fun onFailure(t: Throwable) {
@@ -245,7 +246,7 @@ class AutoMediaBrowserCallback(var player: Player) :
                                 ).show()
                             }
                         },
-                        MoreExecutors.directExecutor()
+                        MainThreadExecutor()
                     )
                 }
             }

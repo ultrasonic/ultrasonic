@@ -111,7 +111,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             player.experimentalSetOffloadSchedulingEnabled(true)
 
         // Create browser interface
-        librarySessionCallback = AutoMediaBrowserCallback(player)
+        librarySessionCallback = AutoMediaBrowserCallback(player, this)
 
         // This will need to use the AutoCalls
         mediaLibrarySession = MediaLibrarySession.Builder(this, player, librarySessionCallback)
