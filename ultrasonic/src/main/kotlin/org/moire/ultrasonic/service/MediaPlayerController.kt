@@ -10,6 +10,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.media3.common.HeartRating
 import androidx.media3.common.MediaItem
@@ -39,6 +40,7 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.MainThreadExecutor
 import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
 
@@ -584,33 +586,29 @@ class MediaPlayerController(
         if (legacyPlaylistManager.currentPlaying == null) return
         val song = legacyPlaylistManager.currentPlaying!!.track
 
-        fun updateStarred() {
-            // Trigger an update
-            // TODO Update Metadata of MediaItem...
-            // localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
-            song.starred = !song.starred
-        }
-
         controller?.setRating(
             HeartRating(!song.starred)
         ).let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && it != null) {
-                Futures.addCallback(
-                    it,
-                    object : FutureCallback<SessionResult> {
-                        override fun onSuccess(result: SessionResult?) {
-                            updateStarred()
-                        }
+            Futures.addCallback(
+                it,
+                object : FutureCallback<SessionResult> {
+                    override fun onSuccess(result: SessionResult?) {
+                        // Trigger an update
+                        // TODO Update Metadata of MediaItem...
+                        // localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
+                        song.starred = !song.starred
+                    }
 
-                        override fun onFailure(t: Throwable) {
-                            TODO("Not yet implemented")
-                        }
-                    },
-                    context.mainExecutor
-                )
-            } else {
-                updateStarred()
-            }
+                    override fun onFailure(t: Throwable) {
+                        Toast.makeText(
+                            context,
+                            "There was an error updating the rating",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                },
+                MainThreadExecutor()
+            )
         }
     }
 
