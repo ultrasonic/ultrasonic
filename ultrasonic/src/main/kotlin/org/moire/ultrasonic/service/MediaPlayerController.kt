@@ -9,7 +9,6 @@ package org.moire.ultrasonic.service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.media3.common.HeartRating
