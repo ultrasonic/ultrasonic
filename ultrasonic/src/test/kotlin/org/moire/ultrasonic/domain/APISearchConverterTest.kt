@@ -11,11 +11,12 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.SearchResult
 import org.moire.ultrasonic.api.subsonic.models.SearchThreeResult
 import org.moire.ultrasonic.api.subsonic.models.SearchTwoResult
+import org.moire.ultrasonic.data.ActiveServerProvider
 
 /**
  * Unit test for extension function in APISearchConverter.kt file.
  */
-class APISearchConverterTest {
+class APISearchConverterTest : BaseTest() {
     @Test
     fun `Should convert SearchResult to domain entity`() {
         val entity = SearchResult(
@@ -26,7 +27,7 @@ class APISearchConverterTest {
             )
         )
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toDomainEntity(serverId)
 
         with(convertedEntity) {
             albums `should not be equal to` null
@@ -34,7 +35,7 @@ class APISearchConverterTest {
             artists `should not be equal to` null
             artists.size `should be equal to` 0
             songs.size `should be equal to` entity.matchList.size
-            songs[0] `should be equal to` entity.matchList[0].toTrackEntity()
+            songs[0] `should be equal to` entity.matchList[0].toTrackEntity(serverId)
         }
     }
 
@@ -46,15 +47,15 @@ class APISearchConverterTest {
             listOf(MusicDirectoryChild(id = "9118", parent = "112"))
         )
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toDomainEntity(ActiveServerProvider.getActiveServerId())
 
         with(convertedEntity) {
             artists.size `should be equal to` entity.artistList.size
-            artists[0] `should be equal to` entity.artistList[0].toIndexEntity()
+            artists[0] `should be equal to` entity.artistList[0].toIndexEntity(serverId)
             albums.size `should be equal to` entity.albumList.size
-            albums[0] `should be equal to` entity.albumList[0].toDomainEntity()
+            albums[0] `should be equal to` entity.albumList[0].toDomainEntity(serverId)
             songs.size `should be equal to` entity.songList.size
-            songs[0] `should be equal to` entity.songList[0].toTrackEntity()
+            songs[0] `should be equal to` entity.songList[0].toTrackEntity(serverId)
         }
     }
 
@@ -66,15 +67,15 @@ class APISearchConverterTest {
             songList = listOf(MusicDirectoryChild(id = "7123", title = "song1"))
         )
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toDomainEntity(serverId)
 
         with(convertedEntity) {
             artists.size `should be equal to` entity.artistList.size
-            artists[0] `should be equal to` entity.artistList[0].toDomainEntity()
+            artists[0] `should be equal to` entity.artistList[0].toDomainEntity(serverId)
             albums.size `should be equal to` entity.albumList.size
-            albums[0] `should be equal to` entity.albumList[0].toDomainEntity()
+            albums[0] `should be equal to` entity.albumList[0].toDomainEntity(serverId)
             songs.size `should be equal to` entity.songList.size
-            songs[0] `should be equal to` entity.songList[0].toTrackEntity()
+            songs[0] `should be equal to` entity.songList[0].toTrackEntity(serverId)
         }
     }
 }

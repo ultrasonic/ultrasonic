@@ -7,11 +7,12 @@ import org.amshove.kluent.`should be equal to`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
+import org.moire.ultrasonic.data.ActiveServerProvider
 
 /**
  * Unit test for extension functions in APIMusicDirectoryConverter.kt file.
  */
-class APIMusicDirectoryConverterTest {
+class APIMusicDirectoryConverterTest : BaseTest() {
     @Test
     fun `Should convert MusicDirectory entity`() {
         val entity = MusicDirectory(
@@ -20,13 +21,13 @@ class APIMusicDirectoryConverterTest {
             childList = listOf(MusicDirectoryChild("1"), MusicDirectoryChild("2"))
         )
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toDomainEntity(ActiveServerProvider.getActiveServerId())
 
         with(convertedEntity) {
             name `should be equal to` entity.name
             size `should be equal to` entity.childList.size
             getChildren() `should be equal to` entity.childList
-                .map { it.toTrackEntity() }.toMutableList()
+                .map { it.toTrackEntity(serverId) }.toMutableList()
         }
     }
 
@@ -44,7 +45,7 @@ class APIMusicDirectoryConverterTest {
             starred = Calendar.getInstance(), userRating = 3, averageRating = 2.99F
         )
 
-        val convertedEntity = entity.toTrackEntity()
+        val convertedEntity = entity.toTrackEntity(serverId)
 
         with(convertedEntity) {
             id `should be equal to` entity.id
@@ -84,7 +85,7 @@ class APIMusicDirectoryConverterTest {
             artist = "some-artist", publishDate = Calendar.getInstance()
         )
 
-        val convertedEntity = entity.toTrackEntity()
+        val convertedEntity = entity.toTrackEntity(serverId)
 
         with(convertedEntity) {
             id `should be equal to` entity.streamId
@@ -96,11 +97,11 @@ class APIMusicDirectoryConverterTest {
     fun `Should convert list of MusicDirectoryChild to domain entity list`() {
         val entitiesList = listOf(MusicDirectoryChild(id = "45"), MusicDirectoryChild(id = "34"))
 
-        val domainList = entitiesList.toDomainEntityList()
+        val domainList = entitiesList.toDomainEntityList(serverId)
 
         domainList.size `should be equal to` entitiesList.size
         domainList.forEachIndexed { index, entry ->
-            entry `should be equal to` entitiesList[index].toTrackEntity()
+            entry `should be equal to` entitiesList[index].toTrackEntity(serverId)
         }
     }
 }

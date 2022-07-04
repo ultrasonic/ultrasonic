@@ -1,12 +1,22 @@
+/*
+ * Album.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.domain
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity(tableName = "albums")
+@Entity(tableName = "albums", primaryKeys = ["id", "serverId"])
 data class Album(
-    @PrimaryKey override var id: String,
+    override var id: String,
+    @ColumnInfo(defaultValue = "-1")
+    override var serverId: Int = -1,
     override var parent: String? = null,
     override var album: String? = null,
     override var title: String? = null,

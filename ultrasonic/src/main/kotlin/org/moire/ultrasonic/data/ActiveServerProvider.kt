@@ -1,3 +1,10 @@
+/*
+ * ActiveServerProvider.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.data
 
 import androidx.room.Room
@@ -124,7 +131,9 @@ class ActiveServerProvider(
             UApp.applicationContext(),
             MetaDatabase::class.java,
             METADATA_DB + serverId
-        ).fallbackToDestructiveMigrationOnDowngrade()
+        )
+            .addMigrations(META_MIGRATION_2_3)
+            .fallbackToDestructiveMigrationOnDowngrade()
             .build()
     }
 

@@ -11,12 +11,12 @@ import org.moire.ultrasonic.api.subsonic.models.Artist
 /**
  * Unit test for extension functions in APIArtistConverter.kt file.
  */
-class APIArtistConverterTest {
+class APIArtistConverterTest : BaseTest() {
     @Test
     fun `Should convert artist entity`() {
         val entity = Artist(id = "10", name = "artist-name", starred = Calendar.getInstance())
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toDomainEntity(serverId)
 
         with(convertedEntity) {
             id `should be equal to` entity.id
@@ -38,12 +38,12 @@ class APIArtistConverterTest {
             )
         )
 
-        val convertedEntity = entity.toMusicDirectoryDomainEntity()
+        val convertedEntity = entity.toMusicDirectoryDomainEntity(serverId)
 
         with(convertedEntity) {
             name `should be equal to` entity.name
             getChildren() `should be equal to` entity.albumsList
-                .map { it.toDomainEntity() }.toMutableList()
+                .map { it.toDomainEntity(serverId) }.toMutableList()
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * OfflineMusicService.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -66,7 +66,7 @@ class OfflineMusicService : MusicService, KoinComponent {
         val root = FileUtil.musicDirectory
         for (file in FileUtil.listFiles(root)) {
             if (file.isDirectory) {
-                val index = Index(file.path)
+                val index = Index(id = file.path)
                 index.id = file.path
                 index.index = file.name.substring(0, 1)
                 index.name = file.name
