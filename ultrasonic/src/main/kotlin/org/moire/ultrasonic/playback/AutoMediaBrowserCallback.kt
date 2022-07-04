@@ -286,7 +286,6 @@ class AutoMediaBrowserCallback(var player: Player, val libraryService: MediaLibr
     ): ListenableFuture<SessionResult> {
         return serviceScope.future {
             if (rating is HeartRating) {
-                val musicService = MusicServiceFactory.getMusicService()
                 try {
                     if (rating.isHeart) {
                         musicService.star(mediaId, null, null)
