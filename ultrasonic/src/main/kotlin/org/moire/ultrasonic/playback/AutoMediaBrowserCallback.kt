@@ -171,6 +171,10 @@ class AutoMediaBrowserCallback(var player: Player, val libraryService: MediaLibr
         val connectionResult = super.onConnect(session, controller)
         val availableSessionCommands = connectionResult.availableSessionCommands.buildUpon()
 
+        /*
+        * TODO: Currently we need to create a custom session command, see https://github.com/androidx/media/issues/107
+        * When this issue is fixed we should be able to remove this method again
+        */
         availableSessionCommands.add(SessionCommand(SESSION_CUSTOM_SET_RATING, Bundle()))
 
         return MediaSession.ConnectionResult.accept(
