@@ -103,7 +103,6 @@ class AutoMediaBrowserCallback(var player: Player, val libraryService: MediaLibr
 
     private val mediaPlayerController by inject<MediaPlayerController>()
     private val activeServerProvider: ActiveServerProvider by inject()
-    private val musicService = MusicServiceFactory.getMusicService()
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
@@ -113,6 +112,7 @@ class AutoMediaBrowserCallback(var player: Player, val libraryService: MediaLibr
     private var randomSongsCache: List<Track>? = null
     private var searchSongsCache: List<Track>? = null
 
+    private val musicService get() = MusicServiceFactory.getMusicService()
     private val isOffline get() = ActiveServerProvider.isOffline()
     private val useId3Tags get() = Settings.shouldUseId3Tags
     private val musicFolderId get() = activeServerProvider.getActiveServer().musicFolderId
