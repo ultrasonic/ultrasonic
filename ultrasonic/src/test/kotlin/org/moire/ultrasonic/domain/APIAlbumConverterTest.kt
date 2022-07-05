@@ -62,7 +62,7 @@ class APIAlbumConverterTest {
     fun `Should convert list of Album entities to domain list entities`() {
         val entityList = listOf(Album(id = "455"), Album(id = "1"), Album(id = "1000"))
 
-        val convertedList = entityList.toDomainEntityList(ActiveServerProvider.getActiveServerId())
+        val convertedList = entityList.toDomainEntityList(serverId)
 
         with(convertedList) {
             size `should be equal to` entityList.size

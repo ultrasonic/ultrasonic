@@ -21,7 +21,7 @@ class APIMusicDirectoryConverterTest : BaseTest() {
             childList = listOf(MusicDirectoryChild("1"), MusicDirectoryChild("2"))
         )
 
-        val convertedEntity = entity.toDomainEntity(ActiveServerProvider.getActiveServerId())
+        val convertedEntity = entity.toDomainEntity(serverId)
 
         with(convertedEntity) {
             name `should be equal to` entity.name

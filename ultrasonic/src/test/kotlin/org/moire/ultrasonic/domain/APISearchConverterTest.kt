@@ -47,7 +47,7 @@ class APISearchConverterTest : BaseTest() {
             listOf(MusicDirectoryChild(id = "9118", parent = "112"))
         )
 
-        val convertedEntity = entity.toDomainEntity(ActiveServerProvider.getActiveServerId())
+        val convertedEntity = entity.toDomainEntity(serverId)
 
         with(convertedEntity) {
             artists.size `should be equal to` entity.artistList.size
