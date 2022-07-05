@@ -9,13 +9,18 @@ package org.moire.ultrasonic.service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.media3.common.HeartRating
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.session.MediaController
+import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
+import com.google.common.util.concurrent.FutureCallback
+import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.MoreExecutors
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +39,7 @@ import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X3
 import org.moire.ultrasonic.provider.UltrasonicAppWidgetProvider4X4
 import org.moire.ultrasonic.service.MusicServiceFactory.getMusicService
 import org.moire.ultrasonic.util.FileUtil
+import org.moire.ultrasonic.util.MainThreadExecutor
 import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
 
@@ -579,23 +585,30 @@ class MediaPlayerController(
         if (legacyPlaylistManager.currentPlaying == null) return
         val song = legacyPlaylistManager.currentPlaying!!.track
 
-        Thread {
-            val musicService = getMusicService()
-            try {
-                if (song.starred) {
-                    musicService.unstar(song.id, null, null)
-                } else {
-                    musicService.star(song.id, null, null)
-                }
-            } catch (all: Exception) {
-                Timber.e(all)
-            }
-        }.start()
+        controller?.setRating(
+            HeartRating(!song.starred)
+        ).let {
+            Futures.addCallback(
+                it,
+                object : FutureCallback<SessionResult> {
+                    override fun onSuccess(result: SessionResult?) {
+                        // Trigger an update
+                        // TODO Update Metadata of MediaItem...
+                        // localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
+                        song.starred = !song.starred
+                    }
 
-        // Trigger an update
-        // TODO Update Metadata of MediaItem...
-        // localMediaPlayer.setCurrentPlaying(localMediaPlayer.currentPlaying)
-        song.starred = !song.starred
+                    override fun onFailure(t: Throwable) {
+                        Toast.makeText(
+                            context,
+                            "There was an error updating the rating",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                },
+                MainThreadExecutor()
+            )
+        }
     }
 
     @Suppress("TooGenericExceptionCaught") // The interface throws only generic exceptions
@@ -668,6 +681,7 @@ fun Track.toMediaItem(): MediaItem {
         .setArtist(artist)
         .setAlbumTitle(album)
         .setAlbumArtist(artist)
+        .setUserRating(HeartRating(starred))
         .build()
 
     val mediaItem = MediaItem.Builder()

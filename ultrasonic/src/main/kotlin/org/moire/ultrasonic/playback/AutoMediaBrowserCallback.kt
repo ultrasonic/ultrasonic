@@ -9,6 +9,9 @@ package org.moire.ultrasonic.playback
 
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
+import androidx.media3.common.HeartRating
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MediaMetadata.FOLDER_TYPE_ALBUMS
@@ -18,10 +21,17 @@ import androidx.media3.common.MediaMetadata.FOLDER_TYPE_NONE
 import androidx.media3.common.MediaMetadata.FOLDER_TYPE_PLAYLISTS
 import androidx.media3.common.MediaMetadata.FOLDER_TYPE_TITLES
 import androidx.media3.common.Player
+import androidx.media3.common.Rating
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionResult
+import androidx.media3.session.SessionResult.RESULT_ERROR_BAD_VALUE
+import androidx.media3.session.SessionResult.RESULT_ERROR_UNKNOWN
+import androidx.media3.session.SessionResult.RESULT_SUCCESS
 import com.google.common.collect.ImmutableList
+import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +51,7 @@ import org.moire.ultrasonic.domain.SearchResult
 import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.service.MediaPlayerController
 import org.moire.ultrasonic.service.MusicServiceFactory
+import org.moire.ultrasonic.util.MainThreadExecutor
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
 import timber.log.Timber
@@ -80,16 +91,18 @@ private const val MEDIA_SEARCH_SONG_ITEM = "MEDIA_SEARCH_SONG_ITEM"
 private const val DISPLAY_LIMIT = 100
 private const val SEARCH_LIMIT = 10
 
+// List of available custom SessionCommands
+const val SESSION_CUSTOM_SET_RATING = "SESSION_CUSTOM_SET_RATING"
+
 /**
  * MediaBrowserService implementation for e.g. Android Auto
  */
 @Suppress("TooManyFunctions", "LargeClass", "UnusedPrivateMember")
-class AutoMediaBrowserCallback(var player: Player) :
+class AutoMediaBrowserCallback(var player: Player, val libraryService: MediaLibraryService) :
     MediaLibraryService.MediaLibrarySession.Callback, KoinComponent {
 
     private val mediaPlayerController by inject<MediaPlayerController>()
     private val activeServerProvider: ActiveServerProvider by inject()
-    private val musicService = MusicServiceFactory.getMusicService()
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
@@ -99,6 +112,7 @@ class AutoMediaBrowserCallback(var player: Player) :
     private var randomSongsCache: List<Track>? = null
     private var searchSongsCache: List<Track>? = null
 
+    private val musicService get() = MusicServiceFactory.getMusicService()
     private val isOffline get() = ActiveServerProvider.isOffline()
     private val useId3Tags get() = Settings.shouldUseId3Tags
     private val musicFolderId get() = activeServerProvider.getActiveServer().musicFolderId
@@ -150,6 +164,25 @@ class AutoMediaBrowserCallback(var player: Player) :
         )
     }
 
+    override fun onConnect(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo
+    ): MediaSession.ConnectionResult {
+        val connectionResult = super.onConnect(session, controller)
+        val availableSessionCommands = connectionResult.availableSessionCommands.buildUpon()
+
+        /*
+        * TODO: Currently we need to create a custom session command, see https://github.com/androidx/media/issues/107
+        * When this issue is fixed we should be able to remove this method again
+        */
+        availableSessionCommands.add(SessionCommand(SESSION_CUSTOM_SET_RATING, Bundle()))
+
+        return MediaSession.ConnectionResult.accept(
+            availableSessionCommands.build(),
+            connectionResult.availablePlayerCommands
+        )
+    }
+
     override fun onGetItem(
         session: MediaLibraryService.MediaLibrarySession,
         browser: MediaSession.ControllerInfo,
@@ -175,6 +208,103 @@ class AutoMediaBrowserCallback(var player: Player) :
     ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
         // TODO: params???
         return onLoadChildren(parentId)
+    }
+
+    override fun onCustomCommand(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        customCommand: SessionCommand,
+        args: Bundle
+    ): ListenableFuture<SessionResult> {
+
+        var customCommandFuture: ListenableFuture<SessionResult>? = null
+
+        when (customCommand.customAction) {
+            SESSION_CUSTOM_SET_RATING -> {
+                /*
+                * It is currently not possible to edit a MediaItem after creation so the isRated value
+                * is stored in the track.starred value
+                * See https://github.com/androidx/media/issues/33
+                */
+                val track = mediaPlayerController.currentPlayingLegacy?.track
+                if (track != null) {
+                    customCommandFuture = onSetRating(
+                        session,
+                        controller,
+                        HeartRating(!track.starred)
+                    )
+                    Futures.addCallback(
+                        customCommandFuture,
+                        object : FutureCallback<SessionResult> {
+                            override fun onSuccess(result: SessionResult) {
+                                track.starred = !track.starred
+                                // This needs to be called on the main Thread
+                                libraryService.onUpdateNotification(session)
+                            }
+
+                            override fun onFailure(t: Throwable) {
+                                Toast.makeText(
+                                    mediaPlayerController.context,
+                                    "There was an error updating the rating",
+                                    LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        MainThreadExecutor()
+                    )
+                }
+            }
+            else -> {
+                Timber.d(
+                    "CustomCommand not recognized %s with extra %s",
+                    customCommand.customAction,
+                    customCommand.customExtras.toString()
+                )
+            }
+        }
+        if (customCommandFuture != null)
+            return customCommandFuture
+        return super.onCustomCommand(session, controller, customCommand, args)
+    }
+
+    override fun onSetRating(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        rating: Rating
+    ): ListenableFuture<SessionResult> {
+        if (session.player.currentMediaItem != null)
+            return onSetRating(
+                session,
+                controller,
+                session.player.currentMediaItem!!.mediaId,
+                rating
+            )
+        return super.onSetRating(session, controller, rating)
+    }
+
+    override fun onSetRating(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        mediaId: String,
+        rating: Rating
+    ): ListenableFuture<SessionResult> {
+        return serviceScope.future {
+            if (rating is HeartRating) {
+                try {
+                    if (rating.isHeart) {
+                        musicService.star(mediaId, null, null)
+                    } else {
+                        musicService.unstar(mediaId, null, null)
+                    }
+                } catch (all: Exception) {
+                    Timber.e(all)
+                    // TODO: Better handle exception
+                    return@future SessionResult(RESULT_ERROR_UNKNOWN)
+                }
+                return@future SessionResult(RESULT_SUCCESS)
+            }
+            return@future SessionResult(RESULT_ERROR_BAD_VALUE)
+        }
     }
 
     /*
@@ -1076,6 +1206,7 @@ class AutoMediaBrowserCallback(var player: Player) :
             album = track.album,
             artist = track.artist,
             genre = track.genre,
+            starred = track.starred
         )
     }
 
@@ -1090,6 +1221,7 @@ class AutoMediaBrowserCallback(var player: Player) :
         genre: String? = null,
         sourceUri: Uri? = null,
         imageUri: Uri? = null,
+        starred: Boolean = false
     ): MediaItem {
         val metadata =
             MediaMetadata.Builder()
@@ -1097,6 +1229,7 @@ class AutoMediaBrowserCallback(var player: Player) :
                 .setTitle(title)
                 .setArtist(artist)
                 .setGenre(genre)
+                .setUserRating(HeartRating(starred))
                 .setFolderType(folderType)
                 .setIsPlayable(isPlayable)
                 .setArtworkUri(imageUri)
