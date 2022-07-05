@@ -7,7 +7,6 @@ import org.amshove.kluent.`should be equal to`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.Playlist
-import org.moire.ultrasonic.data.ActiveServerProvider
 
 /**
  * Unit test for extension functions that converts api playlist entity to domain.
@@ -23,7 +22,7 @@ class APIPlaylistConverterTest : BaseTest() {
             )
         )
 
-        val convertedEntity = entity.toMusicDirectoryDomainEntity(ActiveServerProvider.getActiveServerId())
+        val convertedEntity = entity.toMusicDirectoryDomainEntity(serverId)
 
         with(convertedEntity) {
             name `should be equal to` entity.name

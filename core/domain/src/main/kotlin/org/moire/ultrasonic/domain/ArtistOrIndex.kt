@@ -9,6 +9,7 @@ package org.moire.ultrasonic.domain
 
 import androidx.room.Ignore
 
+@Suppress("LongParameterList")
 abstract class ArtistOrIndex(
     @Ignore
     override var id: String,

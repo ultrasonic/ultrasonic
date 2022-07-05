@@ -14,12 +14,12 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import java.util.Date
 import org.moire.ultrasonic.domain.Album
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Index
 import org.moire.ultrasonic.domain.MusicFolder
 import org.moire.ultrasonic.domain.Track
-import java.util.Date
 
 /**
  * This database is used to store and cache the ID3 metadata
@@ -67,7 +67,8 @@ class Converters {
     }
 }
 
-val META_MIGRATION_2_3: Migration = object : Migration(2,3) {
+/* ktlint-disable max-line-length */
+val META_MIGRATION_2_3: Migration = object : Migration(2, 3) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("DROP TABLE `albums`")
         database.execSQL("DROP TABLE `indexes`")
@@ -81,3 +82,4 @@ val META_MIGRATION_2_3: Migration = object : Migration(2,3) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `tracks` (`id` TEXT NOT NULL, `serverId` INTEGER NOT NULL DEFAULT -1, `parent` TEXT, `isDirectory` INTEGER NOT NULL, `title` TEXT, `album` TEXT, `albumId` TEXT, `artist` TEXT, `artistId` TEXT, `track` INTEGER, `year` INTEGER, `genre` TEXT, `contentType` TEXT, `suffix` TEXT, `transcodedContentType` TEXT, `transcodedSuffix` TEXT, `coverArt` TEXT, `size` INTEGER, `songCount` INTEGER, `duration` INTEGER, `bitRate` INTEGER, `path` TEXT, `isVideo` INTEGER NOT NULL, `starred` INTEGER NOT NULL, `discNumber` INTEGER, `type` TEXT, `created` INTEGER, `closeness` INTEGER NOT NULL, `bookmarkPosition` INTEGER NOT NULL, `userRating` INTEGER, `averageRating` REAL, `name` TEXT, PRIMARY KEY(`id`, `serverId`))")
     }
 }
+/* ktlint-enable max-line-length */

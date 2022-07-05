@@ -9,7 +9,6 @@ package org.moire.ultrasonic.domain
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
 @Entity(tableName = "indexes", primaryKeys = ["id", "serverId"])
 data class Index(
