@@ -40,6 +40,12 @@ class MediaNotificationProvider(context: Context) :
         actionFactory: MediaNotification.ActionFactory
     ): IntArray {
         val tmp: MutableList<CommandButton> = mutableListOf()
+        /*
+        * TODO:
+        * It is currently not possible to edit a MediaItem after creation so the isRated value
+        * is stored in the track.starred value
+        * See https://github.com/androidx/media/issues/33
+        */
         val rating = mediaPlayerController.currentPlayingLegacy?.track?.starred?.let {
             HeartRating(
                 it
