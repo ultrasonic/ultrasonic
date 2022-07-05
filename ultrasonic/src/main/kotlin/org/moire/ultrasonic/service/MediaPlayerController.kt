@@ -42,6 +42,7 @@ import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.MainThreadExecutor
 import org.moire.ultrasonic.util.Settings
 import timber.log.Timber
+import java.io.File
 
 /**
  * The implementation of the Media Player Controller.
@@ -666,6 +667,9 @@ class MediaPlayerController(
     }
 }
 
+/*
+ * TODO: Merge with the Builder functions in AutoMediaBrowserCallback
+ */
 fun Track.toMediaItem(): MediaItem {
 
     val filePath = FileUtil.getSongFile(this)
@@ -676,13 +680,18 @@ fun Track.toMediaItem(): MediaItem {
         .setMediaUri(uri.toUri())
         .build()
 
+    val artworkFile = File(FileUtil.getAlbumArtFile(this))
+
     val metadata = MediaMetadata.Builder()
     metadata.setTitle(title)
         .setArtist(artist)
         .setAlbumTitle(album)
         .setAlbumArtist(artist)
         .setUserRating(HeartRating(starred))
-        .build()
+
+    if (artworkFile.exists()) {
+        metadata.setArtworkUri(artworkFile.toUri())
+    }
 
     val mediaItem = MediaItem.Builder()
         .setUri(uri)
