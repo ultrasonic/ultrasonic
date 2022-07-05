@@ -256,9 +256,7 @@ class MediaPlayerController(
 
     @Synchronized
     fun restore(
-        songs: List<Track>,
-        currentPlayingIndex: Int,
-        currentPlayingPosition: Int,
+        state: PlaybackState,
         autoPlay: Boolean,
         newPlaylist: Boolean
     ) {
@@ -266,21 +264,24 @@ class MediaPlayerController(
         else InsertionMode.APPEND
 
         addToPlaylist(
-            songs,
+            state.songs,
             cachePermanently = false,
             autoPlay = false,
             shuffle = false,
             insertionMode = insertionMode
         )
 
-        if (currentPlayingIndex != -1) {
+        repeatMode = state.repeatMode
+        isShufflePlayEnabled = state.shufflePlay
+
+        if (state.currentPlayingIndex != -1) {
             if (jukeboxMediaPlayer.isEnabled) {
                 jukeboxMediaPlayer.skip(
-                    currentPlayingIndex,
-                    currentPlayingPosition / 1000
+                    state.currentPlayingIndex,
+                    state.currentPlayingPosition / 1000
                 )
             } else {
-                seekTo(currentPlayingIndex, currentPlayingPosition)
+                seekTo(state.currentPlayingIndex, state.currentPlayingPosition)
             }
 
             prepare()
@@ -445,8 +446,8 @@ class MediaPlayerController(
         controller?.clearMediaItems()
 
         if (controller != null && serialize) {
-            playbackStateSerializer.serialize(
-                listOf(), -1, 0
+            playbackStateSerializer.serializeAsync(
+                listOf(), -1, 0, isShufflePlayEnabled, repeatMode
             )
         }
 
@@ -481,10 +482,12 @@ class MediaPlayerController(
         // Don't serialize invalid sessions
         if (currentMediaItemIndex == -1) return
 
-        playbackStateSerializer.serialize(
-            legacyPlaylistManager.playlist,
-            currentMediaItemIndex,
-            playerPosition
+        playbackStateSerializer.serializeAsync(
+            songs = legacyPlaylistManager.playlist,
+            currentPlayingIndex = currentMediaItemIndex,
+            currentPlayingPosition = playerPosition,
+            isShufflePlayEnabled,
+            repeatMode
         )
     }
 

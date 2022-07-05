@@ -60,9 +60,7 @@ class MediaPlayerLifecycleSupport : KoinComponent {
             Timber.i("Restoring %s songs", it!!.songs.size)
 
             mediaPlayerController.restore(
-                it.songs,
-                it.currentPlayingIndex,
-                it.currentPlayingPosition,
+                it,
                 autoPlay,
                 false
             )
@@ -78,7 +76,9 @@ class MediaPlayerLifecycleSupport : KoinComponent {
         playbackStateSerializer.serializeNow(
             mediaPlayerController.playList,
             mediaPlayerController.currentMediaItemIndex,
-            mediaPlayerController.playerPosition
+            mediaPlayerController.playerPosition,
+            mediaPlayerController.isShufflePlayEnabled,
+            mediaPlayerController.repeatMode
         )
 
         mediaPlayerController.clear(false)

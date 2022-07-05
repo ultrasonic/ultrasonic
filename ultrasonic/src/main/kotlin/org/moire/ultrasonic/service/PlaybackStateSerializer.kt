@@ -31,17 +31,25 @@ class PlaybackStateSerializer : KoinComponent {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val mainScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-    fun serialize(
+    fun serializeAsync(
         songs: Iterable<DownloadFile>,
         currentPlayingIndex: Int,
-        currentPlayingPosition: Int
+        currentPlayingPosition: Int,
+        shufflePlay: Boolean,
+        repeatMode: Int
     ) {
         if (isSerializing.get() || !isSetup.get()) return
 
         isSerializing.set(true)
 
         ioScope.launch {
-            serializeNow(songs, currentPlayingIndex, currentPlayingPosition)
+            serializeNow(
+                songs,
+                currentPlayingIndex,
+                currentPlayingPosition,
+                shufflePlay,
+                repeatMode
+            )
         }.invokeOnCompletion {
             isSerializing.set(false)
         }
@@ -50,17 +58,22 @@ class PlaybackStateSerializer : KoinComponent {
     fun serializeNow(
         referencedList: Iterable<DownloadFile>,
         currentPlayingIndex: Int,
-        currentPlayingPosition: Int
+        currentPlayingPosition: Int,
+        shufflePlay: Boolean,
+        repeatMode: Int
     ) {
-        val state = State()
-        val songs = referencedList.toList()
 
-        for (downloadFile in songs) {
-            state.songs.add(downloadFile.track)
+        val tracks = referencedList.toList().map {
+            it.track
         }
 
-        state.currentPlayingIndex = currentPlayingIndex
-        state.currentPlayingPosition = currentPlayingPosition
+        val state = PlaybackState(
+            tracks,
+            currentPlayingIndex,
+            currentPlayingPosition,
+            shufflePlay,
+            repeatMode
+        )
 
         Timber.i(
             "Serialized currentPlayingIndex: %d, currentPlayingPosition: %d",
@@ -71,7 +84,7 @@ class PlaybackStateSerializer : KoinComponent {
         FileUtil.serialize(context, state, Constants.FILENAME_PLAYLIST_SER)
     }
 
-    fun deserialize(afterDeserialized: (State?) -> Unit?) {
+    fun deserialize(afterDeserialized: (PlaybackState?) -> Unit?) {
         if (isDeserializing.get()) return
         ioScope.launch {
             try {
@@ -85,9 +98,9 @@ class PlaybackStateSerializer : KoinComponent {
         }
     }
 
-    private fun deserializeNow(afterDeserialized: (State?) -> Unit?) {
+    private fun deserializeNow(afterDeserialized: (PlaybackState?) -> Unit?) {
 
-        val state = FileUtil.deserialize<State>(
+        val state = FileUtil.deserialize<PlaybackState>(
             context, Constants.FILENAME_PLAYLIST_SER
         ) ?: return
 

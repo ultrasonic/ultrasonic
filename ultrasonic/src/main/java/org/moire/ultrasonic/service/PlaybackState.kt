@@ -1,19 +1,19 @@
-package org.moire.ultrasonic.service;
+package org.moire.ultrasonic.service
 
-import org.moire.ultrasonic.domain.Track;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable
+import org.moire.ultrasonic.domain.Track
 
 /**
  * Represents the state of the Media Player implementation
  */
-public class State implements Serializable
-{
-    public static final long serialVersionUID = -6346438781062572270L;
-
-    public List<Track> songs = new ArrayList<>();
-    public int currentPlayingIndex;
-    public int currentPlayingPosition;
+data class PlaybackState(
+    val songs: List<Track> = listOf(),
+    val currentPlayingIndex: Int = 0,
+    val currentPlayingPosition: Int = 0,
+    var shufflePlay: Boolean = false,
+    var repeatMode: Int = 0
+) : Serializable {
+    companion object {
+        const val serialVersionUID = -293487987L
+    }
 }
