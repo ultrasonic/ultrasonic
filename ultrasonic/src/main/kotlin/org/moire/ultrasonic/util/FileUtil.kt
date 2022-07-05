@@ -114,7 +114,7 @@ object FileUtil {
      * @param entry The album entry
      * @return File object. Not guaranteed that it exists
      */
-    fun getAlbumArtFile(entry: MusicDirectory.Child): String? {
+    fun getAlbumArtFile(entry: MusicDirectory.Child): String {
         val albumDir = getAlbumDirectory(entry)
         return getAlbumArtFileForAlbumDir(albumDir)
     }
@@ -169,7 +169,7 @@ object FileUtil {
      * @return File object. Not guaranteed that it exists
      */
     @JvmStatic
-    fun getAlbumArtFileForAlbumDir(albumDir: String): String? {
+    fun getAlbumArtFileForAlbumDir(albumDir: String): String {
         val key = getAlbumArtKey(albumDir, true)
         return getAlbumArtFile(key)
     }
@@ -180,11 +180,9 @@ object FileUtil {
      * @return File object. Not guaranteed that it exists
      */
     @JvmStatic
-    fun getAlbumArtFile(cacheKey: String?): String? {
+    fun getAlbumArtFile(cacheKey: String): String {
         val albumArtDir = albumArtDirectory.absolutePath
-        return if (cacheKey == null) {
-            null
-        } else "$albumArtDir/$cacheKey"
+        return "$albumArtDir/$cacheKey"
     }
 
     val albumArtDirectory: File

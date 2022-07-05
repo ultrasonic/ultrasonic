@@ -44,7 +44,7 @@ class BitmapUtils {
         ): Bitmap? {
             val albumArtFile = FileUtil.getAlbumArtFile(filename)
             val bitmap: Bitmap? = null
-            if (albumArtFile != null && File(albumArtFile).exists()) {
+            if (File(albumArtFile).exists()) {
                 return getBitmapFromDisk(albumArtFile, size, bitmap)
             }
             return null
