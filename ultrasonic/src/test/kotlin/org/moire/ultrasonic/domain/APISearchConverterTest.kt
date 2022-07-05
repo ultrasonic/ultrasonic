@@ -11,7 +11,6 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 import org.moire.ultrasonic.api.subsonic.models.SearchResult
 import org.moire.ultrasonic.api.subsonic.models.SearchThreeResult
 import org.moire.ultrasonic.api.subsonic.models.SearchTwoResult
-import org.moire.ultrasonic.data.ActiveServerProvider
 
 /**
  * Unit test for extension function in APISearchConverter.kt file.

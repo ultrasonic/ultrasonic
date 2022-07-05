@@ -7,7 +7,6 @@ import org.amshove.kluent.`should be equal to`
 import org.junit.Test
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectory
 import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
-import org.moire.ultrasonic.data.ActiveServerProvider
 
 /**
  * Unit test for extension functions in APIMusicDirectoryConverter.kt file.
