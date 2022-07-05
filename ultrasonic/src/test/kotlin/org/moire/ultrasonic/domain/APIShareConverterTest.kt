@@ -11,12 +11,12 @@ import org.moire.ultrasonic.api.subsonic.models.Share
 /**
  * Unit test for api to domain share entity converter functions.
  */
-class APIShareConverterTest {
+class APIShareConverterTest : BaseTest() {
     @Test
     fun `Should convert share entity to domain`() {
         val entity = createFakeShare()
 
-        val domainEntity = entity.toDomainEntity()
+        val domainEntity = entity.toDomainEntity(serverId)
 
         with(domainEntity) {
             id `should be equal to` entity.id
@@ -27,7 +27,7 @@ class APIShareConverterTest {
             lastVisited `should be equal to` shareTimeFormat.format(entity.lastVisited!!.time)
             expires `should be equal to` shareTimeFormat.format(entity.expires!!.time)
             visitCount `should be equal to` entity.visitCount.toLong()
-            this.getEntries() `should be equal to` entity.items.toDomainEntityList()
+            this.getEntries() `should be equal to` entity.items.toDomainEntityList(serverId)
         }
     }
 
@@ -47,10 +47,10 @@ class APIShareConverterTest {
             createFakeShare().copy(id = "554", lastVisited = null)
         )
 
-        val domainEntityList = entityList.toDomainEntitiesList()
+        val domainEntityList = entityList.toDomainEntitiesList(serverId)
 
         domainEntityList.size `should be equal to` entityList.size
-        domainEntityList[0] `should be equal to` entityList[0].toDomainEntity()
-        domainEntityList[1] `should be equal to` entityList[1].toDomainEntity()
+        domainEntityList[0] `should be equal to` entityList[0].toDomainEntity(serverId)
+        domainEntityList[1] `should be equal to` entityList[1].toDomainEntity(serverId)
     }
 }
