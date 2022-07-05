@@ -28,7 +28,8 @@ class MediaNotificationProvider(context: Context) :
 
     /*
     * It is currently not possible to edit a MediaItem after creation so the isRated value
-    * is stored in the track.starred value
+    * is stored in the track.starred value. See https://github.com/androidx/media/issues/33
+    * TODO: Once the bug is fixed remove this circular reference!
     */
     private val mediaPlayerController by inject<MediaPlayerController>()
 
