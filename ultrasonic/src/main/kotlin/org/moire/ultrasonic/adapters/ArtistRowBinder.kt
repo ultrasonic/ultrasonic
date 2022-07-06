@@ -1,6 +1,6 @@
 /*
- * ArtistRowAdapter.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * ArtistRowBinder.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -110,11 +110,7 @@ class ArtistRowBinder(
     }
 
     private fun showArtistPicture(): Boolean {
-        val isOnline = !ActiveServerProvider.isOffline()
-        val shouldShowArtistPicture = Settings.shouldShowArtistPicture
-
-        val id3Enabled = (isOnline && Settings.shouldUseId3Tags) || Settings.useId3TagsOffline
-        return id3Enabled && shouldShowArtistPicture
+        return ActiveServerProvider.isID3Enabled() && Settings.shouldShowArtistPicture
     }
 
     /**

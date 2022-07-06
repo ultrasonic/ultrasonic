@@ -250,6 +250,13 @@ class ActiveServerProvider(
         }
 
         /**
+         * Queries if ID3 tags should be used
+         */
+        fun isID3Enabled(): Boolean {
+            return Settings.shouldUseId3Tags && (!isOffline() || Settings.useId3TagsOffline)
+        }
+
+        /**
          * Queries if Server Scaling is enabled
          */
         fun isServerScalingEnabled(): Boolean {

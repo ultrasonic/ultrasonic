@@ -1,6 +1,6 @@
 /*
  * Settings.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -160,9 +160,12 @@ object Settings {
     var showNowPlayingDetails
         by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING_DETAILS, false)
 
+    // Normally you don't need to use these Settings directly,
+    // use ActiveServerProvider.isID3Enabled() instead
     @JvmStatic
     var shouldUseId3Tags by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
 
+    // See comment above.
     @JvmStatic
     var useId3TagsOffline by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS_OFFLINE, false)
 

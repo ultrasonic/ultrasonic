@@ -1,6 +1,6 @@
 /*
  * TrackCollectionFragment.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -31,6 +31,7 @@ import org.moire.ultrasonic.adapters.AlbumHeader
 import org.moire.ultrasonic.adapters.AlbumRowBinder
 import org.moire.ultrasonic.adapters.HeaderViewBinder
 import org.moire.ultrasonic.adapters.TrackViewBinder
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -604,7 +605,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 listModel.getRandom(albumListSize)
             } else {
                 setTitle(name)
-                if (!isOffline() && Settings.shouldUseId3Tags || Settings.useId3TagsOffline) {
+                if (ActiveServerProvider.isID3Enabled()) {
                     if (isAlbum) {
                         listModel.getAlbum(refresh2, id!!, name)
                     } else {
