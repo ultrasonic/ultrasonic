@@ -20,11 +20,12 @@ import androidx.media3.session.SessionCommand
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.imageloader.ArtworkBitmapLoader
 import org.moire.ultrasonic.service.MediaPlayerController
 
 @UnstableApi
 class MediaNotificationProvider(context: Context) :
-    DefaultMediaNotificationProvider(context), KoinComponent {
+    DefaultMediaNotificationProvider(context, ArtworkBitmapLoader()), KoinComponent {
 
     /*
     * It is currently not possible to edit a MediaItem after creation so the isRated value

@@ -32,7 +32,7 @@ class BitmapUtils {
             if (track == null) return null
             val albumArtFile = FileUtil.getAlbumArtFile(track)
             val bitmap: Bitmap? = null
-            if (albumArtFile != null && File(albumArtFile).exists()) {
+            if (File(albumArtFile).exists()) {
                 return getBitmapFromDisk(albumArtFile, size, bitmap)
             }
             return null
@@ -48,35 +48,6 @@ class BitmapUtils {
                 return getBitmapFromDisk(albumArtFile, size, bitmap)
             }
             return null
-        }
-
-        @Suppress("DEPRECATION")
-        fun getSampledBitmap(bytes: ByteArray, size: Int): Bitmap? {
-            val opt = BitmapFactory.Options()
-            if (size > 0) {
-                // With this flag we only calculate the size first
-                opt.inJustDecodeBounds = true
-
-                // Decode the size
-                BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opt)
-
-                // Now set the remaining flags
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                    opt.inDither = true
-                    opt.inPreferQualityOverSpeed = true
-                }
-
-                opt.inSampleSize = Util.calculateInSampleSize(
-                    opt,
-                    size,
-                    Util.getScaledHeight(opt.outHeight.toDouble(), opt.outWidth.toDouble(), size)
-                )
-
-                // Enable real decoding
-                opt.inJustDecodeBounds = false
-            }
-            Timber.i("getSampledBitmap %s", size.toString())
-            return BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opt)
         }
 
         @Suppress("DEPRECATION")
