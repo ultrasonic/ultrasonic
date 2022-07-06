@@ -76,6 +76,7 @@ class SettingsFragment :
     private var directoryCacheTime: ListPreference? = null
     private var mediaButtonsEnabled: CheckBoxPreference? = null
     private var showArtistPicture: CheckBoxPreference? = null
+    private var useId3TagsOffline: CheckBoxPreference? = null
     private var sharingDefaultDescription: EditTextPreference? = null
     private var sharingDefaultGreeting: EditTextPreference? = null
     private var sharingDefaultExpiration: TimeSpanPreference? = null
@@ -121,6 +122,7 @@ class SettingsFragment :
         pauseOnBluetoothDevice = findPreference(Constants.PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE)
         debugLogToFile = findPreference(Constants.PREFERENCES_KEY_DEBUG_LOG_TO_FILE)
         showArtistPicture = findPreference(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE)
+        useId3TagsOffline = findPreference(Constants.PREFERENCES_KEY_ID3_TAGS_OFFLINE)
         customCacheLocation = findPreference(Constants.PREFERENCES_KEY_CUSTOM_CACHE_LOCATION)
 
         sharingDefaultGreeting?.text = shareGreeting
@@ -196,7 +198,8 @@ class SettingsFragment :
                 setDebugLogToFile(sharedPreferences.getBoolean(key, false))
             }
             Constants.PREFERENCES_KEY_ID3_TAGS -> {
-                showArtistPicture!!.isEnabled = sharedPreferences.getBoolean(key, false)
+                showArtistPicture?.isEnabled = sharedPreferences.getBoolean(key, false)
+                useId3TagsOffline?.isEnabled = sharedPreferences.getBoolean(key, false)
             }
             Constants.PREFERENCES_KEY_THEME -> {
                 RxBus.themeChangedEventPublisher.onNext(Unit)
@@ -372,6 +375,7 @@ class SettingsFragment :
             debugLogToFile?.summary = ""
         }
         showArtistPicture?.isEnabled = shouldUseId3Tags
+        useId3TagsOffline?.isEnabled = shouldUseId3Tags
     }
 
     private fun setHideMedia(hide: Boolean) {
