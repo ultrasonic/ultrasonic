@@ -110,9 +110,6 @@ class OfflineMusicService : MusicService, KoinComponent {
     override fun getArtists(refresh: Boolean): List<Artist> {
         val result = cachedArtists.get()
 
-        if (result.isEmpty()) {
-            // use indexes?
-        }
         return result
     }
 
@@ -472,7 +469,20 @@ class OfflineMusicService : MusicService, KoinComponent {
     @Throws(Exception::class)
     override fun getAlbumsOfArtist(id: String, name: String?, refresh: Boolean):
         List<Album> {
-        return cachedAlbums.byArtist(id)
+        val directAlbums = cachedAlbums.byArtist(id)
+
+        // The direct albums won't contain any compilations that the artist has participated in
+        // We need to fetch the tracks of the artist and then gather the compilation albums from that.
+        val tracks = cachedTracks.byArtist(id)
+        val albumIds = tracks.map {
+            it.albumId
+        }.distinct().filterNotNull()
+
+        val compilationAlbums = albumIds.map {
+            cachedAlbums.get(it)
+        }
+
+        return directAlbums.plus(compilationAlbums).distinct()
     }
 
     @Throws(OfflineException::class)

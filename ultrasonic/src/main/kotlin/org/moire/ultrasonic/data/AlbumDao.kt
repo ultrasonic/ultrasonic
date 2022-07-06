@@ -20,6 +20,12 @@ interface AlbumDao : GenericDao<Album> {
     fun get(): List<Album>
 
     /**
+     * Get album by id
+     */
+    @Query("SELECT * FROM albums where id LIKE :albumId LIMIT 1")
+    fun get(albumId: String): Album
+
+    /**
      * Get albums by artist
      */
     @Query("SELECT * FROM albums WHERE artistId LIKE :id")

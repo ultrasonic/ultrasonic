@@ -25,4 +25,10 @@ interface TrackDao : GenericDao<Track> {
      */
     @Query("SELECT * FROM tracks WHERE albumId LIKE :id")
     fun byAlbum(id: String): List<Track>
+
+    /**
+     * Get albums by artist
+     */
+    @Query("SELECT * FROM tracks WHERE artistId LIKE :id")
+    fun byArtist(id: String): List<Track>
 }
