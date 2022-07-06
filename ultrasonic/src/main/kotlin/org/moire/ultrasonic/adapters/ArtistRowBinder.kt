@@ -110,9 +110,11 @@ class ArtistRowBinder(
     }
 
     private fun showArtistPicture(): Boolean {
-        val isOffline = ActiveServerProvider.isOffline()
+        val isOnline = !ActiveServerProvider.isOffline()
         val shouldShowArtistPicture = Settings.shouldShowArtistPicture
-        return (!isOffline && shouldShowArtistPicture) || Settings.useId3TagsOffline
+
+        val id3Enabled = (isOnline && Settings.shouldUseId3Tags) || Settings.useId3TagsOffline
+        return id3Enabled && shouldShowArtistPicture
     }
 
     /**
