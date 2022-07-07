@@ -105,6 +105,7 @@ object Constants {
     const val PREFERENCES_KEY_PAUSE_ON_BLUETOOTH_DEVICE = "pauseOnBluetoothDevice"
     const val PREFERENCES_KEY_DEBUG_LOG_TO_FILE = "debugLogToFile"
     const val PREFERENCES_KEY_OVERRIDE_LANGUAGE = "overrideLanguage"
+    const val PREFERENCES_FIRST_INSTALLED_VERSION = "firstInstalledVersion"
     const val PREFERENCE_VALUE_ALL = 0
     const val PREFERENCE_VALUE_A2DP = 1
     const val PREFERENCE_VALUE_DISABLED = 2

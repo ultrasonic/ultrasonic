@@ -6,11 +6,16 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.provider.SearchRecentSuggestions
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
@@ -126,9 +131,33 @@ class SettingsFragment :
         customCacheLocation = findPreference(Constants.PREFERENCES_KEY_CUSTOM_CACHE_LOCATION)
 
         sharingDefaultGreeting?.text = shareGreeting
+
+        setupTextColors()
         setupClearSearchPreference()
         setupCacheLocationPreference()
         setupBluetoothDevicePreferences()
+    }
+
+    private fun setupTextColors(enabled: Boolean = shouldUseId3Tags) {
+        val firstPart = getString(R.string.settings_use_id3_offline_warning)
+        var secondPart = getString(R.string.settings_use_id3_offline_summary)
+
+        // Little hack to circumvent a bug in Android. If we just change the color,
+        // the text is not refreshed. If we also change the string, it is refreshed.
+        if (enabled) secondPart += " "
+
+        val color = if (enabled) "#bd5164" else "#813b48"
+
+        Timber.i(color)
+
+        val warning = SpannableString(firstPart + "\n" + secondPart)
+        warning.setSpan(
+            ForegroundColorSpan(Color.parseColor(color)), 0, firstPart.length, 0
+        )
+        warning.setSpan(
+            StyleSpan(Typeface.BOLD), 0, firstPart.length, 0
+        )
+        useId3TagsOffline?.summary = warning
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -198,8 +227,10 @@ class SettingsFragment :
                 setDebugLogToFile(sharedPreferences.getBoolean(key, false))
             }
             Constants.PREFERENCES_KEY_ID3_TAGS -> {
-                showArtistPicture?.isEnabled = sharedPreferences.getBoolean(key, false)
-                useId3TagsOffline?.isEnabled = sharedPreferences.getBoolean(key, false)
+                val enabled = sharedPreferences.getBoolean(key, false)
+                showArtistPicture?.isEnabled = enabled
+                useId3TagsOffline?.isEnabled = enabled
+                setupTextColors(enabled)
             }
             Constants.PREFERENCES_KEY_THEME -> {
                 RxBus.themeChangedEventPublisher.onNext(Unit)

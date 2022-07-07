@@ -251,6 +251,9 @@ object Settings {
 
     var useHwOffload by BooleanSetting(Constants.PREFERENCES_KEY_HARDWARE_OFFLOAD, false)
 
+    @JvmStatic
+    var firstInstalledVersion by IntSetting(Constants.PREFERENCES_FIRST_INSTALLED_VERSION, 0)
+
     // TODO: Remove in December 2022
     fun migrateFeatureStorage() {
         val sp = appContext.getSharedPreferences("feature_flags", Context.MODE_PRIVATE)
