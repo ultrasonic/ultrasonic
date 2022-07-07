@@ -328,7 +328,8 @@ class OfflineMusicService : MusicService, KoinComponent {
         offset: Int,
         musicFolderId: String?
     ): List<Album> {
-        throw OfflineException("getAlbumList2 isn't available in offline mode")
+        // TODO: Implement filtering by musicFolder?
+        return cachedAlbums.get(size, offset)
     }
 
     @Throws(Exception::class)

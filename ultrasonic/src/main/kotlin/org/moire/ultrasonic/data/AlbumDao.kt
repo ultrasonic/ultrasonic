@@ -20,6 +20,12 @@ interface AlbumDao : GenericDao<Album> {
     fun get(): List<Album>
 
     /**
+     * Get all albums in a specific range
+     */
+    @Query("SELECT * FROM albums LIMIT :offset,:size")
+    fun get(size: Int, offset: Int = 0): List<Album>
+
+    /**
      * Get album by id
      */
     @Query("SELECT * FROM albums where id LIKE :albumId LIMIT 1")
