@@ -64,10 +64,7 @@ style:
   WildcardImport:
     active: true
   MaxLineLength:
-    active: true
-    maxLineLength: 120
-    excludePackageStatements: false
-    excludeImportStatements: false
+    active: false
   MagicNumber:
     # 100 common in percentage, 1000 in milliseconds
     ignoreNumbers: ['-1', '0', '1', '2', '5', '10', '100', '256', '512', '1000', '1024', '4096']

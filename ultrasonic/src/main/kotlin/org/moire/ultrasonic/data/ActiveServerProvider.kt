@@ -1,3 +1,10 @@
+/*
+ * ActiveServerProvider.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.data
 
 import androidx.room.Room
@@ -110,20 +117,23 @@ class ActiveServerProvider(
 
         Timber.i("Switching to new database, id:$activeServer")
         cachedServerId = activeServer
-        return buildDatabase(cachedServerId)
+        cachedDatabase = initDatabase(activeServer)
+
+        return cachedDatabase!!
     }
 
     val offlineMetaDatabase: MetaDatabase by lazy {
-        buildDatabase(OFFLINE_DB_ID)
+        initDatabase(0)
     }
 
-    private fun buildDatabase(id: Int?): MetaDatabase {
+    private fun initDatabase(serverId: Int): MetaDatabase {
         return Room.databaseBuilder(
             UApp.applicationContext(),
             MetaDatabase::class.java,
-            METADATA_DB + id
+            METADATA_DB + serverId
         )
-            .fallbackToDestructiveMigration()
+            .addMigrations(META_MIGRATION_2_3)
+            .fallbackToDestructiveMigrationOnDowngrade()
             .build()
     }
 
@@ -237,6 +247,13 @@ class ActiveServerProvider(
             }
             val preferences = Settings.preferences
             return preferences.getBoolean(Constants.PREFERENCES_KEY_SCROBBLE, false)
+        }
+
+        /**
+         * Queries if ID3 tags should be used
+         */
+        fun isID3Enabled(): Boolean {
+            return Settings.shouldUseId3Tags && (!isOffline() || Settings.useId3TagsOffline)
         }
 
         /**

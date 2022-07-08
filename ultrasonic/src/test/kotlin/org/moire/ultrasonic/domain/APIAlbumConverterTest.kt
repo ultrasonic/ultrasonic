@@ -12,6 +12,8 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
  * Unit test for extension functions in [APIAlbumConverter.kt] file.
  */
 class APIAlbumConverterTest {
+    private val serverId = -1
+
     @Test
     fun `Should convert Album to domain entity`() {
         val entity = Album(
@@ -20,7 +22,7 @@ class APIAlbumConverterTest {
             created = Calendar.getInstance(), year = 2017, genre = "some-genre"
         )
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toDomainEntity(serverId)
 
         with(convertedEntity) {
             id `should be equal to` entity.id
@@ -46,12 +48,12 @@ class APIAlbumConverterTest {
             songList = listOf(MusicDirectoryChild())
         )
 
-        val convertedEntity = entity.toMusicDirectoryDomainEntity()
+        val convertedEntity = entity.toMusicDirectoryDomainEntity(serverId)
 
         with(convertedEntity) {
             name `should be equal to` null
             size `should be equal to` entity.songList.size
-            this[0] `should be equal to` entity.songList[0].toTrackEntity()
+            this[0] `should be equal to` entity.songList[0].toTrackEntity(serverId)
         }
     }
 
@@ -59,12 +61,12 @@ class APIAlbumConverterTest {
     fun `Should convert list of Album entities to domain list entities`() {
         val entityList = listOf(Album(id = "455"), Album(id = "1"), Album(id = "1000"))
 
-        val convertedList = entityList.toDomainEntityList()
+        val convertedList = entityList.toDomainEntityList(serverId)
 
         with(convertedList) {
             size `should be equal to` entityList.size
             forEachIndexed { index, entry ->
-                entry `should be equal to` entityList[index].toDomainEntity()
+                entry `should be equal to` entityList[index].toDomainEntity(serverId)
             }
         }
     }

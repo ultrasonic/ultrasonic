@@ -269,7 +269,7 @@ class DownloadHandler(
                     return
                 }
                 val musicService = getMusicService()
-                val artist = musicService.getArtist(id, "", false)
+                val artist = musicService.getAlbumsOfArtist(id, "", false)
                 for ((id1) in artist) {
                     val albumDirectory = musicService.getAlbum(
                         id1,

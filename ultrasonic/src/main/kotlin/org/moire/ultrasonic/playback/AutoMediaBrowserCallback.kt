@@ -635,7 +635,7 @@ class AutoMediaBrowserCallback(var player: Player, val libraryService: MediaLibr
 
         return serviceScope.future {
             val albums = if (!isOffline && useId3Tags) {
-                callWithErrorHandling { musicService.getArtist(id, name, false) }
+                callWithErrorHandling { musicService.getAlbumsOfArtist(id, name, false) }
             } else {
                 callWithErrorHandling {
                     musicService.getMusicDirectory(id, name, false).getAlbums()

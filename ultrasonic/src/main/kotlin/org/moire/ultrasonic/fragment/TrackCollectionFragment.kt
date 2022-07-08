@@ -1,6 +1,6 @@
 /*
  * TrackCollectionFragment.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -31,6 +31,7 @@ import org.moire.ultrasonic.adapters.AlbumHeader
 import org.moire.ultrasonic.adapters.AlbumRowBinder
 import org.moire.ultrasonic.adapters.HeaderViewBinder
 import org.moire.ultrasonic.adapters.TrackViewBinder
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.data.ActiveServerProvider.Companion.isOffline
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.domain.MusicDirectory
@@ -47,6 +48,7 @@ import org.moire.ultrasonic.util.Constants
 import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.Settings
 import org.moire.ultrasonic.util.Util
+import timber.log.Timber
 
 /**
  * Displays a group of tracks, eg. the songs of an album, of a playlist etc.
@@ -61,11 +63,11 @@ import org.moire.ultrasonic.util.Util
 open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
     private var albumButtons: View? = null
-    internal var selectButton: ImageView? = null
+    private var selectButton: ImageView? = null
     internal var playNowButton: ImageView? = null
     private var playNextButton: ImageView? = null
     private var playLastButton: ImageView? = null
-    internal var pinButton: ImageView? = null
+    private var pinButton: ImageView? = null
     private var unpinButton: ImageView? = null
     private var downloadButton: ImageView? = null
     private var deleteButton: ImageView? = null
@@ -144,11 +146,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
         // Update the buttons when the selection has changed
         viewAdapter.selectionRevision.observe(
-            viewLifecycleOwner,
-            {
-                enableButtons()
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            enableButtons()
+        }
     }
 
     internal open fun setupButtons(view: View) {
@@ -267,10 +268,10 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
     private val childCount: Int
         get() {
             val count = viewAdapter.getCurrentList().count()
-            if (listModel.showHeader) {
-                return count - 1
+            return if (listModel.showHeader) {
+                count - 1
             } else {
-                return count
+                count
             }
         }
 
@@ -320,13 +321,13 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         } as List<Track>
     }
 
-    internal fun selectAllOrNone() {
+    private fun selectAllOrNone() {
         val someUnselected = viewAdapter.selectedSet.size < childCount
 
         selectAll(someUnselected, true)
     }
 
-    internal fun selectAll(selected: Boolean, toast: Boolean) {
+    private fun selectAll(selected: Boolean, toast: Boolean) {
         var selectedCount = viewAdapter.selectedSet.size * -1
 
         selectedCount += viewAdapter.setSelectionStatusOfAll(selected)
@@ -366,7 +367,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         deleteButton?.isVisible = (enabled && deleteEnabled)
     }
 
-    internal fun downloadBackground(save: Boolean) {
+    private fun downloadBackground(save: Boolean) {
         var songs = getSelectedSongs()
 
         if (songs.isEmpty()) {
@@ -426,6 +427,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
 
     override val defaultObserver: (List<MusicDirectory.Child>) -> Unit = {
 
+        Timber.i("Received list")
         val entryList: MutableList<MusicDirectory.Child> = it.toMutableList()
 
         if (listModel.currentListIsSortable && Settings.shouldSortByDisc) {
@@ -454,9 +456,9 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 moreButton!!.visibility = View.GONE
             } else {
                 moreButton!!.visibility = View.VISIBLE
-                if (arguments?.getInt(Constants.INTENT_RANDOM, 0) ?: 0 > 0) {
+                if ((arguments?.getInt(Constants.INTENT_RANDOM, 0) ?: 0) > 0) {
                     moreRandomTracks()
-                } else if (arguments?.getString(Constants.INTENT_GENRE_NAME, "") ?: "" != "") {
+                } else if ((arguments?.getString(Constants.INTENT_GENRE_NAME, "") ?: "") != "") {
                     moreSongsForGenre()
                 }
             }
@@ -497,6 +499,8 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         }
 
         listModel.currentListIsSortable = true
+
+        Timber.i("Processed list")
     }
 
     private fun moreSongsForGenre(args: Bundle = requireArguments()) {
@@ -556,6 +560,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         args: Bundle?,
         refresh: Boolean
     ): LiveData<List<MusicDirectory.Child>> {
+        Timber.i("Starting gathering track collection data...")
         if (args == null) return listModel.currentList
         val id = args.getString(Constants.INTENT_ID)
         val isAlbum = args.getBoolean(Constants.INTENT_IS_ALBUM, false)
@@ -600,7 +605,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
                 listModel.getRandom(albumListSize)
             } else {
                 setTitle(name)
-                if (!isOffline() && Settings.shouldUseId3Tags) {
+                if (ActiveServerProvider.isID3Enabled()) {
                     if (isAlbum) {
                         listModel.getAlbum(refresh2, id!!, name)
                     } else {
@@ -669,7 +674,7 @@ open class TrackCollectionFragment : MultiListFragment<MusicDirectory.Child>() {
         return true
     }
 
-    internal fun getClickedSong(item: MusicDirectory.Child): List<Track> {
+    private fun getClickedSong(item: MusicDirectory.Child): List<Track> {
         // This can probably be done better
         return viewAdapter.getCurrentList().mapNotNull {
             if (it is Track && (it.id == item.id))

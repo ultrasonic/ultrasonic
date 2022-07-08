@@ -53,6 +53,7 @@ interface IndexDao : GenericDao<Index> {
     fun get(musicFolderId: String): List<Index>
 
     /**
+     * TODO: Make generic
      * Upserts (insert or update) an object to the database
      *
      * @param obj the object to upsert

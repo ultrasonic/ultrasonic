@@ -1,6 +1,6 @@
 /*
  * APIMusicDirectoryConverter.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -26,12 +26,12 @@ internal val dateFormat: DateFormat by lazy {
     SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())
 }
 
-fun MusicDirectoryChild.toTrackEntity(): Track = Track(id).apply {
+fun MusicDirectoryChild.toTrackEntity(serverId: Int): Track = Track(id, serverId).apply {
     populateCommonProps(this, this@toTrackEntity)
     populateTrackProps(this, this@toTrackEntity)
 }
 
-fun MusicDirectoryChild.toAlbumEntity(): Album = Album(id).apply {
+fun MusicDirectoryChild.toAlbumEntity(serverId: Int): Album = Album(id, serverId).apply {
     populateCommonProps(this, this@toAlbumEntity)
 }
 
@@ -80,24 +80,24 @@ private fun populateTrackProps(
     track.averageRating = source.averageRating
 }
 
-fun List<MusicDirectoryChild>.toDomainEntityList(): List<MusicDirectory.Child> {
+fun List<MusicDirectoryChild>.toDomainEntityList(serverId: Int): List<MusicDirectory.Child> {
     val newList: MutableList<MusicDirectory.Child> = mutableListOf()
 
     forEach {
         if (it.isDir)
-            newList.add(it.toAlbumEntity())
+            newList.add(it.toAlbumEntity(serverId))
         else
-            newList.add(it.toTrackEntity())
+            newList.add(it.toTrackEntity(serverId))
     }
 
     return newList
 }
 
-fun List<MusicDirectoryChild>.toTrackList(): List<Track> = this.map {
-    it.toTrackEntity()
+fun List<MusicDirectoryChild>.toTrackList(serverId: Int): List<Track> = this.map {
+    it.toTrackEntity(serverId)
 }
 
-fun APIMusicDirectory.toDomainEntity(): MusicDirectory = MusicDirectory().apply {
+fun APIMusicDirectory.toDomainEntity(serverId: Int): MusicDirectory = MusicDirectory().apply {
     name = this@toDomainEntity.name
-    addAll(this@toDomainEntity.childList.toDomainEntityList())
+    addAll(this@toDomainEntity.childList.toDomainEntityList(serverId))
 }
