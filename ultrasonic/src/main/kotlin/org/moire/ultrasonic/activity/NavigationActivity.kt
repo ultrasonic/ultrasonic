@@ -392,6 +392,8 @@ class NavigationActivity : AppCompatActivity() {
         if (!infoDialogDisplayed) {
             infoDialogDisplayed = true
 
+            Settings.firstInstalledVersion = Util.getVersionCode(UApp.applicationContext())
+
             InfoDialog.Builder(this)
                 .setTitle(R.string.main_welcome_title)
                 .setMessage(R.string.main_welcome_text_demo)

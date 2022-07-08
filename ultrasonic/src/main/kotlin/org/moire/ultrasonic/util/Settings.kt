@@ -1,6 +1,6 @@
 /*
  * Settings.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -13,7 +13,6 @@ import androidx.preference.PreferenceManager
 import java.util.regex.Pattern
 import org.moire.ultrasonic.R
 import org.moire.ultrasonic.app.UApp
-import org.moire.ultrasonic.data.ActiveServerProvider
 
 /**
  * Contains convenience functions for reading and writing preferences
@@ -131,6 +130,7 @@ object Settings {
     @JvmStatic
     var mediaButtonsEnabled
         by BooleanSetting(Constants.PREFERENCES_KEY_MEDIA_BUTTONS, true)
+
     var resumePlayOnHeadphonePlug
         by BooleanSetting(R.string.setting_keys_resume_play_on_headphones_plug, true)
 
@@ -160,9 +160,14 @@ object Settings {
     var showNowPlayingDetails
         by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_NOW_PLAYING_DETAILS, false)
 
+    // Normally you don't need to use these Settings directly,
+    // use ActiveServerProvider.isID3Enabled() instead
     @JvmStatic
-    var shouldUseId3Tags
-        by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
+    var shouldUseId3Tags by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS, false)
+
+    // See comment above.
+    @JvmStatic
+    var useId3TagsOffline by BooleanSetting(Constants.PREFERENCES_KEY_ID3_TAGS_OFFLINE, false)
 
     var activeServer by IntSetting(Constants.PREFERENCES_KEY_SERVER_INSTANCE, -1)
 
@@ -170,15 +175,8 @@ object Settings {
 
     var firstRunExecuted by BooleanSetting(Constants.PREFERENCES_KEY_FIRST_RUN_EXECUTED, false)
 
-    val shouldShowArtistPicture: Boolean
-        get() {
-            val preferences = preferences
-            val isOffline = ActiveServerProvider.isOffline()
-            val isId3Enabled = preferences.getBoolean(Constants.PREFERENCES_KEY_ID3_TAGS, false)
-            val shouldShowArtistPicture =
-                preferences.getBoolean(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE, false)
-            return !isOffline && isId3Enabled && shouldShowArtistPicture
-        }
+    val shouldShowArtistPicture
+        by BooleanSetting(Constants.PREFERENCES_KEY_SHOW_ARTIST_PICTURE, false)
 
     @JvmStatic
     var chatRefreshInterval by StringIntSetting(
@@ -252,6 +250,9 @@ object Settings {
     var useFiveStarRating by BooleanSetting(Constants.PREFERENCES_KEY_USE_FIVE_STAR_RATING, false)
 
     var useHwOffload by BooleanSetting(Constants.PREFERENCES_KEY_HARDWARE_OFFLOAD, false)
+
+    @JvmStatic
+    var firstInstalledVersion by IntSetting(Constants.PREFERENCES_FIRST_INSTALLED_VERSION, 0)
 
     // TODO: Remove in December 2022
     fun migrateFeatureStorage() {

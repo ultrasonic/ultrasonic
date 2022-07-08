@@ -43,7 +43,6 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
 
     // Old style TimeLimitedCache
     private val cachedMusicDirectories: LRUCache<String, TimeLimitedCache<MusicDirectory?>>
-    private val cachedArtist: LRUCache<String, TimeLimitedCache<List<Album>>>
     private val cachedAlbum: LRUCache<String, TimeLimitedCache<MusicDirectory?>>
     private val cachedUserInfo: LRUCache<String, TimeLimitedCache<UserInfo?>>
     private val cachedLicenseValid = TimeLimitedCache<Boolean>(120, TimeUnit.SECONDS)
@@ -53,7 +52,8 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     private val cachedGenres = TimeLimitedCache<List<Genre>>(10 * 3600, TimeUnit.SECONDS)
 
     // New Room Database
-    private var cachedArtists = metaDatabase.artistsDao()
+    private var cachedArtists = metaDatabase.artistDao()
+    private var cachedAlbums = metaDatabase.albumDao()
     private var cachedIndexes = metaDatabase.indexDao()
     private val cachedMusicFolders = metaDatabase.musicFoldersDao()
 
@@ -103,10 +103,10 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
 
         var indexes: List<Index>
 
-        if (musicFolderId == null) {
-            indexes = cachedIndexes.get()
+        indexes = if (musicFolderId == null) {
+            cachedIndexes.get()
         } else {
-            indexes = cachedIndexes.get(musicFolderId)
+            cachedIndexes.get(musicFolderId)
         }
 
         if (indexes.isEmpty()) {
@@ -120,14 +120,15 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
     @Throws(Exception::class)
     override fun getArtists(refresh: Boolean): List<Artist> {
         checkSettingsChanged()
+
         if (refresh) {
             cachedArtists.clear()
         }
+
         var result = cachedArtists.get()
 
         if (result.isEmpty()) {
             result = musicService.getArtists(refresh)
-            cachedArtist.clear()
             cachedArtists.set(result)
         }
         return result
@@ -149,21 +150,29 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         return dir
     }
 
+    /*
+     * Retrieves all albums of the provided artist.
+     * Cached in the RoomDB
+     */
     @Throws(Exception::class)
-    override fun getArtist(id: String, name: String?, refresh: Boolean):
+    override fun getAlbumsOfArtist(id: String, name: String?, refresh: Boolean):
         List<Album> {
         checkSettingsChanged()
-        var cache = if (refresh) null else cachedArtist[id]
-        var dir = cache?.get()
-        if (dir == null) {
-            dir = musicService.getArtist(id, name, refresh)
-            cache = TimeLimitedCache(
-                Settings.directoryCacheTime.toLong(), TimeUnit.SECONDS
-            )
-            cache.set(dir)
-            cachedArtist.put(id, cache)
+
+        var result: List<Album>
+
+        result = if (refresh) {
+            cachedAlbums.clearByArtist(id)
+            listOf()
+        } else {
+            cachedAlbums.byArtist(id)
         }
-        return dir
+
+        if (result.isEmpty()) {
+            result = musicService.getAlbumsOfArtist(id, name, refresh)
+            cachedAlbums.upsert(result)
+        }
+        return result
     }
 
     @Throws(Exception::class)
@@ -326,7 +335,8 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
         if (!Util.equals(newUrl, restUrl) || !Util.equals(cachedMusicFolderId, newFolderId)) {
             // Switch database
             metaDatabase = activeServerProvider.getActiveMetaDatabase()
-            cachedArtists = metaDatabase.artistsDao()
+            cachedArtists = metaDatabase.artistDao()
+            cachedAlbums = metaDatabase.albumDao()
             cachedIndexes = metaDatabase.indexDao()
 
             // Clear in memory caches
@@ -335,7 +345,6 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
             cachedPlaylists.clear()
             cachedGenres.clear()
             cachedAlbum.clear()
-            cachedArtist.clear()
             cachedUserInfo.clear()
 
             // Set the cache keys
@@ -472,7 +481,6 @@ class CachedMusicService(private val musicService: MusicService) : MusicService,
 
     init {
         cachedMusicDirectories = LRUCache(MUSIC_DIR_CACHE_SIZE)
-        cachedArtist = LRUCache(MUSIC_DIR_CACHE_SIZE)
         cachedAlbum = LRUCache(MUSIC_DIR_CACHE_SIZE)
         cachedUserInfo = LRUCache(MUSIC_DIR_CACHE_SIZE)
     }

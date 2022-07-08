@@ -14,6 +14,7 @@ import java.util.PriorityQueue
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.data.MetaDatabase
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.playback.LegacyPlaylistManager
@@ -402,6 +403,14 @@ class Downloader(
                             downloadFile.completeFile
                         )
                     }
+
+                    // Hidden feature: If track is toggled between pinned/saved, refresh the metadata..
+                    try {
+                        downloadFile.track.cacheMetadata()
+                    } catch (ignore: Exception) {
+                        Timber.w(ignore)
+                    }
+
                     downloadFile.status.postValue(newStatus)
                     return
                 }
@@ -457,8 +466,10 @@ class Downloader(
                         )
                     }
 
-                    if (downloadFile.track.artistId != null) {
-                        cacheMetadata(downloadFile.track.artistId!!)
+                    try {
+                        downloadFile.track.cacheMetadata()
+                    } catch (ignore: Exception) {
+                        Timber.w(ignore)
                     }
 
                     downloadAndSaveCoverArt()
@@ -510,13 +521,35 @@ class Downloader(
             return String.format(Locale.ROOT, "DownloadTask (%s)", downloadFile.track)
         }
 
-        private fun cacheMetadata(artistId: String) {
-            // TODO: Right now it's caching the track artist.
-            // Once the albums are cached in db, we should retrieve the album,
-            // and then cache the album artist.
-            if (artistId.isEmpty()) return
-            var artist: Artist? =
-                activeServerProvider.getActiveMetaDatabase().artistsDao().get(artistId)
+        private fun Track.cacheMetadata() {
+            if (artistId.isNullOrEmpty()) return
+
+            val onlineDB = activeServerProvider.getActiveMetaDatabase()
+            val offlineDB = activeServerProvider.offlineMetaDatabase
+
+            cacheArtist(onlineDB, offlineDB, artistId!!)
+
+            // Now cache the album
+            if (albumId?.isNotEmpty() == true) {
+                // This is a cached call
+                val albums = musicService.getAlbumsOfArtist(artistId!!, null, false)
+                val album = albums.find { it.id == albumId }
+
+                if (album != null) {
+                    offlineDB.albumDao().insert(album)
+
+                    // If the album is a Compilation, also cache the Album artist
+                    if (album.artistId != null && album.artistId != artistId)
+                        cacheArtist(onlineDB, offlineDB, album.artistId!!)
+                }
+            }
+
+            // Now cache the track data
+            offlineDB.trackDao().insert(this)
+        }
+
+        private fun cacheArtist(onlineDB: MetaDatabase, offlineDB: MetaDatabase, artistId: String) {
+            var artist: Artist? = onlineDB.artistDao().get(artistId)
 
             // If we are downloading a new album, and the user has not visited the Artists list
             // recently, then the artist won't be in the database.
@@ -527,9 +560,9 @@ class Downloader(
                 }
             }
 
-            // If we have found an artist, catch it.
+            // If we have found an artist, cache it.
             if (artist != null) {
-                activeServerProvider.offlineMetaDatabase.artistsDao().insert(artist)
+                offlineDB.artistDao().insert(artist)
             }
         }
 

@@ -11,7 +11,8 @@ import org.moire.ultrasonic.api.subsonic.models.MusicDirectoryChild
 /**
  * Unit test for function that converts [Bookmark] api entity to domain.
  */
-class APIBookmarkConverterTest {
+class APIBookmarkConverterTest : BaseTest() {
+
     @Test
     fun `Should convert to domain entity`() {
         val entity = Bookmark(
@@ -19,7 +20,7 @@ class APIBookmarkConverterTest {
             Calendar.getInstance(), MusicDirectoryChild(id = "12333")
         )
 
-        val domainEntity = entity.toDomainEntity()
+        val domainEntity = entity.toDomainEntity(serverId)
 
         with(domainEntity) {
             position `should be equal to` entity.position.toInt()
@@ -27,7 +28,7 @@ class APIBookmarkConverterTest {
             comment `should be equal to` entity.comment
             created `should be equal to` entity.created?.time
             changed `should be equal to` entity.changed?.time
-            track `should be equal to` entity.entry.toTrackEntity()
+            track `should be equal to` entity.entry.toTrackEntity(serverId)
         }
     }
 
@@ -35,11 +36,11 @@ class APIBookmarkConverterTest {
     fun `Should convert list of entities to domain entities`() {
         val entitiesList = listOf(Bookmark(443L), Bookmark(444L))
 
-        val domainEntitiesList = entitiesList.toDomainEntitiesList()
+        val domainEntitiesList = entitiesList.toDomainEntitiesList(serverId)
 
         domainEntitiesList.size `should be equal to` entitiesList.size
-        domainEntitiesList.forEachIndexed({ index, bookmark ->
-            bookmark `should be equal to` entitiesList[index].toDomainEntity()
-        })
+        domainEntitiesList.forEachIndexed { index, bookmark ->
+            bookmark `should be equal to` entitiesList[index].toDomainEntity(serverId)
+        }
     }
 }

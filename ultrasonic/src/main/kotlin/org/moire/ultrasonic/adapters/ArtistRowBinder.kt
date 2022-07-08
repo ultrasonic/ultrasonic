@@ -1,6 +1,6 @@
 /*
- * ArtistRowAdapter.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * ArtistRowBinder.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.ItemViewBinder
 import org.koin.core.component.KoinComponent
 import org.moire.ultrasonic.R
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.domain.Identifiable
 import org.moire.ultrasonic.imageloader.ImageLoader
@@ -57,7 +58,7 @@ class ArtistRowBinder(
 
         holder.coverArtId = item.coverArt
 
-        if (Settings.shouldShowArtistPicture) {
+        if (showArtistPicture()) {
             holder.coverArt.visibility = View.VISIBLE
             val key = FileUtil.getArtistArtKey(item.name, false)
             imageLoader.loadImage(
@@ -106,6 +107,10 @@ class ArtistRowBinder(
         val section = name.first().uppercaseChar()
         if (!section.isLetter()) return SECTION_KEY_DEFAULT
         return section.toString()
+    }
+
+    private fun showArtistPicture(): Boolean {
+        return ActiveServerProvider.isID3Enabled() && Settings.shouldShowArtistPicture
     }
 
     /**

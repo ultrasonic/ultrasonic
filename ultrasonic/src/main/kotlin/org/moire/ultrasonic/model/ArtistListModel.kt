@@ -1,20 +1,8 @@
 /*
- This file is part of Subsonic.
-
- Subsonic is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Subsonic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
-
- Copyright 2020 (C) Jozsef Varga
+ * ArtistListModel.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
  */
 package org.moire.ultrasonic.model
 
@@ -24,6 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.text.Collator
+import org.moire.ultrasonic.data.ActiveServerProvider
 import org.moire.ultrasonic.domain.ArtistOrIndex
 import org.moire.ultrasonic.service.MusicService
 
@@ -56,12 +45,10 @@ class ArtistListModel(application: Application) : GenericListModel(application) 
 
         val musicFolderId = activeServer.musicFolderId
 
-        val result: List<ArtistOrIndex>
-
-        if (!isOffline && useId3Tags) {
-            result = musicService.getArtists(refresh)
+        val result = if (ActiveServerProvider.isID3Enabled()) {
+            musicService.getArtists(refresh)
         } else {
-            result = musicService.getIndexes(musicFolderId, refresh)
+            musicService.getIndexes(musicFolderId, refresh)
         }
 
         artists.postValue(result.toMutableList().sortedWith(comparator))

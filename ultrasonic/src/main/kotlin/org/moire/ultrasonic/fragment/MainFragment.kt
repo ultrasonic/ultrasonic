@@ -66,17 +66,17 @@ class MainFragment : Fragment(), KoinComponent {
 
     override fun onResume() {
         super.onResume()
-        var shouldRestart = false
+        var shouldRelayout = false
         val currentId3Setting = Settings.shouldUseId3Tags
 
         // If setting has changed...
-        if (currentId3Setting != cachedId3Setting) {
-            cachedId3Setting = currentId3Setting
-            shouldRestart = true
+        if (currentId3Setting != useId3) {
+            useId3 = currentId3Setting
+            shouldRelayout = true
         }
 
         // then setup the list anew.
-        if (shouldRestart) {
+        if (shouldRelayout) {
             setupItemVisibility()
         }
     }
@@ -109,17 +109,19 @@ class MainFragment : Fragment(), KoinComponent {
 
     private fun setupItemVisibility() {
         // Cache some values
-        cachedId3Setting = Settings.shouldUseId3Tags
+        useId3 = Settings.shouldUseId3Tags
+        useId3Offline = Settings.useId3TagsOffline
+
         val isOnline = !isOffline()
 
         // Music
         musicTitle.isVisible = true
         artistsButton.isVisible = true
-        albumsButton.isVisible = isOnline
+        albumsButton.isVisible = isOnline || useId3Offline
         genresButton.isVisible = true
 
         // Songs
-        songsTitle.isVisible = isOnline
+        songsTitle.isVisible = true
         randomSongsButton.isVisible = true
         songsStarredButton.isVisible = isOnline
 
@@ -128,7 +130,7 @@ class MainFragment : Fragment(), KoinComponent {
         albumsNewestButton.isVisible = isOnline
         albumsRecentButton.isVisible = isOnline
         albumsFrequentButton.isVisible = isOnline
-        albumsHighestButton.isVisible = isOnline && !cachedId3Setting
+        albumsHighestButton.isVisible = isOnline && !useId3
         albumsRandomButton.isVisible = isOnline
         albumsStarredButton.isVisible = isOnline
         albumsAlphaByNameButton.isVisible = isOnline
@@ -240,6 +242,7 @@ class MainFragment : Fragment(), KoinComponent {
     }
 
     companion object {
-        private var cachedId3Setting = false
+        private var useId3 = false
+        private var useId3Offline = false
     }
 }

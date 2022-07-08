@@ -9,12 +9,12 @@ import org.moire.ultrasonic.api.subsonic.models.MusicFolder
 /**
  * Unit test for extension functions in file APIMusicFolderConverter.kt.
  */
-class APIMusicFolderConverterTest {
+class APIMusicFolderConverterTest : BaseTest() {
     @Test
     fun `Should convert MusicFolder entity`() {
         val entity = MusicFolder(id = "10", name = "some-name")
 
-        val convertedEntity = entity.toDomainEntity()
+        val convertedEntity = entity.toDomainEntity(serverId)
 
         convertedEntity.name `should be equal to` entity.name
         convertedEntity.id `should be equal to` entity.id
@@ -27,7 +27,7 @@ class APIMusicFolderConverterTest {
             MusicFolder(id = "4", name = "some-name-4")
         )
 
-        val convertedList = entityList.toDomainEntityList()
+        val convertedList = entityList.toDomainEntityList(serverId)
 
         with(convertedList) {
             size `should be equal to` entityList.size

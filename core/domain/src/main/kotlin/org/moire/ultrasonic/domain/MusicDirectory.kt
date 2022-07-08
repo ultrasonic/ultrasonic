@@ -1,3 +1,10 @@
+/*
+ * MusicDirectory.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.domain
 
 import java.util.Date
@@ -31,6 +38,7 @@ class MusicDirectory : ArrayList<MusicDirectory.Child>() {
 
     abstract class Child : GenericEntry() {
         abstract override var id: String
+        abstract var serverId: Int
         abstract var parent: String?
         abstract var isDirectory: Boolean
         abstract var album: String?

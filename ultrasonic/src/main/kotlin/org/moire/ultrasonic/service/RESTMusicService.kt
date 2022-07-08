@@ -1,6 +1,6 @@
 /*
- * RestMusicService.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * RESTMusicService.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -78,7 +78,7 @@ open class RESTMusicService(
     ): List<MusicFolder> {
         val response = API.getMusicFolders().execute().throwOnFailure()
 
-        return response.body()!!.musicFolders.toDomainEntityList()
+        return response.body()!!.musicFolders.toDomainEntityList(activeServerId)
     }
 
     /**
@@ -91,7 +91,10 @@ open class RESTMusicService(
     ): List<Index> {
         val response = API.getIndexes(musicFolderId, null).execute().throwOnFailure()
 
-        return response.body()!!.indexes.toIndexList(musicFolderId)
+        return response.body()!!.indexes.toIndexList(
+            ActiveServerProvider.getActiveServerId(),
+            musicFolderId
+        )
     }
 
     @Throws(Exception::class)
@@ -100,7 +103,7 @@ open class RESTMusicService(
     ): List<Artist> {
         val response = API.getArtists(null).execute().throwOnFailure()
 
-        return response.body()!!.indexes.toArtistList()
+        return response.body()!!.indexes.toArtistList(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -137,18 +140,18 @@ open class RESTMusicService(
     ): MusicDirectory {
         val response = API.getMusicDirectory(id).execute().throwOnFailure()
 
-        return response.body()!!.musicDirectory.toDomainEntity()
+        return response.body()!!.musicDirectory.toDomainEntity(activeServerId)
     }
 
     @Throws(Exception::class)
-    override fun getArtist(
+    override fun getAlbumsOfArtist(
         id: String,
         name: String?,
         refresh: Boolean
     ): List<Album> {
         val response = API.getArtist(id).execute().throwOnFailure()
 
-        return response.body()!!.artist.toDomainEntityList()
+        return response.body()!!.artist.toDomainEntityList(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -159,7 +162,7 @@ open class RESTMusicService(
     ): MusicDirectory {
         val response = API.getAlbum(id).execute().throwOnFailure()
 
-        return response.body()!!.album.toMusicDirectoryDomainEntity()
+        return response.body()!!.album.toMusicDirectoryDomainEntity(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -189,7 +192,7 @@ open class RESTMusicService(
             API.search(null, null, null, criteria.query, criteria.songCount, null, null)
                 .execute().throwOnFailure()
 
-        return response.body()!!.searchResult.toDomainEntity()
+        return response.body()!!.searchResult.toDomainEntity(activeServerId)
     }
 
     /**
@@ -205,7 +208,7 @@ open class RESTMusicService(
             criteria.songCount, null
         ).execute().throwOnFailure()
 
-        return response.body()!!.searchResult.toDomainEntity()
+        return response.body()!!.searchResult.toDomainEntity(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -218,7 +221,7 @@ open class RESTMusicService(
             criteria.songCount, null
         ).execute().throwOnFailure()
 
-        return response.body()!!.searchResult.toDomainEntity()
+        return response.body()!!.searchResult.toDomainEntity(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -228,7 +231,7 @@ open class RESTMusicService(
     ): MusicDirectory {
         val response = API.getPlaylist(id).execute().throwOnFailure()
 
-        val playlist = response.body()!!.playlist.toMusicDirectoryDomainEntity()
+        val playlist = response.body()!!.playlist.toMusicDirectoryDomainEntity(activeServerId)
         savePlaylist(name, playlist)
 
         return playlist
@@ -319,7 +322,7 @@ open class RESTMusicService(
                 "skipped" != podcastEntry.status &&
                 "error" != podcastEntry.status
             ) {
-                val entry = podcastEntry.toTrackEntity()
+                val entry = podcastEntry.toTrackEntity(activeServerId)
                 entry.track = null
                 musicDirectory.add(entry)
             }
@@ -363,7 +366,7 @@ open class RESTMusicService(
             musicFolderId
         ).execute().throwOnFailure()
 
-        return response.body()!!.albumList.toDomainEntityList()
+        return response.body()!!.albumList.toDomainEntityList(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -383,7 +386,7 @@ open class RESTMusicService(
             musicFolderId
         ).execute().throwOnFailure()
 
-        return response.body()!!.albumList.toDomainEntityList()
+        return response.body()!!.albumList.toDomainEntityList(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -399,7 +402,7 @@ open class RESTMusicService(
         ).execute().throwOnFailure()
 
         val result = MusicDirectory()
-        result.addAll(response.body()!!.songsList.toDomainEntityList())
+        result.addAll(response.body()!!.songsList.toDomainEntityList(activeServerId))
 
         return result
     }
@@ -408,14 +411,14 @@ open class RESTMusicService(
     override fun getStarred(): SearchResult {
         val response = API.getStarred(null).execute().throwOnFailure()
 
-        return response.body()!!.starred.toDomainEntity()
+        return response.body()!!.starred.toDomainEntity(activeServerId)
     }
 
     @Throws(Exception::class)
     override fun getStarred2(): SearchResult {
         val response = API.getStarred2(null).execute().throwOnFailure()
 
-        return response.body()!!.starred2.toDomainEntity()
+        return response.body()!!.starred2.toDomainEntity(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -546,7 +549,7 @@ open class RESTMusicService(
     ): List<Share> {
         val response = API.getShares().execute().throwOnFailure()
 
-        return response.body()!!.shares.toDomainEntitiesList()
+        return response.body()!!.shares.toDomainEntitiesList(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -567,7 +570,7 @@ open class RESTMusicService(
         val response = API.getSongsByGenre(genre, count, offset, null).execute().throwOnFailure()
 
         val result = MusicDirectory()
-        result.addAll(response.body()!!.songsList.toDomainEntityList())
+        result.addAll(response.body()!!.songsList.toDomainEntityList(activeServerId))
 
         return result
     }
@@ -601,7 +604,7 @@ open class RESTMusicService(
     override fun getBookmarks(): List<Bookmark> {
         val response = API.getBookmarks().execute().throwOnFailure()
 
-        return response.body()!!.bookmarkList.toDomainEntitiesList()
+        return response.body()!!.bookmarkList.toDomainEntitiesList(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -626,7 +629,7 @@ open class RESTMusicService(
         val response = API.getVideos().execute().throwOnFailure()
 
         val musicDirectory = MusicDirectory()
-        musicDirectory.addAll(response.body()!!.videosList.toDomainEntityList())
+        musicDirectory.addAll(response.body()!!.videosList.toDomainEntityList(activeServerId))
 
         return musicDirectory
     }
@@ -639,7 +642,7 @@ open class RESTMusicService(
     ): List<Share> {
         val response = API.createShare(ids, description, expires).execute().throwOnFailure()
 
-        return response.body()!!.shares.toDomainEntitiesList()
+        return response.body()!!.shares.toDomainEntitiesList(activeServerId)
     }
 
     @Throws(Exception::class)
@@ -662,6 +665,9 @@ open class RESTMusicService(
 
         API.updateShare(id, description, expiresValue).execute().throwOnFailure()
     }
+
+    private val activeServerId: Int
+        get() = ActiveServerProvider.getActiveServerId()
 
     init {
         // The client will notice if the minimum supported API version has changed

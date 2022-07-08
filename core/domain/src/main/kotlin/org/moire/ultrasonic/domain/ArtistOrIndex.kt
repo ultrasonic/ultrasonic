@@ -1,10 +1,20 @@
+/*
+ * ArtistOrIndex.kt
+ * Copyright (C) 2009-2022 Ultrasonic developers
+ *
+ * Distributed under terms of the GNU GPLv3 license.
+ */
+
 package org.moire.ultrasonic.domain
 
 import androidx.room.Ignore
 
+@Suppress("LongParameterList")
 abstract class ArtistOrIndex(
     @Ignore
     override var id: String,
+    @Ignore
+    open var serverId: Int,
     @Ignore
     override var name: String? = null,
     @Ignore
@@ -18,15 +28,15 @@ abstract class ArtistOrIndex(
 ) : GenericEntry() {
 
     fun compareTo(other: ArtistOrIndex): Int {
-        when {
+        return when {
             this.closeness == other.closeness -> {
-                return 0
+                0
             }
             this.closeness > other.closeness -> {
-                return -1
+                -1
             }
             else -> {
-                return 1
+                1
             }
         }
     }

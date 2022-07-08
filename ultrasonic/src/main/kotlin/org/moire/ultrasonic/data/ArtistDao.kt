@@ -7,7 +7,7 @@ import androidx.room.Query
 import org.moire.ultrasonic.domain.Artist
 
 @Dao
-interface ArtistsDao {
+interface ArtistDao {
     /**
      * Insert a list in the database. If the item already exists, replace it.
      *
@@ -43,5 +43,5 @@ interface ArtistsDao {
      * Get artist by id
      */
     @Query("SELECT * FROM artists WHERE id LIKE :id")
-    fun get(id: String): Artist
+    fun get(id: String): Artist?
 }

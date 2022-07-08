@@ -1,6 +1,6 @@
 /*
  * OfflineMusicService.kt
- * Copyright (C) 2009-2021 Ultrasonic developers
+ * Copyright (C) 2009-2022 Ultrasonic developers
  *
  * Distributed under terms of the GNU GPLv3 license.
  */
@@ -23,6 +23,7 @@ import java.util.regex.Pattern
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.moire.ultrasonic.data.ActiveServerProvider
+import org.moire.ultrasonic.data.MetaDatabase
 import org.moire.ultrasonic.domain.Album
 import org.moire.ultrasonic.domain.Artist
 import org.moire.ultrasonic.domain.ArtistOrIndex
@@ -43,6 +44,7 @@ import org.moire.ultrasonic.domain.Track
 import org.moire.ultrasonic.domain.UserInfo
 import org.moire.ultrasonic.util.AbstractFile
 import org.moire.ultrasonic.util.Constants
+import org.moire.ultrasonic.util.EntryByDiscAndTrackComparator
 import org.moire.ultrasonic.util.FileUtil
 import org.moire.ultrasonic.util.Storage
 import org.moire.ultrasonic.util.Util.safeClose
@@ -52,12 +54,19 @@ import timber.log.Timber
 class OfflineMusicService : MusicService, KoinComponent {
     private val activeServerProvider: ActiveServerProvider by inject()
 
+    private var metaDatabase: MetaDatabase = activeServerProvider.getActiveMetaDatabase()
+
+    // New Room Database
+    private var cachedArtists = metaDatabase.artistDao()
+    private var cachedAlbums = metaDatabase.albumDao()
+    private var cachedTracks = metaDatabase.trackDao()
+
     override fun getIndexes(musicFolderId: String?, refresh: Boolean): List<Index> {
         val indexes: MutableList<Index> = ArrayList()
         val root = FileUtil.musicDirectory
         for (file in FileUtil.listFiles(root)) {
             if (file.isDirectory) {
-                val index = Index(file.path)
+                val index = Index(id = file.path)
                 index.id = file.path
                 index.index = file.name.substring(0, 1)
                 index.name = file.name
@@ -95,6 +104,13 @@ class OfflineMusicService : MusicService, KoinComponent {
         }
 
         return indexes
+    }
+
+    @Throws(OfflineException::class)
+    override fun getArtists(refresh: Boolean): List<Artist> {
+        val result = cachedArtists.get()
+
+        return result
     }
 
     /*
@@ -312,7 +328,8 @@ class OfflineMusicService : MusicService, KoinComponent {
         offset: Int,
         musicFolderId: String?
     ): List<Album> {
-        throw OfflineException("getAlbumList2 isn't available in offline mode")
+        // TODO: Implement filtering by musicFolder?
+        return cachedAlbums.get(size, offset)
     }
 
     @Throws(Exception::class)
@@ -450,20 +467,39 @@ class OfflineMusicService : MusicService, KoinComponent {
 
     override fun isLicenseValid(): Boolean = true
 
-    @Throws(OfflineException::class)
-    override fun getArtists(refresh: Boolean): List<Artist> {
-        throw OfflineException("getArtists isn't available in offline mode")
-    }
-
-    @Throws(OfflineException::class)
-    override fun getArtist(id: String, name: String?, refresh: Boolean):
+    @Throws(Exception::class)
+    override fun getAlbumsOfArtist(id: String, name: String?, refresh: Boolean):
         List<Album> {
-        throw OfflineException("getArtist isn't available in offline mode")
+        val directAlbums = cachedAlbums.byArtist(id)
+
+        // The direct albums won't contain any compilations that the artist has participated in
+        // We need to fetch the tracks of the artist and then gather the compilation albums from that.
+        val tracks = cachedTracks.byArtist(id)
+        val albumIds = tracks.map {
+            it.albumId
+        }.distinct().filterNotNull()
+
+        val compilationAlbums = albumIds.map {
+            cachedAlbums.get(it)
+        }
+
+        return directAlbums.plus(compilationAlbums).distinct()
     }
 
     @Throws(OfflineException::class)
     override fun getAlbum(id: String, name: String?, refresh: Boolean): MusicDirectory {
-        throw OfflineException("getAlbum isn't available in offline mode")
+
+        Timber.i("Starting album query...")
+
+        val list = cachedTracks
+            .byAlbum(id)
+            .sortedWith(EntryByDiscAndTrackComparator())
+
+        val dir = MusicDirectory()
+        dir.addAll(list)
+
+        Timber.i("Returning query.")
+        return dir
     }
 
     @Throws(OfflineException::class)
