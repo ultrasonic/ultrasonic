@@ -5,7 +5,7 @@ Ultrasonic code is now hosted in [GitLab][ultrasonic].
 - New Web: https://ultrasonic.gitlab.io
 - New Git: https://gitlab.com/ultrasonic/ultrasonic
 - New bugtracker: https://gitlab.com/ultrasonic/ultrasonic/-/issues
-- New releases: https://gitlab.com/ultrasonic/ultrasonic/-/issues
+- New releases: https://gitlab.com/ultrasonic/ultrasonic/-/packages
 
 [ultrasonic]: https://gitlab.com/ultrasonic/ultrasonic
 
